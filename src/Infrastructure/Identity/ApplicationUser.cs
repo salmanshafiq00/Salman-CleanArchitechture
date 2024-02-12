@@ -1,0 +1,15 @@
+﻿using CleanArchitechture.Application.Features.Identity.Models;
+using Microsoft.AspNetCore.Identity;
+
+namespace CleanArchitechture.Infrastructure.Identity;
+
+public class ApplicationUser : IdentityUser
+{
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    public bool IsActive { get; set; }
+    public int UserType { get; set; }
+    public Guid? UserTypeId { get; set; }
+
+    public IList<RefreshToken> RefreshTokens { get; private set; } = new List<RefreshToken>();
+}
