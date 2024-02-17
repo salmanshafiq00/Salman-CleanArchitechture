@@ -1,7 +1,7 @@
 ﻿using Application.Constants;
 using CleanArchitechture.Application.Common.Events;
 using CleanArchitechture.Application.Common.Models;
-using CleanArchitechture.Domain.Events;
+using CleanArchitechture.Domain.Common.DomainEvents;
 
 namespace CleanArchitechture.Application.Features.Lookups.Commands;
 
@@ -15,7 +15,7 @@ public record UpdateLookupCommand(
 
 internal sealed class UpdateLookupCommandHandler(
     IApplicationDbContext dbContext,
-    IPublisher publisher) 
+    IPublisher publisher)
     : ICommandHandler<UpdateLookupCommand, Result>
 {
     public async Task<Result> Handle(UpdateLookupCommand request, CancellationToken cancellationToken)

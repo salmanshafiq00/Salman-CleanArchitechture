@@ -1,4 +1,4 @@
-﻿namespace CleanArchitechture.Domain.Entities;
+﻿namespace CleanArchitechture.Domain.Common;
 
 public class LookupDetail : BaseAuditableEntity
 {

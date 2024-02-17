@@ -1,7 +1,7 @@
 ﻿using CleanArchitechture.Application.TodoItems.Commands.CreateTodoItem;
 using CleanArchitechture.Application.TodoItems.Commands.UpdateTodoItem;
 using CleanArchitechture.Application.TodoLists.Commands.CreateTodoList;
-using CleanArchitechture.Domain.Entities;
+using CleanArchitechture.Domain.Todos;
 
 namespace CleanArchitechture.Application.FunctionalTests.TodoItems.Commands;
 

@@ -1,5 +1,5 @@
 ﻿using CleanArchitechture.Application.Common.Interfaces;
-using CleanArchitechture.Domain.Enums;
+using CleanArchitechture.Domain.Todos;
 
 namespace CleanArchitechture.Application.TodoItems.Commands.UpdateTodoItemDetail;
 

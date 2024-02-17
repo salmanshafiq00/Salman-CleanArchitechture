@@ -1,9 +1,4 @@
-﻿using CleanArchitechture.Application.Common.Interfaces;
-using CleanArchitechture.Application.Common.Models;
-using CleanArchitechture.Application.Common.Security;
-using CleanArchitechture.Domain.Enums;
-
-namespace CleanArchitechture.Application.TodoLists.Queries.GetTodos;
+﻿namespace CleanArchitechture.Application.TodoLists.Queries.GetTodos;
 
 [Authorize]
 public record GetTodosQuery : IRequest<TodosVm>;

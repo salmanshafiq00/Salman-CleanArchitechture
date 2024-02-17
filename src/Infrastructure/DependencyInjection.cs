@@ -19,6 +19,8 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using WebApi.Infrastructure.Persistence;
 using WebApi.Infrastructure.Permissions;
+using StackExchange.Redis;
+using Microsoft.AspNetCore.Builder;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -30,6 +32,7 @@ public static class DependencyInjection
         var redisConString = configuration.GetConnectionString("RedisCache");
 
         Guard.Against.Null(dbConString, message: "Connection string 'DefaultConnection' not found.");
+        Guard.Against.Null(redisConString, message: "Connection string 'RedisCache' not found.");
 
         services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
         services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
@@ -46,6 +49,7 @@ public static class DependencyInjection
         services.AddScoped<IApplicationDbContext>(provider
             => provider.GetRequiredService<ApplicationDbContext>());
 
+        services.AddSingleton(ConnectionMultiplexer.Connect(redisConString));
         services.AddStackExchangeRedisCache(options => options.Configuration = redisConString);
 
         services.AddScoped<ApplicationDbContextInitialiser>();

@@ -82,7 +82,7 @@ internal sealed class AuthService(
         await dbContext.SaveChangesAsync(cancellation);
 
         return !string.IsNullOrEmpty(accessToken)
-            ? Result.Success(authResponse)
+            ? Result.Success(authResponse, CommonMessage.LOGIN_SUCCESSFULLY)
             : Result.NotFound<AuthenticatedResponse>(ErrorMessages.WRONG_USERNAME_PASSWORD);
     }
 

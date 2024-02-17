@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace CleanArchitechture.Infrastructure.Infrastructure.Data
+namespace CleanArchitechture.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -17,7 +17,7 @@ namespace CleanArchitechture.Infrastructure.Infrastructure.Data
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.0")
+                .HasAnnotation("ProductVersion", "8.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -58,7 +58,7 @@ namespace CleanArchitechture.Infrastructure.Infrastructure.Data
                     b.ToTable("RefreshTokens");
                 });
 
-            modelBuilder.Entity("CleanArchitechture.Domain.Entities.Lookup", b =>
+            modelBuilder.Entity("CleanArchitechture.Domain.Common.Lookup", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -110,7 +110,7 @@ namespace CleanArchitechture.Infrastructure.Infrastructure.Data
                     b.ToTable("Lookups");
                 });
 
-            modelBuilder.Entity("CleanArchitechture.Domain.Entities.LookupDetail", b =>
+            modelBuilder.Entity("CleanArchitechture.Domain.Common.LookupDetail", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -167,7 +167,7 @@ namespace CleanArchitechture.Infrastructure.Infrastructure.Data
                     b.ToTable("LookupDetails");
                 });
 
-            modelBuilder.Entity("CleanArchitechture.Domain.Entities.TodoItem", b =>
+            modelBuilder.Entity("CleanArchitechture.Domain.Todos.TodoItem", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -212,7 +212,7 @@ namespace CleanArchitechture.Infrastructure.Infrastructure.Data
                     b.ToTable("TodoItems");
                 });
 
-            modelBuilder.Entity("CleanArchitechture.Domain.Entities.TodoList", b =>
+            modelBuilder.Entity("CleanArchitechture.Domain.Todos.TodoList", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -464,24 +464,24 @@ namespace CleanArchitechture.Infrastructure.Infrastructure.Data
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CleanArchitechture.Domain.Entities.Lookup", b =>
+            modelBuilder.Entity("CleanArchitechture.Domain.Common.Lookup", b =>
                 {
-                    b.HasOne("CleanArchitechture.Domain.Entities.Lookup", "Parent")
+                    b.HasOne("CleanArchitechture.Domain.Common.Lookup", "Parent")
                         .WithMany()
                         .HasForeignKey("ParentId");
 
                     b.Navigation("Parent");
                 });
 
-            modelBuilder.Entity("CleanArchitechture.Domain.Entities.LookupDetail", b =>
+            modelBuilder.Entity("CleanArchitechture.Domain.Common.LookupDetail", b =>
                 {
-                    b.HasOne("CleanArchitechture.Domain.Entities.Lookup", "Lookup")
+                    b.HasOne("CleanArchitechture.Domain.Common.Lookup", "Lookup")
                         .WithMany()
                         .HasForeignKey("LookupId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("CleanArchitechture.Domain.Entities.LookupDetail", "Parent")
+                    b.HasOne("CleanArchitechture.Domain.Common.LookupDetail", "Parent")
                         .WithMany()
                         .HasForeignKey("ParentId");
 
@@ -490,9 +490,9 @@ namespace CleanArchitechture.Infrastructure.Infrastructure.Data
                     b.Navigation("Parent");
                 });
 
-            modelBuilder.Entity("CleanArchitechture.Domain.Entities.TodoItem", b =>
+            modelBuilder.Entity("CleanArchitechture.Domain.Todos.TodoItem", b =>
                 {
-                    b.HasOne("CleanArchitechture.Domain.Entities.TodoList", "List")
+                    b.HasOne("CleanArchitechture.Domain.Todos.TodoList", "List")
                         .WithMany("Items")
                         .HasForeignKey("ListId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -501,9 +501,9 @@ namespace CleanArchitechture.Infrastructure.Infrastructure.Data
                     b.Navigation("List");
                 });
 
-            modelBuilder.Entity("CleanArchitechture.Domain.Entities.TodoList", b =>
+            modelBuilder.Entity("CleanArchitechture.Domain.Todos.TodoList", b =>
                 {
-                    b.OwnsOne("CleanArchitechture.Domain.ValueObjects.Colour", "Colour", b1 =>
+                    b.OwnsOne("CleanArchitechture.Domain.Todos.Colour", "Colour", b1 =>
                         {
                             b1.Property<Guid>("TodoListId")
                                 .HasColumnType("uniqueidentifier");
@@ -575,7 +575,7 @@ namespace CleanArchitechture.Infrastructure.Infrastructure.Data
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CleanArchitechture.Domain.Entities.TodoList", b =>
+            modelBuilder.Entity("CleanArchitechture.Domain.Todos.TodoList", b =>
                 {
                     b.Navigation("Items");
                 });

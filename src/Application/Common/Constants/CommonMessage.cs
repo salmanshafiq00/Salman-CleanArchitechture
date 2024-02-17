@@ -2,6 +2,7 @@
 
 public static class CommonMessage
 {
+    public const string LOGIN_SUCCESSFULLY = "Login Successfully!";
     public const string SAVED_SUCCESSFULLY = "Saved Successfully!";
     public const string UPDATED_SUCCESSFULLY = "Updated Successfully!";
     public const string DELETED_SUCCESSFULLY = "Deleted Successfully!";

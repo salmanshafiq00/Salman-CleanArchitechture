@@ -1,8 +1,8 @@
 ﻿using CleanArchitechture.Application.Common.Interfaces;
-using CleanArchitechture.Domain.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using SharedKernel;
 
 namespace CleanArchitechture.Infrastructure.Persistence.Interceptors;
 

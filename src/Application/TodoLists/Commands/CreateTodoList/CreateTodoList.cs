@@ -1,5 +1,4 @@
-﻿using CleanArchitechture.Application.Common.Interfaces;
-using CleanArchitechture.Domain.Entities;
+﻿using CleanArchitechture.Domain.Todos;
 
 namespace CleanArchitechture.Application.TodoLists.Commands.CreateTodoList;
 

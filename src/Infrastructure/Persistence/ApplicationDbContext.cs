@@ -1,7 +1,8 @@
 ﻿using System.Reflection;
 using CleanArchitechture.Application.Common.Interfaces;
 using CleanArchitechture.Application.Features.Identity.Models;
-using CleanArchitechture.Domain.Entities;
+using CleanArchitechture.Domain.Common;
+using CleanArchitechture.Domain.Todos;
 using CleanArchitechture.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
