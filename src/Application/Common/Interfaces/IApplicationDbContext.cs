@@ -1,5 +1,6 @@
 ﻿using CleanArchitechture.Application.Features.Identity.Models;
-using CleanArchitechture.Domain.Entities;
+using CleanArchitechture.Domain.Common;
+using CleanArchitechture.Domain.Todos;
 
 namespace CleanArchitechture.Application.Common.Interfaces;
 

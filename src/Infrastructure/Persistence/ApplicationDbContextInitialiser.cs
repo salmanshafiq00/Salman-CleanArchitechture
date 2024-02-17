@@ -1,5 +1,5 @@
 ﻿using CleanArchitechture.Domain.Constants;
-using CleanArchitechture.Domain.Entities;
+using CleanArchitechture.Domain.Todos;
 using CleanArchitechture.Infrastructure.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
@@ -70,7 +70,7 @@ internal class ApplicationDbContextInitialiser(
 
         if (userManager.Users.All(u => u.UserName != administrator.UserName))
         {
-            await userManager.CreateAsync(administrator, "Administrator1!");
+            await userManager.CreateAsync(administrator, "Salman@123");
             if (!string.IsNullOrWhiteSpace(administratorRole.Name))
             {
                 await userManager.AddToRolesAsync(administrator, new [] { administratorRole.Name });

@@ -5,7 +5,7 @@ using CleanArchitechture.Application.Common.Interfaces;
 using CleanArchitechture.Application.Common.Models;
 using CleanArchitechture.Application.TodoItems.Queries.GetTodoItemsWithPagination;
 using CleanArchitechture.Application.TodoLists.Queries.GetTodos;
-using CleanArchitechture.Domain.Entities;
+using CleanArchitechture.Domain.Todos;
 using NUnit.Framework;
 
 namespace CleanArchitechture.Application.UnitTests.Common.Mappings;

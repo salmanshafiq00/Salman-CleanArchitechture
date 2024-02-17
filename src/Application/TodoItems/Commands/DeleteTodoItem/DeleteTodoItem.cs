@@ -1,5 +1,4 @@
-﻿using CleanArchitechture.Application.Common.Interfaces;
-using CleanArchitechture.Domain.Events;
+﻿using CleanArchitechture.Domain.Todos.DomainEvents;
 
 namespace CleanArchitechture.Application.TodoItems.Commands.DeleteTodoItem;
 

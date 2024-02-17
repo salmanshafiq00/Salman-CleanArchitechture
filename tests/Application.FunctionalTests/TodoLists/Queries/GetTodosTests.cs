@@ -1,6 +1,5 @@
 ﻿using CleanArchitechture.Application.TodoLists.Queries.GetTodos;
-using CleanArchitechture.Domain.Entities;
-using CleanArchitechture.Domain.ValueObjects;
+using CleanArchitechture.Domain.Todos;
 
 namespace CleanArchitechture.Application.FunctionalTests.TodoLists.Queries;
 

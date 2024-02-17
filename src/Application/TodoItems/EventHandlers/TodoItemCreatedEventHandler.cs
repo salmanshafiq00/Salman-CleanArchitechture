@@ -1,4 +1,4 @@
-﻿using CleanArchitechture.Domain.Events;
+﻿using CleanArchitechture.Domain.Todos.DomainEvents;
 using Microsoft.Extensions.Logging;
 
 namespace CleanArchitechture.Application.TodoItems.EventHandlers;

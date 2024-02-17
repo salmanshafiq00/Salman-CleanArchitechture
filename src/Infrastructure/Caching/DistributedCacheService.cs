@@ -4,12 +4,14 @@ using CleanArchitechture.Application.Common.Caching;
 using CleanArchitechture.Infrastructure.OptionsSetup.Cache;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
+using StackExchange.Redis;
 
 namespace CleanArchitechture.Infrastructure.Caching;
 
 internal sealed class DistributedCacheService(
     IDistributedCache distributedCache,
-    IOptions<CacheOptions> cacheOptions)
+    IOptions<CacheOptions> cacheOptions,
+    ConnectionMultiplexer connectionMultiplexer)
     : IDistributedCacheService
 {
     private readonly CacheOptions _cacheOptions = cacheOptions.Value;
@@ -56,21 +58,38 @@ internal sealed class DistributedCacheService(
         CacheKeys.TryRemove(key, out bool _);
     }
 
+    //public async Task RemoveByPrefixAsync(string prefixKey, CancellationToken cancellation = default)
+    //{
+    //    var keys = CacheKeys
+    //        .Keys
+    //        .Where(k => string.Equals(prefixKey, PrefixValue(k)));
+
+    //    var tasks = CacheKeys
+    //        .Keys
+    //        .Where(k => string.Equals(prefixKey, PrefixValue(k)))
+    //        .Select(k => RemoveAsync(k, cancellation));
+
+    //    await Task.WhenAll(tasks);
+    //}
+
     public async Task RemoveByPrefixAsync(string prefixKey, CancellationToken cancellation = default)
     {
-        var keys = CacheKeys
+        var keys2 = CacheKeys
             .Keys
             .Where(k => string.Equals(prefixKey, PrefixValue(k)));
 
-        var tasks = CacheKeys
-            .Keys
-            .Where(k => string.Equals(prefixKey, PrefixValue(k)))
-            .Select(k => RemoveAsync(k, cancellation));
+        // Check if the cache keys exist in the concurrent dictionary
+        var keys = CacheKeys.Keys.Where(k => string.Equals(prefixKey, PrefixValue(k)));
 
-        //var tasks = CacheKeys
-        //    .Keys
-        //    .Where(k => k.StartsWith(prefixKey))
-        //    .Select(k => RemoveAsync(k, cancellation));
+        // If keys are not found in the concurrent dictionary, fetch them from Redis
+        if (!keys.Any())
+        {
+            // Fetch the keys from Redis using the specified prefix pattern
+            keys = await GetKeysFromRedis(prefixKey);
+        }
+
+        // Remove the keys asynchronously
+        var tasks = keys.Select(k => RemoveAsync(k, cancellation));
 
         await Task.WhenAll(tasks);
     }
@@ -106,6 +125,13 @@ internal sealed class DistributedCacheService(
     {
         string[] parts = input.Split(delimiter);
         return parts.Length > 0 ? parts[0] : input;
+    }
+
+    private async Task<IEnumerable<string>> GetKeysFromRedis(string prefixKey)
+    {
+        var server = connectionMultiplexer.GetServer(connectionMultiplexer.GetEndPoints().First());
+        var keys = server.Keys(pattern: $"{prefixKey}*");
+        return keys.Select(k => k.ToString());
     }
 
 }

@@ -1,4 +1,4 @@
-﻿using CleanArchitechture.Domain.Entities;
+﻿using CleanArchitechture.Domain.Common;
 
 namespace CleanArchitechture.Application.Features.Lookups.Queries;
 

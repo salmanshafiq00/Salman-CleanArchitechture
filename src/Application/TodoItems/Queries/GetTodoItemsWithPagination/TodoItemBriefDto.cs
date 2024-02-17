@@ -1,4 +1,4 @@
-﻿using CleanArchitechture.Domain.Entities;
+﻿using CleanArchitechture.Domain.Todos;
 
 namespace CleanArchitechture.Application.TodoItems.Queries.GetTodoItemsWithPagination;
 

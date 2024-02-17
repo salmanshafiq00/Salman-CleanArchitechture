@@ -19,7 +19,7 @@ public class LookupDetails : EndpointGroupBase
            .MapDelete(DeleteLookupDetail, "{id:Guid}");
     }
 
-    public async Task<PaginatedResponse<LookupDetailResponse>> GetLookupDetails(ISender sender, [AsParameters] GetLookupDetailsQuery query)
+    public async Task<PaginatedResponse<LookupDetailResponse>> GetLookupDetails(ISender sender, [AsParameters] GetLookupDetailListQuery query)
     {
         return await sender.Send(query);
     }

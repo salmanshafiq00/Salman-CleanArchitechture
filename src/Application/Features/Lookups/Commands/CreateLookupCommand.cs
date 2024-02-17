@@ -1,7 +1,7 @@
 ﻿using Application.Constants;
 using CleanArchitechture.Application.Common.Events;
 using CleanArchitechture.Application.Common.Models;
-using CleanArchitechture.Domain.Entities;
+using CleanArchitechture.Domain.Common;
 
 namespace CleanArchitechture.Application.Features.Lookups.Commands;
 
