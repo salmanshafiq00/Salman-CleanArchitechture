@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SharedKernel\SharedKernel.csproj" />
+    <PackageReference Include="MediatR" />
   </ItemGroup>
 
 </Project>

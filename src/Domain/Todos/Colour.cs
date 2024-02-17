@@ -1,4 +1,6 @@
-﻿namespace CleanArchitechture.Domain.Todos;
+﻿using CleanArchitechture.Domain.Abstractions;
+
+namespace CleanArchitechture.Domain.Todos;
 
 public class Colour : ValueObject
 {

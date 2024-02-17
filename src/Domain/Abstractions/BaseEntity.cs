@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SharedKernel;
+namespace CleanArchitechture.Domain.Abstractions;
 
 public abstract class BaseEntity
 {

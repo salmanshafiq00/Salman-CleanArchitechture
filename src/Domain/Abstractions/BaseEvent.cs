@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace SharedKernel;
+namespace CleanArchitechture.Domain.Abstractions;
 
 public abstract class BaseEvent : INotification
 {
