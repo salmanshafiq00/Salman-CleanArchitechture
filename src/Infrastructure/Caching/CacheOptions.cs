@@ -1,4 +1,4 @@
-﻿namespace CleanArchitechture.Infrastructure.OptionsSetup.Cache;
+﻿namespace CleanArchitechture.Infrastructure.Caching;
 
 internal class CacheOptions
 {
