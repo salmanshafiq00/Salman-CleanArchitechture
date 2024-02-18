@@ -11,7 +11,10 @@ public record UpdateLookupCommand(
     string Code,
     string Description,
     bool Status,
-    Guid? ParentId) : ICommand<Result>;
+    Guid? ParentId) : ICacheInvalidatorCommand<Result>
+{
+    public string CacheKey => CacheKeys.Lookup;
+}
 
 internal sealed class UpdateLookupCommandHandler(
     IApplicationDbContext dbContext,
@@ -35,9 +38,6 @@ internal sealed class UpdateLookupCommandHandler(
         entity.AddDomainEvent(new LookupUpdatedEvent(entity));
 
         await dbContext.SaveChangesAsync(cancellationToken);
-
-        await publisher.Publish(
-new CacheInvalidationEvent { CacheKey = CacheKeys.Lookup });
 
         if (oldStatus != request.Status)
         {

@@ -1,4 +1,4 @@
-﻿namespace SharedKernel;
+﻿namespace CleanArchitechture.Domain.Abstractions;
 
 public abstract class BaseAuditableEntity : BaseEntity
 {

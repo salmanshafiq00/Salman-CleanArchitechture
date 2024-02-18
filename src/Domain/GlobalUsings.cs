@@ -1,1 +1,1 @@
-﻿global using SharedKernel;
+﻿global using CleanArchitechture.Domain.Abstractions;

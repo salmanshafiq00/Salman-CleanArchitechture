@@ -1,14 +1,15 @@
 ﻿using Application.Constants;
-using CleanArchitechture.Application.Common.Events;
 using CleanArchitechture.Application.Common.Models;
 
 namespace CleanArchitechture.Application.Features.LookupDetails.Commands;
 
-public record DeleteLookupDetailCommand(Guid Id) : ICommand<Result>;
+public record DeleteLookupDetailCommand(Guid Id) : ICommand<Result>
+{
+    public string CacheKey => CacheKeys.LookupDetail;
+}
 
 internal sealed class DeleteLookupDetailCommandHandler(
-    IApplicationDbContext dbContext,
-    IPublisher publisher) 
+    IApplicationDbContext dbContext) 
     : ICommandHandler<DeleteLookupDetailCommand, Result>
 {
     public async Task<Result> Handle(DeleteLookupDetailCommand request, CancellationToken cancellationToken)
@@ -20,9 +21,6 @@ internal sealed class DeleteLookupDetailCommandHandler(
         dbContext.LookupDetails.Remove(entity);
 
         await dbContext.SaveChangesAsync(cancellationToken);
-
-        await publisher.Publish(
-    new CacheInvalidationEvent { CacheKey = CacheKeys.LookupDetail });
 
         return Result.Success(CommonMessage.UPDATED_SUCCESSFULLY);
     }

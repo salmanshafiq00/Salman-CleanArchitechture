@@ -10,7 +10,6 @@ internal class CacheInvalidationEventHandler(IDistributedCacheService distribute
         // await distributedCache.RemoveAsync(notification.CacheKey, cancellationToken);
 
         await distributedCache.RemoveByPrefixAsync(notification.CacheKey, cancellationToken);
-        //await distributedCache.RemoveByPrefixAsync(notification.CacheKey, cancellationToken);
     }
 
     private static string PrefixValue(string value)

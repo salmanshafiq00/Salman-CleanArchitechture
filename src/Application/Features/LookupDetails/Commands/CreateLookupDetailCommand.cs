@@ -1,5 +1,4 @@
 ﻿using Application.Constants;
-using CleanArchitechture.Application.Common.Events;
 using CleanArchitechture.Application.Common.Models;
 using CleanArchitechture.Domain.Common;
 
@@ -11,7 +10,10 @@ public record CreateLookupDetailCommand(
     string Description,
     bool Status,
     Guid LookupId,
-    Guid? ParentId = null) : ICommand<Result>;
+    Guid? ParentId = null) : ICacheInvalidatorCommand<Result>
+{
+   public string CacheKey => CacheKeys.LookupDetail;
+}
 
 internal sealed class CreateLookupDetailQueryHandler(
     IApplicationDbContext dbContext,
@@ -32,9 +34,6 @@ internal sealed class CreateLookupDetailQueryHandler(
 
         dbContext.LookupDetails.Add(entity);
         await dbContext.SaveChangesAsync(cancellationToken);
-
-        await publisher.Publish(
-            new CacheInvalidationEvent { CacheKey = CacheKeys.LookupDetail});
 
         return Result.Success(CommonMessage.SAVED_SUCCESSFULLY);
     }

@@ -1,15 +1,11 @@
 ﻿namespace CleanArchitechture.Application.Features.LookupDetails.Queries;
 
 [Authorize(Policy = Permissions.LookupDetails.View)]
-public record GetLookupDetailListQuery : ICacheableQuery<PaginatedResponse<LookupDetailResponse>>, IDapperPaginatedQuery
+public record GetLookupDetailListQuery : PaginatedFilter, ICacheableQuery<PaginatedResponse<LookupDetailResponse>>
 {
     public string CacheKey => $"LookupDetail_{PageNumber}_{PageSize}";
 
     public TimeSpan? Expiration => null;
-
-    public int? PageNumber => 1;
-
-    public int? PageSize => 10;
 }
 
 internal sealed class GetLookupDetailListQueryHandler(ISqlConnectionFactory sqlConnection) 
@@ -40,6 +36,6 @@ internal sealed class GetLookupDetailListQueryHandler(ISqlConnectionFactory sqlC
             ORDER BY ld.Created
             """;
 
-        return await PaginatedResponse<LookupDetailResponse>.CreateAsync(connection, sql, sqlWithOrders, request.PageNumber.Value, request.PageSize.Value);
+        return await PaginatedResponse<LookupDetailResponse>.CreateAsync(connection, sql, sqlWithOrders, request.PageNumber, request.PageSize);
     }
 }

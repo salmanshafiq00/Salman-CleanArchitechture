@@ -1,6 +1,4 @@
-﻿using CleanArchitechture.Domain.Todos;
-
-namespace CleanArchitechture.Domain.Todos.DomainEvents;
+﻿namespace CleanArchitechture.Domain.Todos.DomainEvents;
 
 public class TodoItemDeletedEvent : BaseEvent
 {

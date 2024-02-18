@@ -1,7 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Text.Json;
 using CleanArchitechture.Application.Common.Caching;
-using CleanArchitechture.Infrastructure.OptionsSetup.Cache;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;
@@ -115,7 +114,6 @@ internal sealed class DistributedCacheService(
     private  DistributedCacheEntryOptions GetOptions(TimeSpan? slidingExpiration)
     {
         var options = new DistributedCacheEntryOptions();
-        
         return slidingExpiration.HasValue 
             ? options.SetSlidingExpiration(slidingExpiration.Value)
             : options.SetSlidingExpiration(TimeSpan.FromMinutes(_cacheOptions.SlidingExpiration));

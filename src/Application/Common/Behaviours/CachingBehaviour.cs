@@ -52,12 +52,11 @@ internal sealed class CachingBehaviour<TRequest, TResponse>(
         // If not found in cache, proceed with the actual request handling
         var response = await next();
 
-        await cacheService
-            .SetStringAsync(
-            request.CacheKey,
-            JsonSerializer.Serialize(response),
-            request.Expiration,
-            cancellationToken);
+        await cacheService.SetStringAsync(
+                    request.CacheKey,
+                    JsonSerializer.Serialize(response),
+                    request.Expiration,
+                    cancellationToken);
 
         return response;
     }

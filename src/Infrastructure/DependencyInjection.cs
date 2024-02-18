@@ -8,7 +8,6 @@ using CleanArchitechture.Infrastructure.Persistence;
 using CleanArchitechture.Infrastructure.Persistence.Interceptors;
 using CleanArchitechture.Infrastructure.Persistence.Services;
 using CleanArchitechture.Infrastructure.Identity;
-using CleanArchitechture.Infrastructure.OptionsSetup.Cache;
 using CleanArchitechture.Infrastructure.OptionsSetup.Jwt;
 using CleanArchitechture.Infrastructure.Services.Token;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
