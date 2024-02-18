@@ -1,10 +1,12 @@
 ﻿using Application.Constants;
-using CleanArchitechture.Application.Common.Events;
 using CleanArchitechture.Application.Common.Models;
 
 namespace CleanArchitechture.Application.Features.Lookups.Commands;
 
-public record DeleteLookupCommand(Guid Id) : ICommand<Result>;
+public record DeleteLookupCommand(Guid Id) : ICacheInvalidatorCommand<Result>
+{
+    public string CacheKey => CacheKeys.Lookup;
+}
 
 internal sealed class DeleteLookupCommandHandler(
     IApplicationDbContext dbContext,
@@ -20,9 +22,6 @@ internal sealed class DeleteLookupCommandHandler(
         dbContext.Lookups.Remove(entity);
 
         await dbContext.SaveChangesAsync(cancellationToken);
-
-        await publisher.Publish(
-    new CacheInvalidationEvent { CacheKey = CacheKeys.Lookup });
 
         return Result.Success(CommonMessage.DELETED_SUCCESSFULLY);
     }

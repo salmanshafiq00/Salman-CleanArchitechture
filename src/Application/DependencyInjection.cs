@@ -13,11 +13,12 @@ public static class DependencyInjection
 
         services.AddMediatR(cfg => {
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
-            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehaviour<,>));
-            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
-            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(CachingBehaviour<,>));
-            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
+            cfg.AddOpenBehavior(typeof(UnhandledExceptionBehaviour<,>));
+            cfg.AddOpenBehavior(typeof(AuthorizationBehaviour<,>));
+            cfg.AddOpenBehavior(typeof(ValidationBehaviour<,>));
+            cfg.AddOpenBehavior(typeof(CachingBehaviour<,>));
+            cfg.AddOpenBehavior(typeof(CacheInvalidationBehaviour<,>));
+            cfg.AddOpenBehavior(typeof(PerformanceBehaviour<,>));
         });
 
         return services;

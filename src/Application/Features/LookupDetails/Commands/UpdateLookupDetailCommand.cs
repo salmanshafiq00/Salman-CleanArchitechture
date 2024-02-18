@@ -1,5 +1,4 @@
 ﻿using Application.Constants;
-using CleanArchitechture.Application.Common.Events;
 using CleanArchitechture.Application.Common.Models;
 
 namespace CleanArchitechture.Application.Features.LookupDetails.Commands;
@@ -11,11 +10,13 @@ public record UpdateLookupDetailCommand(
     string Description,
     bool Status,
     Guid LookupId,
-    Guid? ParentId) : ICommand<Result>;
+    Guid? ParentId) : ICacheInvalidatorCommand<Result>
+{
+    public string CacheKey => CacheKeys.LookupDetail;
+}
 
 internal sealed class UpdateLookupDetailCommandHandler(
-    IApplicationDbContext dbContext,
-    IPublisher publisher) 
+    IApplicationDbContext dbContext) 
     : ICommandHandler<UpdateLookupDetailCommand, Result>
 {
     public async Task<Result> Handle(UpdateLookupDetailCommand request, CancellationToken cancellationToken)
@@ -32,9 +33,6 @@ internal sealed class UpdateLookupDetailCommandHandler(
         entity.ParentId = request.ParentId;
 
         await dbContext.SaveChangesAsync(cancellationToken);
-
-        await publisher.Publish(
-            new CacheInvalidationEvent { CacheKey = CacheKeys.LookupDetail });
 
         return Result.Success(CommonMessage.UPDATED_SUCCESSFULLY);
     }

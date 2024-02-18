@@ -2,15 +2,11 @@
 
 [Authorize(Policy = Permissions.Lookups.View)]
 public record GetLookupListQuery 
-    : ICacheableQuery<PaginatedResponse<LookupResponse>>, IDapperPaginatedQuery
+    : PaginatedFilter, ICacheableQuery<PaginatedResponse<LookupResponse>>
 {
     public string CacheKey => $"Lookup_{PageNumber}_{PageSize}";
 
     public TimeSpan? Expiration => null;
-
-    public int? PageNumber => 1;
-
-    public int? PageSize => 10;
 }
 
 internal sealed class GetLookupListQueryHandler(ISqlConnectionFactory sqlConnection) 
@@ -39,6 +35,6 @@ internal sealed class GetLookupListQueryHandler(ISqlConnectionFactory sqlConnect
             """;
 
         return await PaginatedResponse<LookupResponse>
-            .CreateAsync(connection, sql, sqlWithOrders, request.PageNumber.Value, request.PageSize.Value);
+            .CreateAsync(connection, sql, sqlWithOrders, request.PageNumber, request.PageSize);
     }
 }

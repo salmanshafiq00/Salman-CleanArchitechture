@@ -115,7 +115,6 @@ internal sealed class DistributedCacheService(
     private  DistributedCacheEntryOptions GetOptions(TimeSpan? slidingExpiration)
     {
         var options = new DistributedCacheEntryOptions();
-        
         return slidingExpiration.HasValue 
             ? options.SetSlidingExpiration(slidingExpiration.Value)
             : options.SetSlidingExpiration(TimeSpan.FromMinutes(_cacheOptions.SlidingExpiration));

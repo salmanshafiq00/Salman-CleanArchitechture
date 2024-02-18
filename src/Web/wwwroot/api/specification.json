@@ -158,6 +158,37 @@
           "Lookups"
         ],
         "operationId": "GetLookups",
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "Keyword",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -1007,6 +1038,9 @@
             "type": "string",
             "format": "guid",
             "nullable": true
+          },
+          "cacheKey": {
+            "type": "string"
           }
         }
       },
@@ -1044,6 +1078,9 @@
             "type": "string",
             "format": "guid",
             "nullable": true
+          },
+          "cacheKey": {
+            "type": "string"
           }
         }
       },
