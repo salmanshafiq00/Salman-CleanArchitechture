@@ -1,12 +1,11 @@
 ﻿using System.Text.Json;
-using Microsoft.Extensions.Logging;
 
 namespace CleanArchitechture.Application.Common.Behaviours;
 
 
 #region Inmemory Cache
 
-//internal sealed class CachingBehaviour<TRequest, TResponse>(
+//internal sealed class QueryCachingBehaviour<TRequest, TResponse>(
 //    IInMemoryCacheService cacheService)
 //    : IPipelineBehavior<TRequest, TResponse>
 //    where TRequest : ICachedQuery
@@ -28,9 +27,9 @@ namespace CleanArchitechture.Application.Common.Behaviours;
 
 #region using distributed cache
 
-internal sealed class CachingBehaviour<TRequest, TResponse>(
+internal sealed class QueryCachingBehaviour<TRequest, TResponse>(
     IDistributedCacheService cacheService,
-    ILogger<CachingBehaviour<TRequest, TResponse>> logger)
+    ILogger<QueryCachingBehaviour<TRequest, TResponse>> logger)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : ICacheableQuery
 {

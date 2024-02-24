@@ -21,7 +21,8 @@ public class Lookups : EndpointGroupBase
 
     public async Task<PaginatedResponse<LookupResponse>> GetLookups(ISender sender, [AsParameters] GetLookupListQuery query)
     {
-        return await sender.Send(query);
+        var result = await sender.Send(query);
+        return result?.Value;
     }
 
     public async Task<LookupResponse> GetLookup(ISender sender, Guid id)
