@@ -1,12 +1,10 @@
 ﻿using System.Reflection;
 using CleanArchitechture.Application.Common.Exceptions;
-using CleanArchitechture.Application.Common.Interfaces;
 using CleanArchitechture.Application.Common.Interfaces.Identity;
-using CleanArchitechture.Application.Common.Security;
 
 namespace CleanArchitechture.Application.Common.Behaviours;
 
-public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
+internal sealed class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
 {
     private readonly IUser _user;
     private readonly IIdentityService _identityService;

@@ -1,8 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿namespace CleanArchitechture.Application.Common.Behaviours;
 
-namespace CleanArchitechture.Application.Common.Behaviours;
-
-public class UnhandledExceptionBehaviour<TRequest, TResponse>(ILogger<TRequest> logger) 
+internal sealed class UnhandledExceptionBehaviour<TRequest, TResponse>(ILogger<TRequest> logger) 
     : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
 {
     private readonly ILogger<TRequest> _logger = logger;

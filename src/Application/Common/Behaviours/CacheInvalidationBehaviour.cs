@@ -2,7 +2,7 @@
 
 namespace CleanArchitechture.Application.Common.Behaviours;
 
-public class CacheInvalidationBehaviour<TRequest, TResponse>(
+internal sealed class CacheInvalidationBehaviour<TRequest, TResponse>(
     ILogger<CacheInvalidationBehaviour<TRequest, TResponse>> logger,
     IDistributedCacheService distributedCache)
     : IPipelineBehavior<TRequest, TResponse>

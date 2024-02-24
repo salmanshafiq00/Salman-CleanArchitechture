@@ -1,11 +1,9 @@
 ﻿using System.Diagnostics;
-using CleanArchitechture.Application.Common.Interfaces;
 using CleanArchitechture.Application.Common.Interfaces.Identity;
-using Microsoft.Extensions.Logging;
 
 namespace CleanArchitechture.Application.Common.Behaviours;
 
-public class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
+internal sealed class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
 {
     private readonly Stopwatch _timer;
     private readonly ILogger<TRequest> _logger;

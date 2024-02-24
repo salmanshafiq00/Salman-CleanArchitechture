@@ -1,10 +1,10 @@
 ﻿using CleanArchitechture.Application.Common.Interfaces.Identity;
 using MediatR.Pipeline;
-using Microsoft.Extensions.Logging;
 
 namespace CleanArchitechture.Application.Common.Behaviours;
 
-public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest> where TRequest : notnull
+public sealed class LoggingBehaviour<TRequest> 
+    : IRequestPreProcessor<TRequest> where TRequest : notnull
 {
     private readonly ILogger _logger;
     private readonly IUser _user;
