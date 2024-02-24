@@ -4,11 +4,9 @@ using CleanArchitechture.Application.Features.Identity.Models;
 
 namespace CleanArchitechture.Application.Features.Identity.Commands;
 
-public record RefreshTokenRequestCommand(string AccessToken)
-    : IRequest<Result<AuthenticatedResponse>>
-{
-    public string RefreshToken { get; set; } = string.Empty;
-}
+public record RefreshTokenRequestCommand(string AccessToken, string RefreshToken)
+    : IRequest<Result<AuthenticatedResponse>>;
+
 
 internal sealed class RefreshTokenCommandHandler(IAuthService authService)
     : IRequestHandler<RefreshTokenRequestCommand, Result<AuthenticatedResponse>>
