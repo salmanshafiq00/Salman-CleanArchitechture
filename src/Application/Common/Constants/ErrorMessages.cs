@@ -6,6 +6,7 @@ public static class ErrorMessages
     public const string WRONG_USERNAME_PASSWORD = "Username or password wrong.";
     public const string TOKEN_DID_NOT_MATCH = "Token did not match any users.";
     public const string TOKEN_NOT_ACTIVE = "Token Not Active.";
+    public const string INVALID_TOKEN = "Invalid Token";
 
 
     public const string NotFound = "Not Found";

@@ -226,7 +226,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedResponseOfLookupResponse"
+                  "$ref": "#/components/schemas/ResultOfPaginatedResponseOfLookupResponse"
                 }
               }
             }
@@ -257,7 +257,14 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -285,7 +292,14 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -319,7 +333,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LookupResponse"
+                  "$ref": "#/components/schemas/ResultOfLookupResponse"
                 }
               }
             }
@@ -350,7 +364,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Result"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -800,7 +821,14 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultOfAuthenticatedResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -813,7 +841,14 @@
         "operationId": "RefreshToken",
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultOfAuthenticatedResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -973,6 +1008,27 @@
           }
         }
       },
+      "ResultOfPaginatedResponseOfLookupResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Result"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "value": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/PaginatedResponseOfLookupResponse"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
       "PaginatedResponseOfLookupResponse": {
         "type": "object",
         "additionalProperties": false,
@@ -1032,6 +1088,68 @@
             "type": "string"
           }
         }
+      },
+      "Result": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "isSucceed": {
+            "type": "boolean"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "message": {
+            "type": "string"
+          },
+          "statusCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "messageType": {
+            "$ref": "#/components/schemas/MessageType"
+          }
+        }
+      },
+      "MessageType": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Success",
+          "Info",
+          "Warning",
+          "Error"
+        ],
+        "enum": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "ResultOfLookupResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Result"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "value": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/LookupResponse"
+                  }
+                ]
+              }
+            }
+          }
+        ]
       },
       "CreateLookupCommand": {
         "type": "object",
@@ -1388,6 +1506,51 @@
           },
           "summary": {
             "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "ResultOfAuthenticatedResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Result"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "value": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/AuthenticatedResponse"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "AuthenticatedResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          },
+          "tokenType": {
+            "type": "string"
+          },
+          "expiresInMinutes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "refreshToken": {
+            "type": "string"
+          },
+          "refreshTokenExpiresOn": {
+            "type": "string",
+            "format": "date-time",
             "nullable": true
           }
         }

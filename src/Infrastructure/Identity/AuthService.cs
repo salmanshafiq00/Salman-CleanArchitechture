@@ -34,7 +34,12 @@ internal sealed class AuthService(
         var user = await userManager.FindByEmailAsync(username)
            ?? await userManager.FindByNameAsync(username);
 
-        Guard.Against.NotFound(nameof(username), user, ErrorMessages.WRONG_USERNAME_PASSWORD);
+        //Guard.Against.NotFound(nameof(username), user, ErrorMessages.WRONG_USERNAME_PASSWORD);
+
+        if (user is null)
+        {
+            return Result.NotFound<AuthenticatedResponse>(ErrorMessages.WRONG_USERNAME_PASSWORD);
+        }
 
         var result = await userManager.CheckPasswordAsync(user, password);
 
@@ -111,10 +116,15 @@ internal sealed class AuthService(
         existedRefreshToken.Revoked = DateTime.Now;
 
         // Get ClaimPrincipal from accessToken
-        var claimsPrincipal = GetClaimsPrincipalFromToken(accessToken);
+        var claimsPrincipalResult = GetClaimsPrincipalFromToken(accessToken);
+
+        if (claimsPrincipalResult.IsFailed)
+        {
+            return Result.Failure<AuthenticatedResponse>(claimsPrincipalResult.Errors);
+        }
 
         // Get Identity UserId  from ClaimPrincipal
-        var userId = (claimsPrincipal?.FindFirstValue(ClaimTypes.NameIdentifier))
+        var userId = (claimsPrincipalResult.Value?.FindFirstValue(ClaimTypes.NameIdentifier))
             ?? throw new SecurityTokenException("Invalid token");
 
         // Generate new Access Token
@@ -171,26 +181,37 @@ internal sealed class AuthService(
         return string.Empty;
     }
 
-    private ClaimsPrincipal GetClaimsPrincipalFromToken(string accessToken)
+    private Result<ClaimsPrincipal> GetClaimsPrincipalFromToken(string accessToken)
     {
-        TokenValidationParameters tokenValidationParameters = new()
+
+        try
         {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = false,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = _jwtOptions.Issuer,
-            ValidAudience = _jwtOptions.Audience,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey)),
-            ClockSkew = TimeSpan.Zero
-        };
+            TokenValidationParameters tokenValidationParameters = new()
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = false,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = _jwtOptions.Issuer,
+                ValidAudience = _jwtOptions.Audience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecretKey)),
+                ClockSkew = TimeSpan.Zero
+            };
 
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var principal = tokenHandler.ValidateToken(accessToken, tokenValidationParameters, out SecurityToken securityToken);
-        if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
-            throw new SecurityTokenException("Invalid token");
+            var tokenHandler = new JwtSecurityTokenHandler();
 
-        return principal;
+            var principal = tokenHandler.ValidateToken(accessToken, tokenValidationParameters, out SecurityToken securityToken);
+            if (securityToken is not JwtSecurityToken jwtSecurityToken
+                || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return Result.Failure<ClaimsPrincipal>(ErrorMessages.INVALID_TOKEN);
+            }
 
+            return principal;
+        }
+        catch
+        {
+            return Result.Failure<ClaimsPrincipal>(ErrorMessages.INVALID_TOKEN);
+        }
     }
 }

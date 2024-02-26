@@ -1,5 +1,9 @@
-﻿using CleanArchitechture.Application.Features.Identity.Commands;
+﻿using CleanArchitechture.Application.Common.Enums;
+using CleanArchitechture.Application.Common.Models;
+using CleanArchitechture.Application.Features.Identity.Commands;
+using CleanArchitechture.Application.Features.Identity.Models;
 using CleanArchitechture.Web.Extensions;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace WebApi.Web.Endpoints;
 
@@ -15,20 +19,21 @@ public class Accounts : EndpointGroupBase
             .MapPost(RefreshToken, "RefreshToken");
     }
 
-    public async Task<IResult> Login(
+    public async Task<Results<Ok<Result<AuthenticatedResponse>>, JsonHttpResult<Result<AuthenticatedResponse>>>> Login(
         ISender sender, 
         IHttpContextAccessor context, 
         LoginRequestCommand command)
     {
-        var result = await sender.Send(command);
+        Result<AuthenticatedResponse>? result = await sender.Send(command);
 
         SetRefreshTokenInCookie(context, result?.Value?.RefreshToken, result?.Value?.RefreshTokenExpiresOn);
 
-        return result.Match(
-            onSucceed: () => Results.Ok(result),
-            onFailed: result.ToProblemDetails);
+        return result.IsFailed 
+            ? result.ToProblemDetails() 
+            : TypedResults.Ok(result);
     }
-    public async Task<IResult> RefreshToken(
+
+    public async Task<Results<Ok<Result<AuthenticatedResponse>>, JsonHttpResult<Result<AuthenticatedResponse>>>> RefreshToken(
         ISender sender, 
         IHttpContextAccessor context)
     {
@@ -37,16 +42,16 @@ public class Accounts : EndpointGroupBase
 
         if (string.IsNullOrEmpty(refreshToken) && string.IsNullOrEmpty(accessToken))
         {
-            return Results.BadRequest("Token Invalid");
+            return ResultExtensions.ToCustomProblemDetails<AuthenticatedResponse>("Invalid Token", ErrorType.NotFound);
         }
 
         var result = await sender.Send(new RefreshTokenRequestCommand(accessToken, refreshToken));
 
         SetRefreshTokenInCookie(context, result?.Value?.RefreshToken, result?.Value?.RefreshTokenExpiresOn);
 
-        return result.Match(
-            onSucceed: () => Results.Ok(result),
-            onFailed: result.ToProblemDetails);
+        return result.IsFailed
+            ? result.ToProblemDetails()
+            : TypedResults.Ok(result);
     }
     private static void SetRefreshTokenInCookie(
         IHttpContextAccessor context, 

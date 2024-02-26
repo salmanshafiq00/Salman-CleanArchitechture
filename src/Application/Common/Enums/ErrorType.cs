@@ -6,6 +6,8 @@ public enum ErrorType
 {
     [Display(Name = "Bad Request")]
     Validation = 400,
+    [Display(Name = "Bad Request")]
+    Failure = 400,
     [Display(Name = "Unauthorized")]
     Unauthorized = 401,
     [Display(Name = "Forbidden")]
@@ -13,9 +15,7 @@ public enum ErrorType
     [Display(Name = "Not Found")]
     NotFound = 404,
     [Display(Name = "Conflict")]
-    Conflict = 409,
-    [Display(Name = "Internal Server Error")]
-    Failure = 500
+    Conflict = 409
 }
 
 public static class ErrorTypeExtensions

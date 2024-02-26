@@ -13,6 +13,15 @@ public class Result
             throw new ArgumentException("Invalid error", nameof(errors));
         }
         IsSucceed = isSucceed;
+        if (isSucceed) 
+        { 
+            StatusCode = 200;
+            MessageType = MessageType.Success;
+        }
+        if (!isSucceed)
+        {
+            MessageType = MessageType.Error;
+        }
         Errors = errors;
     }
     protected internal Result(bool isSucceed, string message, MessageType messageType)
@@ -20,12 +29,14 @@ public class Result
     {
         Message = message;
         MessageType = messageType;
+        StatusCode = 200;
     }
 
     protected internal Result(bool isSucceed, ErrorType errorType, params string[] errors)
        : this(isSucceed, errors)
     {
         ErrorType = errorType;
+        StatusCode = (int)errorType;
         MessageType = MessageType.Error;
     }
 
@@ -36,7 +47,8 @@ public class Result
 
     public string[] Errors { get; }
 
-    public string Message { get; } = string.Empty;
+    public string Message { get; init; } = string.Empty;
+    public int StatusCode { get; init; }
 
     public MessageType MessageType { get; }
 
@@ -72,28 +84,28 @@ public class Result
 
 public class Result<TValue> : Result
 {
-    protected internal Result(TValue? value, bool isSucceed, params string[] errors)
+    public Result(TValue? value, bool isSucceed, params string[] errors)
         : base(isSucceed, errors)
     {
         Value = value;
     }
 
-    protected internal Result(TValue? value, bool isSucceed, string message, MessageType messageType)
+    public Result(TValue? value, bool isSucceed, string message, MessageType messageType)
         : base(isSucceed, message, messageType)
     {
         Value = value;
     }
 
-    protected internal Result(TValue? value, bool isSucceed, ErrorType errorType, params string[] errors)
+    public Result(TValue? value, bool isSucceed, ErrorType errorType, params string[] errors)
         : base(isSucceed, errorType, errors)
     {
         Value = value;
     }
 
-    public TValue? Value { get; }
+    public TValue? Value { get; init; }
 
     public static implicit operator Result<TValue>(TValue value) => Success(value);
 
-   // public static implicit operator Result<TValue>(string[] errors) => Failure<TValue>(errors);
+    // public static implicit operator Result<TValue>(string[] errors) => Failure<TValue>(errors);
 
 }
