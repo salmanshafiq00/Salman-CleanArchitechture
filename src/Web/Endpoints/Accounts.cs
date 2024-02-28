@@ -63,7 +63,7 @@ public class Accounts : EndpointGroupBase
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Expires = expiresOn,
+                Expires = expiresOn
             };
             context?.HttpContext?.Response.Cookies.Append(RefreshTokenKey, refreshToken, cookieOptions);
         }

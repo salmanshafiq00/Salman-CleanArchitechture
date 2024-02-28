@@ -21,7 +21,7 @@ internal sealed class AuthService(
     UserManager<ApplicationUser> userManager,
     ITokenProviderService tokenProvider,
     IApplicationDbContext dbContext,
-    IOptions<JwtOptions> jwtOptions)
+    IOptionsSnapshot<JwtOptions> jwtOptions)
     : IAuthService
 {
     private readonly JwtOptions _jwtOptions = jwtOptions.Value;
