@@ -18,16 +18,3 @@ public enum ErrorType
     Conflict = 409
 }
 
-public static class ErrorTypeExtensions
-{
-    public static string GetDisplayName(this ErrorType errorType)
-    {
-        DisplayAttribute? displayAtrribute = errorType.GetType()
-            .GetField(errorType.ToString())
-            .GetCustomAttributes(typeof(DisplayAttribute), false)
-            .FirstOrDefault() as DisplayAttribute;
-
-        return displayAtrribute?.Name ?? nameof(errorType);
-    }
-}
-

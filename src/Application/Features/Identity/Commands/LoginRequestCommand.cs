@@ -1,5 +1,4 @@
 ﻿using CleanArchitechture.Application.Common.Interfaces.Identity;
-using CleanArchitechture.Application.Common.Models;
 using CleanArchitechture.Application.Features.Identity.Models;
 
 namespace CleanArchitechture.Application.Features.Identity.Commands;

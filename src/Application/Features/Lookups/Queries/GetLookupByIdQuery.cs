@@ -1,6 +1,4 @@
-﻿using Dapper;
-
-namespace CleanArchitechture.Application.Features.Lookups.Queries;
+﻿namespace CleanArchitechture.Application.Features.Lookups.Queries;
 
 [Authorize(Policy = Permissions.Lookups.View)]
 public record GetLookupByIdQuery(Guid Id) : ICacheableQuery<Result<LookupResponse>>

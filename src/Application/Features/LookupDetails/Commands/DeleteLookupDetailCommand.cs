@@ -1,5 +1,4 @@
 ﻿using Application.Constants;
-using CleanArchitechture.Application.Common.Models;
 
 namespace CleanArchitechture.Application.Features.LookupDetails.Commands;
 
@@ -16,12 +15,13 @@ internal sealed class DeleteLookupDetailCommandHandler(
     {
         var entity = await dbContext.LookupDetails.FindAsync(request.Id, cancellationToken);
 
-        if (entity is null) return Result.NotFound(ErrorMessages.NotFound);
+        if (entity is null) return Result.Failure(Error.NotFound(nameof(entity), ErrorMessages.EntityNotFound));
 
         dbContext.LookupDetails.Remove(entity);
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        return Result.Success(CommonMessage.UPDATED_SUCCESSFULLY);
+        return Result.Success();
+        //return Result.Success(CommonMessage.UPDATED_SUCCESSFULLY);
     }
 }

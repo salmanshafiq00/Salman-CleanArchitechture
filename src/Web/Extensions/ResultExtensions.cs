@@ -1,65 +1,42 @@
-﻿using CleanArchitechture.Application.Common.Enums;
-using CleanArchitechture.Application.Common.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
-
-namespace CleanArchitechture.Web.Extensions;
+﻿namespace CleanArchitechture.Web.Extensions;
 
 public static class ResultExtensions
 {
-    public static TResult Match<TResult>(
-        this Result result,
-        Func<TResult> onSucceed,
-        Func<TResult> onFailed)
-    {
-        return result.IsSucceed ? onSucceed() : onFailed();
-    }
-
     public static IResult ToProblemDetails(this Result result)
     {
-        if (result.IsSucceed) throw new InvalidOperationException();
+        if (result.IsSuccess) throw new InvalidOperationException();
 
         return Results.Problem(
-            statusCode: (int)result.ErrorType,
-            title: result.ErrorType.GetDisplayName(),
-            type: GetType(result.ErrorType),
+            statusCode: GetStatusCode(result.Error.ErrorType),
+            title: GetTitle(result.Error.ErrorType),
+            type: GetType(result.Error.ErrorType),
             extensions: new Dictionary<string, object?>
             {
-                {"errors", result.Errors }
+                {"errors", new[] { result.Error } }
             });
     }
 
+    static int GetStatusCode(ErrorType errorType) =>
+        errorType switch
+        {
+            ErrorType.Validation => StatusCodes.Status400BadRequest,
+            ErrorType.Unauthorized => StatusCodes.Status401Unauthorized,
+            ErrorType.Forbidden => StatusCodes.Status403Forbidden,
+            ErrorType.NotFound => StatusCodes.Status404NotFound,
+            ErrorType.Conflict => StatusCodes.Status409Conflict,
+            _ => StatusCodes.Status500InternalServerError
+        };
 
-    public static JsonHttpResult<Result> ToEmptyProblemDetails(this Result result)
-    {
-        if (result.IsSucceed) throw new InvalidOperationException();
-
-        return TypedResults.Json(result, statusCode: (int)result.ErrorType);
-    }
-
-    public static JsonHttpResult<Result<T>> ToProblemDetails<T>(this Result<T> result)
-    {
-        if (result.IsSucceed) throw new InvalidOperationException();
-
-        return TypedResults.Json(result, statusCode: (int)result.ErrorType);
-    }
-
-    public static JsonHttpResult<Result<T>> ToProblemDetails<T>(
-        this Result<T> result,
-        string message,
-        ErrorType errorType)
-    {
-        if (result.IsSucceed) throw new InvalidOperationException();
-
-        return TypedResults.Json(new Result<T>(result.Value, false, errorType, message), statusCode: (int)errorType);
-    }
-
-    public static JsonHttpResult<Result<T>> ToCustomProblemDetails<T>(
-        string message,
-        ErrorType errorType)
-    {
-
-        return TypedResults.Json(new Result<T>(default, false, errorType, message), statusCode: (int)errorType);
-    }
+    static string GetTitle(ErrorType errorType) =>
+     errorType switch
+     {
+         ErrorType.Validation => "Bad Request",
+         ErrorType.Unauthorized => "Unauthorized",
+         ErrorType.Forbidden => "Forbidden",
+         ErrorType.NotFound => "Not Found",
+         ErrorType.Conflict => "Conflict",
+         _ => "Internal Server Error"
+     };
 
     static string GetType(ErrorType errorType) =>
         errorType switch

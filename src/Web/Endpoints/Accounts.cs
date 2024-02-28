@@ -1,9 +1,7 @@
-﻿using CleanArchitechture.Application.Common.Enums;
-using CleanArchitechture.Application.Common.Models;
-using CleanArchitechture.Application.Features.Identity.Commands;
+﻿using CleanArchitechture.Application.Features.Identity.Commands;
 using CleanArchitechture.Application.Features.Identity.Models;
 using CleanArchitechture.Web.Extensions;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Web.Endpoints;
 
@@ -19,7 +17,9 @@ public class Accounts : EndpointGroupBase
             .MapPost(RefreshToken, "RefreshToken");
     }
 
-    public async Task<Results<Ok<Result<AuthenticatedResponse>>, JsonHttpResult<Result<AuthenticatedResponse>>>> Login(
+    [ProducesResponseType(typeof(AuthenticatedResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(AuthenticatedResponse), StatusCodes.Status404NotFound)]
+    public async Task<IResult> Login(
         ISender sender, 
         IHttpContextAccessor context, 
         LoginRequestCommand command)
@@ -28,28 +28,28 @@ public class Accounts : EndpointGroupBase
 
         SetRefreshTokenInCookie(context, result?.Value?.RefreshToken, result?.Value?.RefreshTokenExpiresOn);
 
-        return result.IsFailed 
+        return result.IsFailure
             ? result.ToProblemDetails() 
             : TypedResults.Ok(result);
     }
 
-    public async Task<Results<Ok<Result<AuthenticatedResponse>>, JsonHttpResult<Result<AuthenticatedResponse>>>> RefreshToken(
+    public async Task<IResult> RefreshToken(
         ISender sender, 
         IHttpContextAccessor context)
     {
         var accessToken = context.HttpContext?.Request.Headers[Authorization].ToString().Replace("Bearer ", "");
         var refreshToken = context.HttpContext?.Request.Cookies[RefreshTokenKey];
 
-        if (string.IsNullOrEmpty(refreshToken) && string.IsNullOrEmpty(accessToken))
-        {
-            return ResultExtensions.ToCustomProblemDetails<AuthenticatedResponse>("Invalid Token", ErrorType.NotFound);
-        }
+        //if (string.IsNullOrEmpty(refreshToken) && string.IsNullOrEmpty(accessToken))
+        //{
+        //    return ResultExtensions.ToCustomProblemDetails<AuthenticatedResponse>("Invalid Token", ErrorType.NotFound);
+        //}
 
         var result = await sender.Send(new RefreshTokenRequestCommand(accessToken, refreshToken));
 
         SetRefreshTokenInCookie(context, result?.Value?.RefreshToken, result?.Value?.RefreshTokenExpiresOn);
 
-        return result.IsFailed
+        return result.IsFailure
             ? result.ToProblemDetails()
             : TypedResults.Ok(result);
     }

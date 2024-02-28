@@ -118,7 +118,7 @@
       "templateDirectory": null,
       "serviceHost": null,
       "serviceSchemes": null,
-      "output": "D:/Programming/Templates/ClientAppCoreUI/src/app/containers/module/lms/lms-api-service.ts",
+      "output": "D:/Programming/Templates/ClientAppCoreUI/src/app/containers/module/lms/lms-api-service-2.ts",
       "newLineBehavior": "Auto"
     }
   }

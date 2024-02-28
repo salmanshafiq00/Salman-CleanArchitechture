@@ -222,14 +222,7 @@
         ],
         "responses": {
           "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ResultOfPaginatedResponseOfLookupResponse"
-                }
-              }
-            }
+            "description": ""
           }
         },
         "security": [
@@ -257,14 +250,7 @@
         },
         "responses": {
           "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Result"
-                }
-              }
-            }
+            "description": ""
           }
         },
         "security": [
@@ -292,14 +278,7 @@
         },
         "responses": {
           "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Result"
-                }
-              }
-            }
+            "description": ""
           }
         },
         "security": [
@@ -329,14 +308,7 @@
         ],
         "responses": {
           "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ResultOfLookupResponse"
-                }
-              }
-            }
+            "description": ""
           }
         },
         "security": [
@@ -364,14 +336,7 @@
         ],
         "responses": {
           "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Result"
-                }
-              }
-            }
+            "description": ""
           }
         },
         "security": [
@@ -825,7 +790,17 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ResultOfAuthenticatedResponse"
+                  "$ref": "#/components/schemas/AuthenticatedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticatedResponse"
                 }
               }
             }
@@ -841,14 +816,7 @@
         "operationId": "RefreshToken",
         "responses": {
           "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ResultOfAuthenticatedResponse"
-                }
-              }
-            }
+            "description": ""
           }
         }
       }
@@ -1007,149 +975,6 @@
             "type": "string"
           }
         }
-      },
-      "ResultOfPaginatedResponseOfLookupResponse": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Result"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "value": {
-                "nullable": true,
-                "oneOf": [
-                  {
-                    "$ref": "#/components/schemas/PaginatedResponseOfLookupResponse"
-                  }
-                ]
-              }
-            }
-          }
-        ]
-      },
-      "PaginatedResponseOfLookupResponse": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LookupResponse"
-            }
-          },
-          "pageNumber": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalPages": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalCount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "hasPreviousPage": {
-            "type": "boolean"
-          },
-          "hasNextPage": {
-            "type": "boolean"
-          }
-        }
-      },
-      "LookupResponse": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "guid"
-          },
-          "name": {
-            "type": "string"
-          },
-          "code": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string"
-          },
-          "parentId": {
-            "type": "string",
-            "format": "guid",
-            "nullable": true
-          },
-          "parentName": {
-            "type": "string"
-          }
-        }
-      },
-      "Result": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "isSucceed": {
-            "type": "boolean"
-          },
-          "errors": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "message": {
-            "type": "string"
-          },
-          "statusCode": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "messageType": {
-            "$ref": "#/components/schemas/MessageType"
-          }
-        }
-      },
-      "MessageType": {
-        "type": "integer",
-        "description": "",
-        "x-enumNames": [
-          "Success",
-          "Info",
-          "Warning",
-          "Error"
-        ],
-        "enum": [
-          1,
-          2,
-          3,
-          4
-        ]
-      },
-      "ResultOfLookupResponse": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Result"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "value": {
-                "nullable": true,
-                "oneOf": [
-                  {
-                    "$ref": "#/components/schemas/LookupResponse"
-                  }
-                ]
-              }
-            }
-          }
-        ]
       },
       "CreateLookupCommand": {
         "type": "object",
@@ -1509,27 +1334,6 @@
             "nullable": true
           }
         }
-      },
-      "ResultOfAuthenticatedResponse": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Result"
-          },
-          {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "value": {
-                "nullable": true,
-                "oneOf": [
-                  {
-                    "$ref": "#/components/schemas/AuthenticatedResponse"
-                  }
-                ]
-              }
-            }
-          }
-        ]
       },
       "AuthenticatedResponse": {
         "type": "object",

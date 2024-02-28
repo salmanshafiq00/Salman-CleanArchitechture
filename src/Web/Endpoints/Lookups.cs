@@ -1,9 +1,6 @@
-﻿using CleanArchitechture.Application.Common.DapperQueries;
-using CleanArchitechture.Application.Common.Models;
-using CleanArchitechture.Application.Features.Lookups.Commands;
+﻿using CleanArchitechture.Application.Features.Lookups.Commands;
 using CleanArchitechture.Application.Features.Lookups.Queries;
 using CleanArchitechture.Web.Extensions;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CleanArchitechture.Web.Endpoints;
@@ -21,30 +18,30 @@ public class Lookups : EndpointGroupBase
            .MapDelete(DeleteLookup, "{id:Guid}");
     }
 
-    public async Task<Results<Ok<Result<PaginatedResponse<LookupResponse>>>, JsonHttpResult<Result<PaginatedResponse<LookupResponse>>>>> GetLookups(
+    public async Task<IResult> GetLookups(
         ISender sender, [AsParameters] GetLookupListQuery query)
     {
         var result = await sender.Send(query);
-        return result.IsFailed
+        return result.IsFailure
             ? result.ToProblemDetails()
             : TypedResults.Ok(result);
     }
 
-    public async Task<Results<Ok<Result<LookupResponse>>, JsonHttpResult<Result<LookupResponse>>>> GetLookup(ISender sender, Guid id)
+    public async Task<IResult> GetLookup(ISender sender, Guid id)
     {
         var result = await sender.Send(new GetLookupByIdQuery(id));
-        return result.IsFailed
+        return result.IsFailure
             ? result.ToProblemDetails()
             : TypedResults.Ok(result);
     }
 
-public async Task<Results<Ok<Result>, JsonHttpResult<Result>>> CreateLookup(ISender sender, [FromBody] CreateLookupCommand command)
+    public async Task<IResult> CreateLookup(ISender sender, [FromBody] CreateLookupCommand command)
     {
         var result = await sender.Send(command);
 
-        return result.IsFailed
-            ? result.ToEmptyProblemDetails()
-            : TypedResults.Ok(result);
+        return result.Match(
+             onSuccess: () => Results.Ok(),
+             onFailure: result.ToProblemDetails);
     }
 
     //public async Task<IResult> UpdateLookup(ISender sender, [FromBody] UpdateLookupCommand command)
@@ -53,21 +50,21 @@ public async Task<Results<Ok<Result>, JsonHttpResult<Result>>> CreateLookup(ISen
     //    return Results.NoContent();
     //}
 
-    public async Task<Results<Ok<Result>, JsonHttpResult<Result>>> UpdateLookup(ISender sender, [FromBody] UpdateLookupCommand command)
+    public async Task<IResult> UpdateLookup(ISender sender, [FromBody] UpdateLookupCommand command)
     {
-        var result =  await sender.Send(command);
+        var result = await sender.Send(command);
 
-        return result.IsFailed
-            ? result.ToEmptyProblemDetails()
-            : TypedResults.Ok(result);
+        return result.Match(
+             onSuccess: () => Results.Ok(),
+             onFailure: result.ToProblemDetails);
     }
 
-    public async Task<Results<Ok<Result>, JsonHttpResult<Result>>> DeleteLookup(ISender sender, Guid id)
+    public async Task<IResult> DeleteLookup(ISender sender, Guid id)
     {
         var result = await sender.Send(new DeleteLookupCommand(id));
 
-        return result.IsFailed
-            ? result.ToEmptyProblemDetails()
-            : TypedResults.Ok(result);
+        return result.Match(
+             onSuccess: () => Results.Ok(),
+             onFailure: result.ToProblemDetails);
     }
 }

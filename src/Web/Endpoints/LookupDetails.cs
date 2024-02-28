@@ -34,8 +34,8 @@ public class LookupDetails : EndpointGroupBase
         var result = await sender.Send(command);
 
         return result.Match(
-             onSucceed: () => Results.Ok(result),
-             onFailed: result.ToProblemDetails);
+             onSuccess: () => Results.Ok(),
+             onFailure: result.ToProblemDetails);
     }
 
     public async Task<IResult> UpdateLookupDetail(ISender sender, [FromBody] UpdateLookupDetailCommand command)
@@ -43,8 +43,8 @@ public class LookupDetails : EndpointGroupBase
         var result = await sender.Send(command);
 
         return result.Match(
-             onSucceed: () => Results.Ok(result),
-             onFailed: result.ToProblemDetails);
+             onSuccess: () => Results.Ok(),
+             onFailure: result.ToProblemDetails);
     }
 
     public async Task<IResult> DeleteLookupDetail(ISender sender, Guid id)
@@ -52,7 +52,7 @@ public class LookupDetails : EndpointGroupBase
         var result = await sender.Send(new DeleteLookupDetailCommand(id));
 
         return result.Match(
-             onSucceed: () => Results.Ok(result),
-             onFailed: result.ToProblemDetails);
+             onSuccess: () => Results.Ok(),
+             onFailure: result.ToProblemDetails);
     }
 }

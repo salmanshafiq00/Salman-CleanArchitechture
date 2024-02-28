@@ -38,14 +38,14 @@ internal sealed class AuthService(
 
         if (user is null)
         {
-            return Result.NotFound<AuthenticatedResponse>(ErrorMessages.WRONG_USERNAME_PASSWORD);
+            return Result.Failure<AuthenticatedResponse>(Error.NotFound(nameof(user) ,ErrorMessages.WRONG_USERNAME_PASSWORD));
         }
 
         var result = await userManager.CheckPasswordAsync(user, password);
 
         if (!result)
         {
-            return Result.NotFound<AuthenticatedResponse>(ErrorMessages.WRONG_USERNAME_PASSWORD);
+            return Result.Failure<AuthenticatedResponse>(Error.NotFound(nameof(user), ErrorMessages.WRONG_USERNAME_PASSWORD));
         }
 
         var (accessToken, expiresInMinutes) = await tokenProvider.GenerateAccessTokenAsync(user.Id);
@@ -87,8 +87,8 @@ internal sealed class AuthService(
         await dbContext.SaveChangesAsync(cancellation);
 
         return !string.IsNullOrEmpty(accessToken)
-            ? Result.Success(authResponse, CommonMessage.LOGIN_SUCCESSFULLY)
-            : Result.NotFound<AuthenticatedResponse>(ErrorMessages.WRONG_USERNAME_PASSWORD);
+            ? Result.Success(authResponse)
+            : Result.Failure<AuthenticatedResponse>(Error.NotFound(nameof(user), ErrorMessages.WRONG_USERNAME_PASSWORD));
     }
 
     public async Task<Result<AuthenticatedResponse>> RefreshToken(
@@ -103,13 +103,13 @@ internal sealed class AuthService(
         // existedRefreshToken is null means the invalid token
         if (existedRefreshToken is null)
         {
-            return Result.NotFound<AuthenticatedResponse>(ErrorMessages.TOKEN_DID_NOT_MATCH);
+            return Result.Failure<AuthenticatedResponse>(Error.Validation("Token", ErrorMessages.TOKEN_DID_NOT_MATCH));
         }
 
         // Check user token is active
         if (!existedRefreshToken.IsActive)
         {
-            return Result.NotFound<AuthenticatedResponse>(ErrorMessages.TOKEN_NOT_ACTIVE);
+            return Result.Failure<AuthenticatedResponse>(Error.Validation("Token", ErrorMessages.TOKEN_NOT_ACTIVE));
         }
 
         // Revoke Current Refresh Token
@@ -118,14 +118,14 @@ internal sealed class AuthService(
         // Get ClaimPrincipal from accessToken
         var claimsPrincipalResult = GetClaimsPrincipalFromToken(accessToken);
 
-        if (claimsPrincipalResult.IsFailed)
+        if (claimsPrincipalResult.IsFailure)
         {
-            return Result.Failure<AuthenticatedResponse>(claimsPrincipalResult.Errors);
+            return Result.Failure<AuthenticatedResponse>(claimsPrincipalResult.Error);
         }
 
         // Get Identity UserId  from ClaimPrincipal
         var userId = (claimsPrincipalResult.Value?.FindFirstValue(ClaimTypes.NameIdentifier))
-            ?? throw new SecurityTokenException("Invalid token");
+            ?? throw new SecurityTokenException(ErrorMessages.INVALID_TOKEN);
 
         // Generate new Access Token
         var (token, expiresInMinutes) = await tokenProvider.GenerateAccessTokenAsync(userId);
@@ -154,7 +154,8 @@ internal sealed class AuthService(
 
         return !string.IsNullOrEmpty(token)
                     ? Result.Success(tokenResponse)
-                    : Result.NotFound<AuthenticatedResponse>(ErrorMessages.WRONG_USERNAME_PASSWORD);
+                    : Result.Failure<AuthenticatedResponse>(Error.NotFound("Token", ErrorMessages.INVALID_TOKEN));
+
     }
 
     public Task<(Result Result, string UserId)> ForgotPassword(string email)
@@ -204,14 +205,14 @@ internal sealed class AuthService(
             if (securityToken is not JwtSecurityToken jwtSecurityToken
                 || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
             {
-                return Result.Failure<ClaimsPrincipal>(ErrorMessages.INVALID_TOKEN);
+                return Result.Failure<ClaimsPrincipal>(Error.Validation("Token", ErrorMessages.INVALID_TOKEN));
             }
 
             return principal;
         }
         catch
         {
-            return Result.Failure<ClaimsPrincipal>(ErrorMessages.INVALID_TOKEN);
+            return Result.Failure<ClaimsPrincipal>(Error.Validation("Token", ErrorMessages.INVALID_TOKEN));
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Application.Constants;
-using CleanArchitechture.Application.Common.Models;
 
 namespace CleanArchitechture.Application.Features.LookupDetails.Commands;
 
@@ -23,7 +22,7 @@ internal sealed class UpdateLookupDetailCommandHandler(
     {
         var entity = await dbContext.LookupDetails.FindAsync(request.Id, cancellationToken);
 
-        if (entity is null) return Result.NotFound(ErrorMessages.NotFound);
+        if (entity is null) return Result.Failure(Error.NotFound(nameof(entity), ErrorMessages.EntityNotFound));
 
         entity.Name = request.Name;
         entity.Code = request.Code;
@@ -34,6 +33,7 @@ internal sealed class UpdateLookupDetailCommandHandler(
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        return Result.Success(CommonMessage.UPDATED_SUCCESSFULLY);
+        //return Result.Success(CommonMessage.UPDATED_SUCCESSFULLY);
+        return Result.Success();
     }
 }

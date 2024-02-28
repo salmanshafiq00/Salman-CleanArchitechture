@@ -1,5 +1,4 @@
 ﻿using Application.Constants;
-using CleanArchitechture.Application.Common.Models;
 using CleanArchitechture.Domain.Common;
 
 namespace CleanArchitechture.Application.Features.LookupDetails.Commands;
@@ -35,6 +34,7 @@ internal sealed class CreateLookupDetailQueryHandler(
         dbContext.LookupDetails.Add(entity);
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        return Result.Success(CommonMessage.SAVED_SUCCESSFULLY);
+        return Result.Success();
+        //return Result.Success(CommonMessage.SAVED_SUCCESSFULLY);
     }
 }

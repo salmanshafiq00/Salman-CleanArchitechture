@@ -5,7 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace CleanArchitechture.Infrastructure.OptionsSetup.Jwt;
 
-public class JwtBearerOptionsSetup(IOptionsSnapshot<JwtOptions> jwtOptions)
+public class JwtBearerOptionsSetup(IOptions<JwtOptions> jwtOptions)
     : IConfigureNamedOptions<JwtBearerOptions>
 {
     private readonly JwtOptions _jwtOptions = jwtOptions.Value;

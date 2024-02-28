@@ -1,5 +1,4 @@
 ﻿using Application.Constants;
-using CleanArchitechture.Application.Common.Models;
 
 namespace CleanArchitechture.Application.Features.Lookups.Commands;
 
@@ -17,7 +16,7 @@ internal sealed class DeleteLookupCommandHandler(
     {
         var entity = await dbContext.Lookups.FindAsync(request.Id, cancellationToken);
 
-        if (entity is null) return Result.NotFound(ErrorMessages.EntityNotFound);
+        if (entity is null) return Result.Failure(Error.NotFound(nameof(entity), ErrorMessages.EntityNotFound));
 
         dbContext.Lookups.Remove(entity);
 
