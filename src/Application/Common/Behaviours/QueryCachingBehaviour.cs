@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using CleanArchitechture.Application.Common.Abstractions.Messaging;
 
 namespace CleanArchitechture.Application.Common.Behaviours;
 

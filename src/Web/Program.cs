@@ -1,7 +1,21 @@
 using CleanArchitechture.Infrastructure.Persistence;
 using Serilog;
 
+const string LMS_Policy = "LMS-Policy";
+
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(LMS_Policy, builder =>
+    {
+        builder.WithOrigins("http://localhost:4200")
+               .AllowAnyHeader()
+               .AllowAnyMethod()
+               .AllowCredentials();
+    });
+});
 
 builder.Host
     .UseSerilog((context, loggerContext) 
@@ -15,6 +29,7 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddWebServices();
 
 var app = builder.Build();
+
 app.UseMiddleware<RequestContextLoggingMiddleware>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -31,6 +46,8 @@ app.UseHealthChecks("/health");
 app.UseHttpsRedirection();
 app.UseSerilogRequestLogging();
 app.UseStaticFiles();
+
+app.UseCors(LMS_Policy);
 
 app.UseSwaggerUi(settings =>
 {

@@ -1,7 +1,4 @@
-﻿using CleanArchitechture.Application.Common.Contracts;
-using CleanArchitechture.Application.Common.Interfaces;
-using CleanArchitechture.Application.Common.Mappings;
-using CleanArchitechture.Application.Common.Models;
+﻿using CleanArchitechture.Application.Common.Mappings;
 
 namespace CleanArchitechture.Application.TodoItems.Queries.GetTodoItemsWithPagination;
 
@@ -23,7 +20,7 @@ public class GetTodoItemsWithPaginationQueryHandler : IQueryHandler<GetTodoItems
         _mapper = mapper;
     }
 
-    public async Task<PaginatedList<TodoItemBriefDto>> Handle(GetTodoItemsWithPaginationQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PaginatedList<TodoItemBriefDto>>> Handle(GetTodoItemsWithPaginationQuery request, CancellationToken cancellationToken)
     {
         return await _context.TodoItems
             .Where(x => x.ListId == request.ListId)

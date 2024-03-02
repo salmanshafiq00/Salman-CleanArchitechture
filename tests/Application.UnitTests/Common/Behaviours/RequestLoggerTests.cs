@@ -1,6 +1,5 @@
-﻿using CleanArchitechture.Application.Common.Behaviours;
-using CleanArchitechture.Application.Common.Interfaces;
-using CleanArchitechture.Application.Common.Interfaces.Identity;
+﻿using CleanArchitechture.Application.Common.Abstractions.Identity;
+using CleanArchitechture.Application.Common.Behaviours;
 using CleanArchitechture.Application.TodoItems.Commands.CreateTodoItem;
 using Microsoft.Extensions.Logging;
 using Moq;

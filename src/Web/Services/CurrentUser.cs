@@ -1,6 +1,5 @@
 ﻿using System.Security.Claims;
-
-using CleanArchitechture.Application.Common.Interfaces;
+using CleanArchitechture.Application.Common.Abstractions.Identity;
 
 namespace CleanArchitechture.Web.Services;
 

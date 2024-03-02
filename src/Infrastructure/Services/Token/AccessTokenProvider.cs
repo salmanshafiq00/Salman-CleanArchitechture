@@ -13,7 +13,7 @@ using CleanArchitechture.Infrastructure.OptionsSetup.Jwt;
 namespace CleanArchitechture.Infrastructure.Services.Token;
 
 internal sealed class AccessTokenProvider(
-    IOptions<JwtOptions> jwtOptions,
+    IOptionsSnapshot<JwtOptions> jwtOptions,
     UserManager<ApplicationUser> userManager)
     : IAccessTokenProvider
 {

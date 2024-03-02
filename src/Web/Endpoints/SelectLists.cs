@@ -1,5 +1,5 @@
 ﻿using CleanArchitechture.Application.Common.Caching;
-using CleanArchitechture.Application.Common.CommonSqlConstants;
+using CleanArchitechture.Application.Common.Constants.CommonSqlConstants;
 using CleanArchitechture.Application.Common.Models;
 using CleanArchitechture.Application.Features.Common.Queries;
 
@@ -17,17 +17,20 @@ public class SelectLists : EndpointGroupBase
 
     public async Task<List<SelectListModel>> GetLookupSelectList(ISender sender)
     {
-        return await sender.Send(
+        var result = await sender.Send(
             new GetSelectListQuery(SelectListSqls.GetLookupSelectListSql, 
             new { },
             CacheKeys.Lookup_All_SelectList));
+        return result.Value;
     }
 
     public async Task<List<SelectListModel>> GetLookupDetailSelectList(ISender sender)
     {
-        return await sender.Send(
+        var result = await sender.Send(
             new GetSelectListQuery(SelectListSqls.GetLookupDetailSelectListSql,
             new { },
             CacheKeys.LookupDetail_All_SelectList));
+
+        return result.Value;
     }
 }

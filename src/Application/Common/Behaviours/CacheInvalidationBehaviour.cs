@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CleanArchitechture.Application.Common.Abstractions.Messaging;
+using Microsoft.Extensions.Logging;
 
 namespace CleanArchitechture.Application.Common.Behaviours;
 

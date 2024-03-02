@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using CleanArchitechture.Application.Common.Interfaces.Identity;
+using CleanArchitechture.Application.Common.Abstractions.Identity;
 
 namespace CleanArchitechture.Application.Common.Behaviours;
 

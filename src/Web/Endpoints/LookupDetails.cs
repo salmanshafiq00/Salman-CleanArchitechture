@@ -19,40 +19,53 @@ public class LookupDetails : EndpointGroupBase
            .MapDelete(DeleteLookupDetail, "{id:Guid}");
     }
 
-    public async Task<PaginatedResponse<LookupDetailResponse>> GetLookupDetails(ISender sender, [AsParameters] GetLookupDetailListQuery query)
+    [ProducesResponseType(typeof(PaginatedResponse<LookupDetailResponse>), StatusCodes.Status200OK)]
+    public async Task<IResult> GetLookupDetails(ISender sender, [AsParameters] GetLookupDetailListQuery query)
     {
-        return await sender.Send(query);
+        var result = await sender.Send(query);
+        return TypedResults.Ok(result.Value);
     }
 
-    public async Task<LookupDetailResponse> GetLookupDetail(ISender sender, Guid id)
+    [ProducesResponseType(typeof(LookupDetailResponse), StatusCodes.Status200OK)]
+    public async Task<IResult> GetLookupDetail(ISender sender, Guid id)
     {
-        return await sender.Send(new GetLookupDetailByIdQuery(id));
+        var result = await sender.Send(new GetLookupDetailByIdQuery(id));
+        return TypedResults.Ok(result.Value);
+
     }
 
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<IResult> CreateLookupDetail(ISender sender, [FromBody] CreateLookupDetailCommand command)
     {
         var result = await sender.Send(command);
 
         return result.Match(
-             onSucceed: () => Results.Ok(result),
-             onFailed: result.ToProblemDetails);
+             onSuccess: () => Results.Ok(),
+             onFailure: result.ToProblemDetails);
     }
 
+
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IResult> UpdateLookupDetail(ISender sender, [FromBody] UpdateLookupDetailCommand command)
     {
         var result = await sender.Send(command);
 
         return result.Match(
-             onSucceed: () => Results.Ok(result),
-             onFailed: result.ToProblemDetails);
+             onSuccess: () => Results.Ok(),
+             onFailure: result.ToProblemDetails);
     }
 
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<IResult> DeleteLookupDetail(ISender sender, Guid id)
     {      
         var result = await sender.Send(new DeleteLookupDetailCommand(id));
 
         return result.Match(
-             onSucceed: () => Results.Ok(result),
-             onFailed: result.ToProblemDetails);
+             onSuccess: Results.NoContent,
+             onFailure: result.ToProblemDetails);
     }
 }

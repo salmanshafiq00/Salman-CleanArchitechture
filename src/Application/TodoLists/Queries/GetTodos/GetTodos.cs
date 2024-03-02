@@ -1,4 +1,6 @@
-﻿namespace CleanArchitechture.Application.TodoLists.Queries.GetTodos;
+﻿using CleanArchitechture.Application.Common.Abstractions;
+
+namespace CleanArchitechture.Application.TodoLists.Queries.GetTodos;
 
 [Authorize]
 public record GetTodosQuery : IRequest<TodosVm>;

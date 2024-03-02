@@ -1,4 +1,4 @@
-﻿using CleanArchitechture.Application.Common.Interfaces;
+﻿using CleanArchitechture.Application.Common.Abstractions;
 using CleanArchitechture.Application.Common.Security;
 using CleanArchitechture.Domain.Constants;
 

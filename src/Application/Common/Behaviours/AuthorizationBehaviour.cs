@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
+using CleanArchitechture.Application.Common.Abstractions.Identity;
 using CleanArchitechture.Application.Common.Exceptions;
-using CleanArchitechture.Application.Common.Interfaces.Identity;
 
 namespace CleanArchitechture.Application.Common.Behaviours;
 

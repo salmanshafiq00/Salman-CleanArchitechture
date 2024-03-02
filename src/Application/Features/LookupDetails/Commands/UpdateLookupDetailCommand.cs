@@ -1,5 +1,6 @@
 ﻿using Application.Constants;
-using CleanArchitechture.Application.Common.Models;
+using CleanArchitechture.Application.Common.Abstractions;
+using CleanArchitechture.Application.Common.Abstractions.Messaging;
 
 namespace CleanArchitechture.Application.Features.LookupDetails.Commands;
 
@@ -10,20 +11,20 @@ public record UpdateLookupDetailCommand(
     string Description,
     bool Status,
     Guid LookupId,
-    Guid? ParentId) : ICacheInvalidatorCommand<Result>
+    Guid? ParentId) : ICacheInvalidatorCommand
 {
     public string CacheKey => CacheKeys.LookupDetail;
 }
 
 internal sealed class UpdateLookupDetailCommandHandler(
     IApplicationDbContext dbContext) 
-    : ICommandHandler<UpdateLookupDetailCommand, Result>
+    : ICommandHandler<UpdateLookupDetailCommand>
 {
     public async Task<Result> Handle(UpdateLookupDetailCommand request, CancellationToken cancellationToken)
     {
         var entity = await dbContext.LookupDetails.FindAsync(request.Id, cancellationToken);
 
-        if (entity is null) return Result.NotFound(ErrorMessages.NotFound);
+        if (entity is null) return Result.Failure(Error.NotFound(nameof(entity), ErrorMessages.EntityNotFound));
 
         entity.Name = request.Name;
         entity.Code = request.Code;
@@ -34,6 +35,7 @@ internal sealed class UpdateLookupDetailCommandHandler(
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        return Result.Success(CommonMessage.UPDATED_SUCCESSFULLY);
+        //return Result.Success(CommonMessage.UPDATED_SUCCESSFULLY);
+        return Result.Success();
     }
 }

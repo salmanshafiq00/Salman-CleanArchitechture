@@ -63,7 +63,7 @@
   "codeGenerators": {
     "openApiToTypeScriptClient": {
       "className": "{controller}Client",
-      "moduleName": "LMS",
+      "moduleName": "",
       "namespace": "",
       "typeScriptVersion": 4.3,
       "template": "Angular",
@@ -76,11 +76,11 @@
       "dateTimeType": "Date",
       "nullValue": "Undefined",
       "generateClientClasses": true,
-      "generateClientInterfaces": true,
+      "generateClientInterfaces": false,
       "generateOptionalParameters": false,
       "exportTypes": true,
       "wrapDtoExceptions": false,
-      "exceptionClass": "LmsApiException",
+      "exceptionClass": "LMSException",
       "clientBaseClass": null,
       "wrapResponses": false,
       "wrapResponseMethods": [],

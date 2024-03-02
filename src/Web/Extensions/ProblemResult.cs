@@ -1,7 +1,4 @@
-﻿
-using Azure;
-using CleanArchitechture.Application.Common.Models;
-using CleanArchitechture.Web.Helpers;
+﻿using CleanArchitechture.Web.Helpers;
 
 namespace CleanArchitechture.Web.Extensions;
 

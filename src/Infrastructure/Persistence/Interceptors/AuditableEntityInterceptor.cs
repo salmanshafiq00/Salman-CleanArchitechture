@@ -1,4 +1,4 @@
-﻿using CleanArchitechture.Application.Common.Interfaces;
+﻿using CleanArchitechture.Application.Common.Abstractions.Identity;
 using CleanArchitechture.Domain.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;

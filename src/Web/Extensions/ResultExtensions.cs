@@ -1,31 +1,55 @@
-﻿using CleanArchitechture.Application.Common.Enums;
-using CleanArchitechture.Application.Common.Models;
-
-namespace CleanArchitechture.Web.Extensions;
+﻿namespace CleanArchitechture.Web.Extensions;
 
 public static class ResultExtensions
 {
-    public static T Match<T>(
-        this Result result,
-        Func<T> onSucceed,
-        Func<T> onFailed)
-    {
-        return result.IsSucceed ? onSucceed() : onFailed();
-    }
-
     public static IResult ToProblemDetails(this Result result)
     {
-        if (result.IsSucceed) throw new InvalidOperationException();
+        if (result.IsSuccess) throw new InvalidOperationException();
+
+        if(result is IValidationResult validationResult)
+        {
+            return Results.Problem(
+                statusCode: GetStatusCode(result.Error.ErrorType),
+                title: "Validation Error",
+                type: GetType(result.Error.ErrorType),
+                detail: result.Error.Description,
+                extensions: new Dictionary<string, object?>
+                {
+                      {nameof(validationResult.Errors), validationResult.Errors }
+                });
+        }
 
         return Results.Problem(
-            statusCode: (int)result.ErrorType,
-            title: result.ErrorType.GetDisplayName(),
-            type: GetType(result.ErrorType),
+            statusCode: GetStatusCode(result.Error.ErrorType),
+            title: GetTitle(result.Error.ErrorType),
+            type: GetType(result.Error.ErrorType),
             extensions: new Dictionary<string, object?>
             {
-                {"errors", result.Errors }
+                {"errors", new[] { result.Error } }
             });
     }
+
+    static int GetStatusCode(ErrorType errorType) =>
+        errorType switch
+        {
+            ErrorType.Validation => StatusCodes.Status400BadRequest,
+            ErrorType.Unauthorized => StatusCodes.Status401Unauthorized,
+            ErrorType.Forbidden => StatusCodes.Status403Forbidden,
+            ErrorType.NotFound => StatusCodes.Status404NotFound,
+            ErrorType.Conflict => StatusCodes.Status409Conflict,
+            _ => StatusCodes.Status500InternalServerError
+        };
+
+    static string GetTitle(ErrorType errorType) =>
+     errorType switch
+     {
+         ErrorType.Validation => "Bad Request",
+         ErrorType.Unauthorized => "Unauthorized",
+         ErrorType.Forbidden => "Forbidden",
+         ErrorType.NotFound => "Not Found",
+         ErrorType.Conflict => "Conflict",
+         _ => "Internal Server Error"
+     };
 
     static string GetType(ErrorType errorType) =>
         errorType switch

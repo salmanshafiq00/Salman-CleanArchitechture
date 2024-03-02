@@ -1,5 +1,7 @@
 ﻿using CleanArchitechture.Application.Features.Identity.Commands;
+using CleanArchitechture.Application.Features.Identity.Models;
 using CleanArchitechture.Web.Extensions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Web.Endpoints;
 
@@ -15,39 +17,53 @@ public class Accounts : EndpointGroupBase
             .MapPost(RefreshToken, "RefreshToken");
     }
 
+    [ProducesResponseType(typeof(AuthenticatedResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IResult> Login(
         ISender sender, 
         IHttpContextAccessor context, 
         LoginRequestCommand command)
     {
-        var result = await sender.Send(command);
+        Result<AuthenticatedResponse> result = await sender.Send(command);
 
         SetRefreshTokenInCookie(context, result?.Value?.RefreshToken, result?.Value?.RefreshTokenExpiresOn);
 
         return result.Match(
-            onSucceed: () => Results.Ok(result),
-            onFailed: result.ToProblemDetails);
+             onSuccess: () => TypedResults.Ok(result.Value),
+             onFailure: result.ToProblemDetails);
     }
+
+    [ProducesResponseType(typeof(AuthenticatedResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<IResult> RefreshToken(
         ISender sender, 
         IHttpContextAccessor context)
     {
-        var accessToken = context.HttpContext?.Request.Headers[Authorization].ToString().Replace("Bearer ", "");
-        var refreshToken = context.HttpContext?.Request.Cookies[RefreshTokenKey];
-
-        if (string.IsNullOrEmpty(refreshToken) && string.IsNullOrEmpty(accessToken))
+        if (!context.HttpContext.Request.Headers.TryGetValue(Authorization, out var authorizationHeader))
         {
-            return Results.BadRequest("Token Invalid");
+            return TypedResults.BadRequest("Invalid Token");
         }
+        if (!context.HttpContext.Request.Cookies.TryGetValue(RefreshTokenKey, out var refreshToken))
+        {
+            return TypedResults.BadRequest("Invalid Token");
+        }
+        var accessToken = authorizationHeader.ToString().Replace("Bearer ", "");
 
-        var result = await sender.Send(new RefreshTokenRequestCommand(accessToken, refreshToken));
+        var tempRefreshToken = "rM103+6IVijnzEjyoU33H1fCn0P743iXuo66ieO12MrgIpNjJbc1SGg7hljKf1ivnqH3tIMzlc/8CycMKldp/A==";
+
+        //var result = await sender.Send(new RefreshTokenRequestCommand(accessToken, refreshToken));
+        var result = await sender.Send(new RefreshTokenRequestCommand(accessToken, tempRefreshToken));
+
+        if(!result.IsSuccess) return result.ToProblemDetails();
 
         SetRefreshTokenInCookie(context, result?.Value?.RefreshToken, result?.Value?.RefreshTokenExpiresOn);
 
         return result.Match(
-            onSucceed: () => Results.Ok(result),
-            onFailed: result.ToProblemDetails);
+             onSuccess: () => TypedResults.Ok(result.Value),
+             onFailure: result.ToProblemDetails);
     }
+
     private static void SetRefreshTokenInCookie(
         IHttpContextAccessor context, 
         string refreshToken, 
@@ -58,7 +74,7 @@ public class Accounts : EndpointGroupBase
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Expires = expiresOn,
+                Expires = expiresOn
             };
             context?.HttpContext?.Response.Cookies.Append(RefreshTokenKey, refreshToken, cookieOptions);
         }

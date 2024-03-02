@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using CleanArchitechture.Application.Common.Interfaces;
+using CleanArchitechture.Application.Common.Abstractions;
 using CleanArchitechture.Application.Features.Identity.Models;
 using CleanArchitechture.Domain.Common;
 using CleanArchitechture.Domain.Todos;

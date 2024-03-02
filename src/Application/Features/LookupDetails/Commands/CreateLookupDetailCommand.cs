@@ -1,5 +1,4 @@
-﻿using Application.Constants;
-using CleanArchitechture.Application.Common.Models;
+﻿
 using CleanArchitechture.Domain.Common;
 
 namespace CleanArchitechture.Application.Features.LookupDetails.Commands;
@@ -10,7 +9,7 @@ public record CreateLookupDetailCommand(
     string Description,
     bool Status,
     Guid LookupId,
-    Guid? ParentId = null) : ICacheInvalidatorCommand<Result>
+    Guid? ParentId = null) : ICacheInvalidatorCommand
 {
    public string CacheKey => CacheKeys.LookupDetail;
 }
@@ -18,7 +17,7 @@ public record CreateLookupDetailCommand(
 internal sealed class CreateLookupDetailQueryHandler(
     IApplicationDbContext dbContext,
     IPublisher publisher) 
-    : ICommandHandler<CreateLookupDetailCommand, Result>
+    : ICommandHandler<CreateLookupDetailCommand>
 {
     public async Task<Result> Handle(CreateLookupDetailCommand request, CancellationToken cancellationToken)
     {
@@ -35,6 +34,7 @@ internal sealed class CreateLookupDetailQueryHandler(
         dbContext.LookupDetails.Add(entity);
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        return Result.Success(CommonMessage.SAVED_SUCCESSFULLY);
+        return Result.Success();
+        //return Result.Success(CommonMessage.SAVED_SUCCESSFULLY);
     }
 }

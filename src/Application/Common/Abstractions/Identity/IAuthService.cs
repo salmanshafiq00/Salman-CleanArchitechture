@@ -1,7 +1,7 @@
 ﻿using CleanArchitechture.Application.Common.Models;
 using CleanArchitechture.Application.Features.Identity.Models;
 
-namespace CleanArchitechture.Application.Common.Interfaces.Identity;
+namespace CleanArchitechture.Application.Common.Abstractions.Identity;
 
 public interface IAuthService
 {

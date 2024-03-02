@@ -1,4 +1,4 @@
-﻿using CleanArchitechture.Application.Common.Interfaces.Identity;
+﻿using CleanArchitechture.Application.Common.Abstractions.Identity;
 using Serilog.Context;
 
 namespace CleanArchitechture.Application.Common.Behaviours;
@@ -35,13 +35,13 @@ internal sealed class RequestLoggingBehaviour<TRequest, TResponse>
 
         TResponse result = await next();
 
-        if(result.IsSucceed)
+        if(result.IsSuccess)
         {
             _logger.LogInformation("Completed Request: {@RequestName}, {@DateTimeUtc}", requestName, DateTime.Now);
         }
         else
         {
-            using (LogContext.PushProperty("Error", result.Errors, true))
+            using (LogContext.PushProperty("Error", result.Error, true))
             {
                 _logger.LogError("Completed Request with Failure: {RequestName}", requestName);
             }

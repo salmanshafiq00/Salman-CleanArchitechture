@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.Serialization;
 using AutoMapper;
-using CleanArchitechture.Application.Common.Interfaces;
+using CleanArchitechture.Application.Common.Abstractions;
 using CleanArchitechture.Application.Common.Models;
 using CleanArchitechture.Application.TodoItems.Queries.GetTodoItemsWithPagination;
 using CleanArchitechture.Application.TodoLists.Queries.GetTodos;

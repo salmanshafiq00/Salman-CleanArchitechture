@@ -1,5 +1,5 @@
 ﻿using Azure.Identity;
-using CleanArchitechture.Application.Common.Interfaces;
+using CleanArchitechture.Application.Common.Abstractions.Identity;
 using CleanArchitechture.Infrastructure.Persistence;
 using CleanArchitechture.Web.Services;
 using Microsoft.AspNetCore.Mvc;

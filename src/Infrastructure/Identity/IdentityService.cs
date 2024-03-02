@@ -1,8 +1,9 @@
-﻿using CleanArchitechture.Application.Common.Interfaces.Identity;
-using CleanArchitechture.Application.Common.Models;
+﻿using Application.Constants;
+using CleanArchitechture.Application.Common.Abstractions.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using static Dapper.SqlMapper;
 
 namespace CleanArchitechture.Infrastructure.Identity;
 
@@ -43,7 +44,12 @@ public class IdentityService : IIdentityService
 
         var result = await _userManager.CreateAsync(user, password);
 
-        return result.ToApplicationResult<string>(user.Id);
+        if (!result.Succeeded)
+        {
+            return Result.Failure<string>(Error.Failure("User.Create", ErrorMessages.UNABLE_CREATE_USER));
+        }
+
+        return Result.Success(user.Id);
     }
 
     public async Task<bool> IsInRoleAsync(string userId, string role, CancellationToken cancellation = default)
@@ -75,13 +81,18 @@ public class IdentityService : IIdentityService
     public async Task<Result> DeleteUserAsync(string userId, CancellationToken cancellation = default)
     {
         var user = await _userManager.Users
-            .SingleOrDefaultAsync(u => u.Id == userId, cancellation);
+        .SingleOrDefaultAsync(u => u.Id == userId, cancellation);
 
-        Guard.Against.NotFound(userId, nameof(userId));
+        if(user is null) return Result.Failure(Error.NotFound(nameof(user), ErrorMessages.USER_NOT_FOUND));
 
         var result = await _userManager.DeleteAsync(user!);
 
-        return result.ToApplicationResult();
+        if(!result.Succeeded)
+        {
+            return Result.Failure(Error.Failure("User.Delete", ErrorMessages.UNABLE_DELETE_USER));
+        }
+
+        return Result.Success();
     }
 
     public async Task<IDictionary<string, string?>> FetchUsers(string roleName, CancellationToken cancellation = default)

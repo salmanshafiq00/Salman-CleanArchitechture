@@ -1,6 +1,4 @@
-﻿using Dapper;
-
-namespace CleanArchitechture.Application.Features.LookupDetails.Queries;
+﻿namespace CleanArchitechture.Application.Features.LookupDetails.Queries;
 
 [Authorize(Policy = Permissions.LookupDetails.View)]
 public record GetLookupDetailByIdQuery(Guid Id) : ICacheableQuery<LookupDetailResponse>
@@ -14,7 +12,7 @@ public record GetLookupDetailByIdQuery(Guid Id) : ICacheableQuery<LookupDetailRe
 internal sealed class GetLookupDetailByIdQueryHandler(ISqlConnectionFactory sqlConnection) 
     : IQueryHandler<GetLookupDetailByIdQuery, LookupDetailResponse>
 {
-    public async Task<LookupDetailResponse> Handle(GetLookupDetailByIdQuery query, CancellationToken cancellationToken)
+    public async Task<Result<LookupDetailResponse>> Handle(GetLookupDetailByIdQuery query, CancellationToken cancellationToken)
     {
         var connection = sqlConnection.GetOpenConnection();
 

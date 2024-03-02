@@ -1,6 +1,6 @@
 ﻿using System.Text;
+using CleanArchitechture.Application.Common.Abstractions;
 using CleanArchitechture.Application.Common.DapperQueries;
-using CleanArchitechture.Application.Common.Interfaces;
 using Dapper;
 
 namespace CleanArchitechture.Infrastructure.Persistence.Services;

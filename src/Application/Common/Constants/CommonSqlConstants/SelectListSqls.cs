@@ -1,4 +1,4 @@
-﻿namespace CleanArchitechture.Application.Common.CommonSqlConstants;
+﻿namespace CleanArchitechture.Application.Common.Constants.CommonSqlConstants;
 
 public static class SelectListSqls
 {

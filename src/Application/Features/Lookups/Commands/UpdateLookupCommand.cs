@@ -1,6 +1,5 @@
 ﻿using Application.Constants;
 using CleanArchitechture.Application.Common.Events;
-using CleanArchitechture.Application.Common.Models;
 using CleanArchitechture.Domain.Common.DomainEvents;
 
 namespace CleanArchitechture.Application.Features.Lookups.Commands;
@@ -11,7 +10,7 @@ public record UpdateLookupCommand(
     string Code,
     string Description,
     bool Status,
-    Guid? ParentId) : ICacheInvalidatorCommand<Result>
+    Guid? ParentId) : ICacheInvalidatorCommand
 {
     public string CacheKey => CacheKeys.Lookup;
 }
@@ -19,13 +18,13 @@ public record UpdateLookupCommand(
 internal sealed class UpdateLookupCommandHandler(
     IApplicationDbContext dbContext,
     IPublisher publisher)
-    : ICommandHandler<UpdateLookupCommand, Result>
+    : ICommandHandler<UpdateLookupCommand>
 {
     public async Task<Result> Handle(UpdateLookupCommand request, CancellationToken cancellationToken)
     {
         var entity = await dbContext.Lookups.FindAsync(request.Id, cancellationToken);
 
-        if (entity is null) return Result.NotFound(ErrorMessages.EntityNotFound);
+        if (entity is null) return Result.Failure(Error.NotFound(nameof(entity), ErrorMessages.EntityNotFound)); ;
 
         bool oldStatus = entity.Status;
 
@@ -45,6 +44,7 @@ internal sealed class UpdateLookupCommandHandler(
     new CacheInvalidationEvent { CacheKey = CacheKeys.LookupDetail });
         }
 
-        return Result.Success(CommonMessage.UPDATED_SUCCESSFULLY);
+        //return Result.Success(CommonMessage.UPDATED_SUCCESSFULLY);
+        return Result.Success();
     }
 }

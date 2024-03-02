@@ -2,7 +2,7 @@
 using CleanArchitechture.Domain.Common;
 using CleanArchitechture.Domain.Todos;
 
-namespace CleanArchitechture.Application.Common.Interfaces;
+namespace CleanArchitechture.Application.Common.Abstractions;
 
 public interface IApplicationDbContext
 {
