@@ -1,6 +1,6 @@
 ﻿using System.Data;
 using System.Data.SqlClient;
-using CleanArchitechture.Application.Common.Interfaces;
+using CleanArchitechture.Application.Common.Abstractions;
 
 namespace WebApi.Infrastructure.Persistence;
 

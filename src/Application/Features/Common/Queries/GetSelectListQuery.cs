@@ -1,5 +1,5 @@
-﻿using CleanArchitechture.Application.Common.Models;
-using Dapper;
+﻿using CleanArchitechture.Application.Common.Abstractions;
+using CleanArchitechture.Application.Common.Abstractions.Messaging;
 
 namespace CleanArchitechture.Application.Features.Common.Queries;
 
@@ -15,13 +15,13 @@ internal sealed class GetSelectListQueryHandler(
     ISqlConnectionFactory sqlConnection)
     : IQueryHandler<GetSelectListQuery, List<SelectListModel>>
 {
-    public async Task<List<SelectListModel>> Handle(GetSelectListQuery request, CancellationToken cancellationToken)
+    public async Task<Result<List<SelectListModel>>> Handle(GetSelectListQuery request, CancellationToken cancellationToken)
     {
         var connection = sqlConnection.GetOpenConnection();
 
         var selectList = await connection
             .QueryAsync<SelectListModel>(request.Sql, request.Parameters);
 
-        return selectList.AsList();
+        return Result.Success(selectList.AsList());
     }
 }

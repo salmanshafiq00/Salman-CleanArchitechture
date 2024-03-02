@@ -1,4 +1,4 @@
-﻿using CleanArchitechture.Application.Common.Interfaces;
+﻿using CleanArchitechture.Application.Common.Abstractions;
 
 namespace CleanArchitechture.Application.TodoLists.Commands.DeleteTodoList;
 

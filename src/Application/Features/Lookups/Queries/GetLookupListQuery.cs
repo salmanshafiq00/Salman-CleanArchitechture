@@ -2,7 +2,7 @@
 
 [Authorize(Policy = Permissions.Lookups.View)]
 public record GetLookupListQuery 
-    : PaginatedFilter, ICacheableQuery<Result<PaginatedResponse<LookupResponse>>>
+    : PaginatedFilter, ICacheableQuery<PaginatedResponse<LookupResponse>>
 {
     public string CacheKey => $"Lookup_{PageNumber}_{PageSize}";
 
@@ -10,7 +10,7 @@ public record GetLookupListQuery
 }
 
 internal sealed class GetLookupListQueryHandler(ISqlConnectionFactory sqlConnection) 
-    : IQueryHandler<GetLookupListQuery, Result<PaginatedResponse<LookupResponse>>>
+    : IQueryHandler<GetLookupListQuery, PaginatedResponse<LookupResponse>>
 {
     public async Task<Result<PaginatedResponse<LookupResponse>>> Handle(GetLookupListQuery request, CancellationToken cancellationToken)
     {

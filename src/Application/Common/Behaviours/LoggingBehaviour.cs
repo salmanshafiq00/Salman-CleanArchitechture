@@ -1,4 +1,4 @@
-﻿using CleanArchitechture.Application.Common.Interfaces.Identity;
+﻿using CleanArchitechture.Application.Common.Abstractions.Identity;
 using MediatR.Pipeline;
 
 namespace CleanArchitechture.Application.Common.Behaviours;

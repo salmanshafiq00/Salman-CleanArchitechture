@@ -1,4 +1,5 @@
-﻿using CleanArchitechture.Application.Common.Events;
+﻿using CleanArchitechture.Application.Common.Abstractions;
+using CleanArchitechture.Application.Common.Events;
 using CleanArchitechture.Domain.Common.DomainEvents;
 using Dapper;
 

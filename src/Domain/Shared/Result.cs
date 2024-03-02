@@ -11,11 +11,16 @@ public class Result
     
     protected Result(bool isSuccess, Error error)
     {
-        if(isSuccess && error != Error.None
-            || !isSuccess && error == Error.None)
+        if (isSuccess && error != Error.None)
         {
-            throw new ArgumentException("Invalid error", nameof(error));
+            throw new InvalidOperationException();
         }
+
+        if (!isSuccess && error == Error.None)
+        {
+            throw new InvalidOperationException();
+        }
+
         IsSuccess = isSuccess;
         Error = error;
     }
@@ -39,7 +44,7 @@ public class Result
     /// </summary>
     /// <param name="error">The error.</param>
     /// <returns>A new instance of <see cref="Result"/> with the specified error and failure flag set.</returns>
-    public static Result Failure(Error error) => new Result(false, error);
+    public static Result Failure(Error error) => new (false, error);
 
     /// <summary>
     /// Returns a failure <see cref="Result{TValue}"/> with the specified error.
@@ -51,7 +56,7 @@ public class Result
     /// We're purposefully ignoring the nullable assignment here because the API will never allow it to be accessed.
     /// The value is accessed through a method that will throw an exception if the result is a failure result.
     /// </remarks>
-    public static Result<TValue> Failure<TValue>(Error error) => new(default!, false, error);
+    public static Result<TValue> Failure<TValue>(Error error) => new(default, false, error);
 
     /// <summary>
     /// Creates a new <see cref="Result{TValue}"/> with the specified nullable value and the specified error.

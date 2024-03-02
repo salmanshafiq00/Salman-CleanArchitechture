@@ -6,6 +6,19 @@ public static class ResultExtensions
     {
         if (result.IsSuccess) throw new InvalidOperationException();
 
+        if(result is IValidationResult validationResult)
+        {
+            return Results.Problem(
+                statusCode: GetStatusCode(result.Error.ErrorType),
+                title: "Validation Error",
+                type: GetType(result.Error.ErrorType),
+                detail: result.Error.Description,
+                extensions: new Dictionary<string, object?>
+                {
+                      {nameof(validationResult.Errors), validationResult.Errors }
+                });
+        }
+
         return Results.Problem(
             statusCode: GetStatusCode(result.Error.ErrorType),
             title: GetTitle(result.Error.ErrorType),

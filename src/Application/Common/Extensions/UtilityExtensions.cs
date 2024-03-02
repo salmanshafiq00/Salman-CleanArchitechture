@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace CleanArchitechture.Application.Common.Extensions;
 
@@ -17,6 +18,11 @@ public static class UtilityExtensions
             .FirstOrDefault();
 
         return displayAttribute?.GetName() ?? nameof(enumValue);
+    }
+
+    public static string SplitWordByUppper(this string value)
+    {
+        return Regex.Replace(value, "(\\B[A-Z])", " $1").Trim();
     }
 }
 

@@ -22,7 +22,8 @@ public class TodoItems : EndpointGroupBase
 
     public async Task<PaginatedList<TodoItemBriefDto>> GetTodoItemsWithPagination(ISender sender, [AsParameters] GetTodoItemsWithPaginationQuery query)
     {
-        return await sender.Send(query);
+        var result = await sender.Send(query);
+        return result.Value;
     }
 
     public async Task<Guid> CreateTodoItem(ISender sender, CreateTodoItemCommand command)

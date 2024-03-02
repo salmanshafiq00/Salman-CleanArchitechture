@@ -11,7 +11,7 @@ public record GetLookupDetailListQuery : PaginatedFilter, ICacheableQuery<Pagina
 internal sealed class GetLookupDetailListQueryHandler(ISqlConnectionFactory sqlConnection) 
     : IQueryHandler<GetLookupDetailListQuery, PaginatedResponse<LookupDetailResponse>>
 {
-    public async Task<PaginatedResponse<LookupDetailResponse>> Handle(GetLookupDetailListQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PaginatedResponse<LookupDetailResponse>>> Handle(GetLookupDetailListQuery request, CancellationToken cancellationToken)
     {
         var connection = sqlConnection.GetOpenConnection();
 

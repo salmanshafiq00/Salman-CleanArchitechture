@@ -1,5 +1,5 @@
 ﻿using Application.Constants;
-using CleanArchitechture.Application.Common.Interfaces.Identity;
+using CleanArchitechture.Application.Common.Abstractions.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

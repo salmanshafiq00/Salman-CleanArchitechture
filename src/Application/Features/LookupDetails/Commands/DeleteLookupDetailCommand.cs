@@ -1,15 +1,17 @@
 ﻿using Application.Constants;
+using CleanArchitechture.Application.Common.Abstractions;
+using CleanArchitechture.Application.Common.Abstractions.Messaging;
 
 namespace CleanArchitechture.Application.Features.LookupDetails.Commands;
 
-public record DeleteLookupDetailCommand(Guid Id) : ICommand<Result>
+public record DeleteLookupDetailCommand(Guid Id) : ICommand
 {
     public string CacheKey => CacheKeys.LookupDetail;
 }
 
 internal sealed class DeleteLookupDetailCommandHandler(
     IApplicationDbContext dbContext) 
-    : ICommandHandler<DeleteLookupDetailCommand, Result>
+    : ICommandHandler<DeleteLookupDetailCommand>
 {
     public async Task<Result> Handle(DeleteLookupDetailCommand request, CancellationToken cancellationToken)
     {

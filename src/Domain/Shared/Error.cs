@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace CleanArchitechture.Domain.Shared;
 
@@ -6,6 +7,7 @@ public sealed record Error
 {
     public string Code { get; }
     public string Description { get; }
+    [JsonIgnore]
     public ErrorType ErrorType { get; }
 
     public Error(string code, string description, ErrorType errorType)

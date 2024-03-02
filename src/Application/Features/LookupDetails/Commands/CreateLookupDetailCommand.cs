@@ -1,4 +1,4 @@
-﻿using Application.Constants;
+﻿
 using CleanArchitechture.Domain.Common;
 
 namespace CleanArchitechture.Application.Features.LookupDetails.Commands;
@@ -9,7 +9,7 @@ public record CreateLookupDetailCommand(
     string Description,
     bool Status,
     Guid LookupId,
-    Guid? ParentId = null) : ICacheInvalidatorCommand<Result>
+    Guid? ParentId = null) : ICacheInvalidatorCommand
 {
    public string CacheKey => CacheKeys.LookupDetail;
 }
@@ -17,7 +17,7 @@ public record CreateLookupDetailCommand(
 internal sealed class CreateLookupDetailQueryHandler(
     IApplicationDbContext dbContext,
     IPublisher publisher) 
-    : ICommandHandler<CreateLookupDetailCommand, Result>
+    : ICommandHandler<CreateLookupDetailCommand>
 {
     public async Task<Result> Handle(CreateLookupDetailCommand request, CancellationToken cancellationToken)
     {

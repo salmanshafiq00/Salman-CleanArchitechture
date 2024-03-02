@@ -1,4 +1,4 @@
-﻿namespace CleanArchitechture.Application.Common.Contracts;
+﻿namespace CleanArchitechture.Application.Common.Abstractions.Messaging;
 
 public interface ICacheableQuery<TResponse> : IQuery<TResponse>, ICacheableQuery;
 

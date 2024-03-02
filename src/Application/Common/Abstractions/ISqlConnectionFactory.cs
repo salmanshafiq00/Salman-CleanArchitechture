@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace CleanArchitechture.Application.Common.Interfaces;
+namespace CleanArchitechture.Application.Common.Abstractions;
 
 public interface ISqlConnectionFactory
 {

@@ -1,4 +1,4 @@
-﻿using CleanArchitechture.Application.Common.Interfaces.Identity;
+﻿using CleanArchitechture.Application.Common.Abstractions.Identity;
 using Serilog.Context;
 
 namespace CleanArchitechture.Application.Common.Behaviours;

@@ -9,8 +9,9 @@ global using Dapper;
 
 global using CleanArchitechture.Domain.Shared;
 global using CleanArchitechture.Application.Common.Caching;
-global using CleanArchitechture.Application.Common.Contracts;
 global using CleanArchitechture.Application.Common.DapperQueries;
-global using CleanArchitechture.Application.Common.Interfaces;
 global using CleanArchitechture.Application.Common.Security;
-global using CleanArchitechture.Application.Common.Models; 
+global using CleanArchitechture.Application.Common.Models;
+global using CleanArchitechture.Application.Common.Abstractions.Messaging;
+global using CleanArchitechture.Application.Common.Abstractions;
+

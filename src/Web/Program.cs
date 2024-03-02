@@ -46,7 +46,6 @@ app.UseHealthChecks("/health");
 app.UseHttpsRedirection();
 app.UseSerilogRequestLogging();
 app.UseStaticFiles();
-app.UseRouting();
 
 app.UseCors(LMS_Policy);
 

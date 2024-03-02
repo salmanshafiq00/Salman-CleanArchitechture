@@ -10,7 +10,7 @@ public record UpdateLookupCommand(
     string Code,
     string Description,
     bool Status,
-    Guid? ParentId) : ICacheInvalidatorCommand<Result>
+    Guid? ParentId) : ICacheInvalidatorCommand
 {
     public string CacheKey => CacheKeys.Lookup;
 }
@@ -18,7 +18,7 @@ public record UpdateLookupCommand(
 internal sealed class UpdateLookupCommandHandler(
     IApplicationDbContext dbContext,
     IPublisher publisher)
-    : ICommandHandler<UpdateLookupCommand, Result>
+    : ICommandHandler<UpdateLookupCommand>
 {
     public async Task<Result> Handle(UpdateLookupCommand request, CancellationToken cancellationToken)
     {

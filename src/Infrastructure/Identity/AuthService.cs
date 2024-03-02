@@ -1,8 +1,6 @@
 ﻿using System.Net.Sockets;
 using System.Net;
 using Application.Constants;
-using CleanArchitechture.Application.Common.Interfaces;
-using CleanArchitechture.Application.Common.Interfaces.Identity;
 using CleanArchitechture.Application.Common.Models;
 using CleanArchitechture.Application.Features.Identity.Models;
 using CleanArchitechture.Infrastructure.Services.Token;
@@ -14,6 +12,8 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using CleanArchitechture.Infrastructure.OptionsSetup.Jwt;
+using CleanArchitechture.Application.Common.Abstractions.Identity;
+using CleanArchitechture.Application.Common.Abstractions;
 
 namespace CleanArchitechture.Infrastructure.Identity;
 

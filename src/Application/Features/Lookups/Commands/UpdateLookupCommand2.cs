@@ -10,12 +10,12 @@ public record UpdateLookupCommand2(
     string Code,
     string Description,
     bool Status,
-    Guid? ParentId) : ICommand<Result>;
+    Guid? ParentId) : ICommand;
 
 internal sealed class UpdateLookupCommandHandler2(
     IApplicationDbContext dbContext,
     IPublisher publisher) 
-    : ICommandHandler<UpdateLookupCommand2, Result>
+    : ICommandHandler<UpdateLookupCommand2>
 {
     public async Task<Result> Handle(UpdateLookupCommand2 request, CancellationToken cancellationToken)
     {

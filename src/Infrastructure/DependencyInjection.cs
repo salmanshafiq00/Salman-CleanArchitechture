@@ -1,7 +1,5 @@
 ﻿using CleanArchitechture.Application.Common.Caching;
 using CleanArchitechture.Application.Common.DapperQueries;
-using CleanArchitechture.Application.Common.Interfaces;
-using CleanArchitechture.Application.Common.Interfaces.Identity;
 using CleanArchitechture.Domain.Constants;
 using CleanArchitechture.Infrastructure.Caching;
 using CleanArchitechture.Infrastructure.Persistence;
@@ -20,6 +18,8 @@ using WebApi.Infrastructure.Persistence;
 using WebApi.Infrastructure.Permissions;
 using StackExchange.Redis;
 using Microsoft.AspNetCore.Builder;
+using CleanArchitechture.Application.Common.Abstractions.Identity;
+using CleanArchitechture.Application.Common.Abstractions;
 
 namespace Microsoft.Extensions.DependencyInjection;
 

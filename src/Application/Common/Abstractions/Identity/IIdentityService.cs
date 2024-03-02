@@ -1,6 +1,6 @@
 ﻿using CleanArchitechture.Application.Common.Models;
 
-namespace CleanArchitechture.Application.Common.Interfaces.Identity;
+namespace CleanArchitechture.Application.Common.Abstractions.Identity;
 
 public interface IIdentityService
 {
