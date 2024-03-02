@@ -1,4 +1,6 @@
-﻿namespace CleanArchitechture.Web.Extensions;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+
+namespace CleanArchitechture.Web.Extensions;
 
 public static class ResultExtensions
 {
@@ -28,6 +30,22 @@ public static class ResultExtensions
                 {"errors", new[] { result.Error } }
             });
     }
+
+    public static JsonHttpResult<Result> ToJsonProblemDetails(this Result result)
+    {
+        if (result.IsSuccess) throw new InvalidOperationException();
+
+        return TypedResults.Json(result, statusCode: (int)result.Error.ErrorType);
+    }
+
+    public static JsonHttpResult<Result<T>> ToJsonProblemDetails<T>(this Result<T> result)
+    {
+        if (result.IsSuccess) throw new InvalidOperationException();
+
+        return TypedResults.Json(result, statusCode: (int)result.Error.ErrorType);
+    }
+
+
 
     static int GetStatusCode(ErrorType errorType) =>
         errorType switch
