@@ -8,7 +8,10 @@ public class Result
     public bool IsSuccess { get; }
     public bool IsFailure => !IsSuccess;
     public Error Error { get; }
-    
+    //public string Message { get; }
+    //public MessageType MessageType { get; }
+
+
     protected Result(bool isSuccess, Error error)
     {
         if (isSuccess && error != Error.None)
