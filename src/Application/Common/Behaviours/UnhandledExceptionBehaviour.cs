@@ -9,7 +9,7 @@ internal sealed class UnhandledExceptionBehaviour<TRequest, TResponse>(ILogger<T
     {
         try
         {
-            return await next();
+            return await next().ConfigureAwait(false);
         }
         catch (Exception ex)
         {

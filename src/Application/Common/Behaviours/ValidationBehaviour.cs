@@ -14,7 +14,7 @@ internal sealed class ValidationBehaviour<TRequest, TResponse>
         RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
-        if (!_validators.Any()) return await next();
+        if (!_validators.Any()) return await next().ConfigureAwait(false);
 
         var context = new ValidationContext<TRequest>(request);
 

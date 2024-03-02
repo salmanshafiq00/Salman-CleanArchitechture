@@ -26,7 +26,7 @@ internal sealed class PerformanceBehaviour<TRequest, TResponse> : IPipelineBehav
     {
         _timer.Start();
 
-        var response = await next();
+        var response = await next().ConfigureAwait(false);
 
         _timer.Stop();
 

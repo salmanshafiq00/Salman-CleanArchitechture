@@ -33,7 +33,7 @@ internal sealed class RequestLoggingBehaviour<TRequest, TResponse>
         _logger.LogInformation("Processing Request: {Name} {@UserId} {@UserName} {@Request}",
             requestName, userId, userName, request);
 
-        TResponse result = await next();
+        TResponse result = await next().ConfigureAwait(false);
 
         if(result.IsSuccess)
         {

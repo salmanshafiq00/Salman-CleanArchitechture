@@ -56,7 +56,7 @@ internal sealed class QueryCachingBehaviour<TRequest, TResponse>(
                     request.CacheKey,
                     JsonSerializer.Serialize(response),
                     request.Expiration,
-                    cancellationToken);
+                    cancellationToken).ConfigureAwait(false);
 
         return response;
     }
