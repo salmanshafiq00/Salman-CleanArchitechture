@@ -53,10 +53,7 @@ public class Accounts : EndpointGroupBase
         }
         var accessToken = authorizationHeader.ToString().Replace("Bearer ", "");
 
-        var tempRefreshToken = "rM103+6IVijnzEjyoU33H1fCn0P743iXuo66ieO12MrgIpNjJbc1SGg7hljKf1ivnqH3tIMzlc/8CycMKldp/A==";
-
-        //var result = await sender.Send(new RefreshTokenRequestCommand(accessToken, refreshToken));
-        var result = await sender.Send(new RefreshTokenRequestCommand(accessToken, tempRefreshToken));
+        var result = await sender.Send(new RefreshTokenRequestCommand(accessToken, refreshToken));
 
         if (!result.IsSuccess) return result.ToProblemDetails();
 

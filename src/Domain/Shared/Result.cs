@@ -1,4 +1,6 @@
-﻿namespace CleanArchitechture.Domain.Shared;
+﻿using System.Text.Json.Serialization;
+
+namespace CleanArchitechture.Domain.Shared;
 
 /// <summary>
 /// Represents a result of some operation, with status information and possibly an error.
@@ -32,7 +34,7 @@ public class Result
     /// Returns a success <see cref="Result"/>.
     /// </summary>
     /// <returns>A new instance of <see cref="Result"/> with the success flag set.</returns>
-    public static Result Success() => new (true, Error.None);
+    public static Result Success() => new(true, Error.None);
 
     /// <summary>
     /// Returns a success <see cref="Result{TValue}"/> with the specified value.
@@ -47,7 +49,7 @@ public class Result
     /// </summary>
     /// <param name="error">The error.</param>
     /// <returns>A new instance of <see cref="Result"/> with the specified error and failure flag set.</returns>
-    public static Result Failure(Error error) => new (false, error);
+    public static Result Failure(Error error) => new(false, error);
 
     /// <summary>
     /// Returns a failure <see cref="Result{TValue}"/> with the specified error.
@@ -114,6 +116,12 @@ public class Result<TValue> : Result
     /// <param name="error">The error.</param>
     protected internal Result(TValue value, bool isSuccess, Error error)
         : base(isSuccess, error)
+    {
+        _value = value;
+    }
+    [JsonConstructor]
+    public Result(TValue value)
+        : base(true, Error.None)
     {
         _value = value;
     }
