@@ -21,13 +21,16 @@ public class Accounts : EndpointGroupBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IResult> Login(
-        ISender sender, 
-        IHttpContextAccessor context, 
+        ISender sender,
+        IHttpContextAccessor context,
         LoginRequestCommand command)
     {
         Result<AuthenticatedResponse> result = await sender.Send(command);
 
-        SetRefreshTokenInCookie(context, result?.Value?.RefreshToken, result?.Value?.RefreshTokenExpiresOn);
+        if (result.IsSuccess)
+        {
+            SetRefreshTokenInCookie(context, result.Value.RefreshToken, result.Value.RefreshTokenExpiresOn);
+        }
 
         return result.Match(
              onSuccess: () => TypedResults.Ok(result.Value),
@@ -37,7 +40,7 @@ public class Accounts : EndpointGroupBase
     [ProducesResponseType(typeof(AuthenticatedResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<IResult> RefreshToken(
-        ISender sender, 
+        ISender sender,
         IHttpContextAccessor context)
     {
         if (!context.HttpContext.Request.Headers.TryGetValue(Authorization, out var authorizationHeader))
@@ -50,14 +53,11 @@ public class Accounts : EndpointGroupBase
         }
         var accessToken = authorizationHeader.ToString().Replace("Bearer ", "");
 
-        var tempRefreshToken = "rM103+6IVijnzEjyoU33H1fCn0P743iXuo66ieO12MrgIpNjJbc1SGg7hljKf1ivnqH3tIMzlc/8CycMKldp/A==";
+        var result = await sender.Send(new RefreshTokenRequestCommand(accessToken, refreshToken));
 
-        //var result = await sender.Send(new RefreshTokenRequestCommand(accessToken, refreshToken));
-        var result = await sender.Send(new RefreshTokenRequestCommand(accessToken, tempRefreshToken));
+        if (!result.IsSuccess) return result.ToProblemDetails();
 
-        if(!result.IsSuccess) return result.ToProblemDetails();
-
-        SetRefreshTokenInCookie(context, result?.Value?.RefreshToken, result?.Value?.RefreshTokenExpiresOn);
+        SetRefreshTokenInCookie(context, result.Value.RefreshToken, result.Value.RefreshTokenExpiresOn);
 
         return result.Match(
              onSuccess: () => TypedResults.Ok(result.Value),
@@ -65,19 +65,18 @@ public class Accounts : EndpointGroupBase
     }
 
     private static void SetRefreshTokenInCookie(
-        IHttpContextAccessor context, 
-        string refreshToken, 
-        DateTime? expiresOn)
+        IHttpContextAccessor context,
+        string refreshToken,
+        DateTime expiresOn)
     {
-        if (expiresOn is not null)
+        var cookieOptions = new CookieOptions
         {
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true,
-                Expires = expiresOn
-            };
-            context?.HttpContext?.Response.Cookies.Append(RefreshTokenKey, refreshToken, cookieOptions);
-        }
+            HttpOnly = true,
+            Expires = expiresOn,
+            Secure = true,
+            SameSite = SameSiteMode.None,
+        };
+        context.HttpContext.Response.Cookies.Append(RefreshTokenKey, refreshToken, cookieOptions);
     }
 }
 

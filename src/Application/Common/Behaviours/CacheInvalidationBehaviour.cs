@@ -1,7 +1,4 @@
-﻿using CleanArchitechture.Application.Common.Abstractions.Messaging;
-using Microsoft.Extensions.Logging;
-
-namespace CleanArchitechture.Application.Common.Behaviours;
+﻿namespace CleanArchitechture.Application.Common.Behaviours;
 
 internal sealed class CacheInvalidationBehaviour<TRequest, TResponse>(
     ILogger<CacheInvalidationBehaviour<TRequest, TResponse>> logger,
@@ -16,9 +13,8 @@ internal sealed class CacheInvalidationBehaviour<TRequest, TResponse>(
         {
             await distributedCache.RemoveByPrefixAsync(request.CacheKey, CancellationToken.None);
             logger.LogInformation("Cach value of {CacheKey} expired with {@Request}", request.CacheKey, request);
-
         }
-        
+       
         return response;
     }
 }

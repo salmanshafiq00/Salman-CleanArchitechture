@@ -1,16 +1,16 @@
 using CleanArchitechture.Infrastructure.Persistence;
 using Serilog;
 
-const string LMS_Policy = "LMS-Policy";
+const string Allow_Origin_Policy = "Allow-Origin-Policy";
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(LMS_Policy, builder =>
+    options.AddPolicy(Allow_Origin_Policy, builder =>
     {
-        builder.WithOrigins("http://localhost:4200")
+        builder.WithOrigins("http://localhost:4200", "http://localhost:8114")
                .AllowAnyHeader()
                .AllowAnyMethod()
                .AllowCredentials();
@@ -30,7 +30,6 @@ builder.Services.AddWebServices();
 
 var app = builder.Build();
 
-app.UseMiddleware<RequestContextLoggingMiddleware>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -38,16 +37,17 @@ if (app.Environment.IsDevelopment())
 }
 if (!app.Environment.IsDevelopment())
 {
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHealthChecks("/health");
+app.UseCors(Allow_Origin_Policy);
 app.UseHttpsRedirection();
 app.UseSerilogRequestLogging();
 app.UseStaticFiles();
 
-app.UseCors(LMS_Policy);
+app.UseMiddleware<RequestContextLoggingMiddleware>();
+
 
 app.UseSwaggerUi(settings =>
 {

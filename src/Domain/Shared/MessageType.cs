@@ -1,4 +1,4 @@
-﻿namespace CleanArchitechture.Application.Common.Enums;
+﻿namespace CleanArchitechture.Domain.Shared;
 
 public enum MessageType
 {

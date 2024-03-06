@@ -17,13 +17,12 @@ internal sealed class DistributedCacheService(
     private static readonly ConcurrentDictionary<string, bool> CacheKeys = new();
 
     public async Task<T?> GetAsync<T>(string key, CancellationToken cancellation = default)
-        where T : class
     {
         string? cachedValue = await distributedCache
             .GetStringAsync(key, cancellation);
 
         return cachedValue is null
-            ? null
+            ? default
             : JsonSerializer.Deserialize<T>(cachedValue);
     }
 
@@ -33,17 +32,26 @@ internal sealed class DistributedCacheService(
             .GetStringAsync(key, cancellation);
     }
 
-    public async Task SetAsync<T>(string key, T value, TimeSpan? slidingExpiration = null, CancellationToken cancellation = default)
-        where T : class
+    public async Task SetAsync<T>(
+        string key, 
+        T value, 
+        TimeSpan? slidingExpiration = null, 
+        CancellationToken cancellation = default)
     {
-        string cacheValue = JsonSerializer.Serialize(value);
-
-        await distributedCache.SetStringAsync(key, cacheValue, GetOptions(slidingExpiration), cancellation);
+        await distributedCache.SetStringAsync(
+            key, 
+            JsonSerializer.Serialize(value), 
+            GetOptions(slidingExpiration), 
+            cancellation);
 
         CacheKeys.TryAdd(key, false);
     }
 
-    public async Task SetStringAsync(string key, string cacheValue, TimeSpan? slidingExpiration = null , CancellationToken cancellation = default)
+    public async Task SetStringAsync(
+        string key, 
+        string cacheValue, 
+        TimeSpan? slidingExpiration = null , 
+        CancellationToken cancellation = default)
     {
         await distributedCache.SetStringAsync(key, cacheValue, GetOptions(slidingExpiration), cancellation);
 
@@ -93,11 +101,21 @@ internal sealed class DistributedCacheService(
         await Task.WhenAll(tasks);
     }
 
+    public void Refresh(string key)
+    {
+        distributedCache.Refresh(key);
+    }
+
+    public async Task RefreshAsync(string key, CancellationToken cancellationToken = default)
+    {
+        await distributedCache.RefreshAsync(key, cancellationToken);
+    }
+
+
     public async Task<T?> GetOrSetAsync<T>(string key,
         Func<Task<T>> factory,
         TimeSpan? slidingExpiration = null,
         CancellationToken cancellation = default)
-        where T : class
     {
         T? cachedValue = await GetAsync<T>(key, cancellation);
 

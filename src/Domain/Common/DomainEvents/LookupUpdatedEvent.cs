@@ -1,6 +1,4 @@
-﻿using CleanArchitechture.Domain.Abstractions;
-
-namespace CleanArchitechture.Domain.Common.DomainEvents;
+﻿namespace CleanArchitechture.Domain.Common;
 
 public class LookupUpdatedEvent(Lookup lookup) : BaseEvent
 {

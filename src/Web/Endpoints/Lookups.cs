@@ -11,7 +11,7 @@ public class Lookups : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-           .RequireAuthorization()
+           //.RequireAuthorization()
            .MapGet(GetLookups)
            .MapGet(GetLookup, "{id:Guid}")
            .MapPost(CreateLookup)

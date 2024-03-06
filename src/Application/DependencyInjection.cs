@@ -13,8 +13,8 @@ public static class DependencyInjection
 
         services.AddMediatR(cfg => {
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-            cfg.AddOpenBehavior(typeof(RequestLoggingBehaviour<,>));
             cfg.AddOpenBehavior(typeof(UnhandledExceptionBehaviour<,>));
+            cfg.AddOpenBehavior(typeof(RequestLoggingBehaviour<,>));
             cfg.AddOpenBehavior(typeof(AuthorizationBehaviour<,>));
             //cfg.AddOpenBehavior(typeof(ValidationBehaviour<,>));
             cfg.AddOpenBehavior(typeof(ValidationBehaviour<,>));

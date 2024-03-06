@@ -1,6 +1,6 @@
 ﻿using Application.Constants;
 using CleanArchitechture.Application.Common.Events;
-using CleanArchitechture.Domain.Common.DomainEvents;
+using CleanArchitechture.Domain.Common;
 
 namespace CleanArchitechture.Application.Features.Lookups.Commands;
 

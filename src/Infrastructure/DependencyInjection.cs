@@ -17,7 +17,6 @@ using Microsoft.Extensions.Configuration;
 using WebApi.Infrastructure.Persistence;
 using WebApi.Infrastructure.Permissions;
 using StackExchange.Redis;
-using Microsoft.AspNetCore.Builder;
 using CleanArchitechture.Application.Common.Abstractions.Identity;
 using CleanArchitechture.Application.Common.Abstractions;
 

@@ -1,6 +1,6 @@
 ﻿using CleanArchitechture.Application.Common.Abstractions;
 using CleanArchitechture.Application.Common.Events;
-using CleanArchitechture.Domain.Common.DomainEvents;
+using CleanArchitechture.Domain.Common;
 using Dapper;
 
 namespace CleanArchitechture.Application.Features.LookupDetails.EventHandlers;
