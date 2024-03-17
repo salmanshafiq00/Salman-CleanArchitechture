@@ -23,7 +23,7 @@ public static class InitialiserExtensions
     }
 }
 
-internal class ApplicationDbContextInitialiser(
+internal sealed class ApplicationDbContextInitialiser(
         ILogger<ApplicationDbContextInitialiser> logger, 
         ApplicationDbContext context, 
         UserManager<ApplicationUser> userManager, 

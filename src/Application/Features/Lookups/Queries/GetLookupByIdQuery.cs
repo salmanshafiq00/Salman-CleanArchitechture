@@ -1,7 +1,7 @@
 ﻿namespace CleanArchitechture.Application.Features.Lookups.Queries;
 
 [Authorize(Policy = Permissions.Lookups.View)]
-public record GetLookupByIdQuery(Guid Id) : ICacheableQuery<LookupResponse>
+public record GetLookupByIdQuery(Guid Id) : ICacheableQuery<LookupResponse?>
 {
     public string CacheKey => $"Lookup_{Id}";
 
@@ -10,9 +10,9 @@ public record GetLookupByIdQuery(Guid Id) : ICacheableQuery<LookupResponse>
 }
 
 internal sealed class GetLookupByIdQueryHandler(ISqlConnectionFactory sqlConnection) 
-    : IQueryHandler<GetLookupByIdQuery, LookupResponse>
+    : IQueryHandler<GetLookupByIdQuery, LookupResponse?>
 {
-    public async Task<Result<LookupResponse>> Handle(GetLookupByIdQuery query, CancellationToken cancellationToken)
+    public async Task<Result<LookupResponse?>> Handle(GetLookupByIdQuery query, CancellationToken cancellationToken)
     {
         var connection = sqlConnection.GetOpenConnection();
 

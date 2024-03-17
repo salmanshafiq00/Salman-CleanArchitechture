@@ -114,17 +114,17 @@ public class Result<TValue> : Result
     /// <param name="value">The result value.</param>
     /// <param name="isSuccess">The flag indicating if the result is successful.</param>
     /// <param name="error">The error.</param>
-    protected internal Result(TValue value, bool isSuccess, Error error)
+    public Result(TValue value, bool isSuccess, Error error)
         : base(isSuccess, error)
     {
         _value = value;
     }
-    [JsonConstructor]
-    public Result(TValue value)
-        : base(true, Error.None)
-    {
-        _value = value;
-    }
+    //[JsonConstructor]
+    //public Result(TValue value)
+    //    : base(true, Error.None)
+    //{
+    //    _value = value;
+    //}
 
     /// <summary>
     /// Gets the result value if the result is successful, otherwise throws an exception.

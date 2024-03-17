@@ -11,7 +11,7 @@ public class UpdateLookupCommandValidator : AbstractValidator<UpdateLookupComman
         RuleFor(v => v.Code)
           .NotEmpty()
           .MaximumLength(10)
-          .MinimumLength(4)
+          .MinimumLength(3)
           .MustAsync(async (v, code, cancellation) => await BeUniqueCodeSkipCurrent(code, v.Id, cancellation))
                 .WithMessage("'{PropertyName}' must be unique.")
                 .WithErrorCode("Unique");

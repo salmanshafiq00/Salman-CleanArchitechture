@@ -1,9 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace CleanArchitechture.Domain.Shared;
 
-public sealed record Error
+public readonly struct Error
 {
     public string Code { get; }
     public string Description { get; }
@@ -16,11 +15,15 @@ public sealed record Error
         Description = description;
         ErrorType = errorType;
     }
+    public Error()
+    {
+        
+    }
 
     public static readonly Error None = new(string.Empty, string.Empty, ErrorType.Failure);
     public static readonly Error NullValue = new("Error.NullValue", "Null value was provided", ErrorType.Failure);
 
-    public static implicit operator string(Error error) => error?.Code ?? string.Empty;
+    public static implicit operator string(Error error) => error.Code ?? string.Empty;
 
     //public static implicit operator Result(Error error) => Result.Failure(error);
 
@@ -45,16 +48,10 @@ public sealed record Error
 
 public enum ErrorType
 {
-    [Display(Name = "Bad Request")]
-    Validation = 400,
-    [Display(Name = "Bad Request")]
-    Failure = 400,
-    [Display(Name = "Unauthorized")]
-    Unauthorized = 401,
-    [Display(Name = "Forbidden")]
-    Forbidden = 403,
-    [Display(Name = "Not Found")]
-    NotFound = 404,
-    [Display(Name = "Conflict")]
-    Conflict = 409
+    Validation,
+    Failure,
+    Unauthorized,
+    Forbidden,
+    NotFound,
+    Conflict
 }

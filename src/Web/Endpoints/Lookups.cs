@@ -27,7 +27,7 @@ public class Lookups : EndpointGroupBase
     }
 
     [ProducesResponseType(typeof(LookupResponse), StatusCodes.Status200OK)]
-    public async Task<IResult> GetLookup(ISender sender, Guid id)
+    public async Task<IResult> GetLookup(ISender sender,[FromRoute] Guid id)
     {
         var result = await sender.Send(new GetLookupByIdQuery(id));
         return TypedResults.Ok(result.Value);
@@ -60,7 +60,7 @@ public class Lookups : EndpointGroupBase
 
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IResult> DeleteLookup(ISender sender, Guid id)
+    public async Task<IResult> DeleteLookup(ISender sender,[FromRoute] Guid id)
     {
         var result = await sender.Send(new DeleteLookupCommand(id));
 

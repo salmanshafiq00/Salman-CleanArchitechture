@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CleanArchitechture.Infrastructure.Persistence.Configurations;
 
-public class LookupDetailConfiguration : IEntityTypeConfiguration<LookupDetail>
+internal sealed class LookupDetailConfiguration : IEntityTypeConfiguration<LookupDetail>
 {
     public void Configure(EntityTypeBuilder<LookupDetail> builder)
     {

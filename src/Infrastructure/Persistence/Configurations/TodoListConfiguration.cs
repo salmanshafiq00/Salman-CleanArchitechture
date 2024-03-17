@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CleanArchitechture.Infrastructure.Persistence.Configurations;
 
-public class TodoListConfiguration : IEntityTypeConfiguration<TodoList>
+internal sealed class TodoListConfiguration : IEntityTypeConfiguration<TodoList>
 {
     public void Configure(EntityTypeBuilder<TodoList> builder)
     {

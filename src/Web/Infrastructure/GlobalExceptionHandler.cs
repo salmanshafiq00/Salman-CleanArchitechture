@@ -14,14 +14,23 @@ public class GlobalExceptionHandler(
     {
         logger.LogError(exception, "Exception occured: {Message}", exception.Message);
 
+
         httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
-        await httpContext.Response.WriteAsJsonAsync(new ProblemDetails()
+        var problemDetails = new ProblemDetails
         {
             Status = StatusCodes.Status500InternalServerError,
             Type = "https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1",
-            Title = "Internal Server Error."
-        }, cancellationToken);
+            Title = "Internal Server Error"
+        };
+
+        var env = httpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+        if(env.IsDevelopment())
+        {
+            problemDetails.Extensions["RequestId"] = httpContext.TraceIdentifier;
+        }
+
+        await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken).ConfigureAwait(false);
 
         return true;
     }

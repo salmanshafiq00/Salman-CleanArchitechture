@@ -4,7 +4,10 @@ using CleanArchitechture.Application.Common.Exceptions;
 
 namespace CleanArchitechture.Application.Common.Behaviours;
 
-internal sealed class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
+internal sealed class AuthorizationBehaviour<TRequest, TResponse> 
+    : IPipelineBehavior<TRequest, TResponse> 
+    where TRequest : notnull
+    where TResponse : Result
 {
     private readonly IUser _user;
     private readonly IIdentityService _identityService;
@@ -41,7 +44,7 @@ internal sealed class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBeh
                     foreach (var role in roles)
                     {
                         var isInRole = await _identityService.IsInRoleAsync(_user.Id, role.Trim());
-                        if (isInRole)
+                        if (isInRole.IsSuccess)
                         {
                             authorized = true;
                             break;
@@ -57,14 +60,16 @@ internal sealed class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBeh
             }
 
             // Policy-based authorization
-            var authorizeAttributesWithPolicies = authorizeAttributes.Where(a => !string.IsNullOrWhiteSpace(a.Policy));
+            var authorizeAttributesWithPolicies = authorizeAttributes
+                .Where(a => !string.IsNullOrWhiteSpace(a.Policy));
+
             if (authorizeAttributesWithPolicies.Any())
             {
                 foreach (var policy in authorizeAttributesWithPolicies.Select(a => a.Policy))
                 {
                     var authorized = await _identityService.AuthorizeAsync(_user.Id, policy);
 
-                    if (!authorized)
+                    if (authorized.IsFailure)
                     {
                         throw new ForbiddenAccessException();
                     }

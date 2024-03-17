@@ -1,11 +1,12 @@
-﻿using CleanArchitechture.Application.Common.Abstractions;
-using CleanArchitechture.Application.Common.Events;
+﻿using CleanArchitechture.Application.Common.Events;
 using CleanArchitechture.Domain.Common;
-using Dapper;
 
 namespace CleanArchitechture.Application.Features.LookupDetails.EventHandlers;
 
-internal sealed class LookupUpdatedEventHandler(ISqlConnectionFactory sqlConnection, IPublisher publisher)
+internal sealed class LookupUpdatedEventHandler(
+    ISqlConnectionFactory sqlConnection, 
+    IPublisher publisher,
+    ILogger<LookupUpdatedEventHandler> logger)
     : INotificationHandler<LookupUpdatedEvent>
 {
     public async Task Handle(LookupUpdatedEvent notification, CancellationToken cancellationToken)
@@ -19,6 +20,9 @@ internal sealed class LookupUpdatedEventHandler(ISqlConnectionFactory sqlConnect
             """;
 
         var result = await connection.ExecuteAsync(sql, new { Status = notification.Lookup.Status, LookupId = notification.Lookup.Id });
+
+        var eventHandlerName = nameof(LookupUpdatedEventHandler);
+        logger.LogInformation("Event Handler: {EventHandlerName} {@Notification} {ExecutedOn}", eventHandlerName, notification, DateTime.Now);
 
         if (result > 0)
         {

@@ -19,6 +19,10 @@ using WebApi.Infrastructure.Permissions;
 using StackExchange.Redis;
 using CleanArchitechture.Application.Common.Abstractions.Identity;
 using CleanArchitechture.Application.Common.Abstractions;
+using CleanArchitechture.Infrastructure.Persistence.Outbox;
+using Hangfire;
+using CleanArchitechture.Infrastructure.BackgroundJobs;
+using Hangfire.SqlServer;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -33,7 +37,8 @@ public static class DependencyInjection
         Guard.Against.Null(redisConString, message: "Connection string 'RedisCache' not found.");
 
         services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
-        services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
+        //services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
+        services.AddScoped<ISaveChangesInterceptor, InsertOutboxMessagesInterceptor>();
 
         services.AddScoped<ISqlConnectionFactory>(_ => new SqlConnectionFactory(dbConString));
 
@@ -53,6 +58,21 @@ public static class DependencyInjection
         services.AddScoped<ApplicationDbContextInitialiser>();
 
         services.AddScoped<ICommonQueryService, CommonQueryService>();
+
+        // Hangfire
+        services.AddHangfire(options =>
+        {
+            options.UseSqlServerStorage(dbConString, new SqlServerStorageOptions
+            {
+                QueuePollInterval = TimeSpan.Zero,
+                UseRecommendedIsolationLevel = true,
+                DisableGlobalLocks = true
+            });
+        });
+
+        services.AddHangfireServer();
+
+        services.AddScoped<ProcessOutboxMessagesJob>();
 
         // Adding Caching
         services.AddDistributedMemoryCache();

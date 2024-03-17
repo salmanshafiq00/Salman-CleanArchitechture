@@ -1,4 +1,6 @@
+using CleanArchitechture.Infrastructure.BackgroundJobs;
 using CleanArchitechture.Infrastructure.Persistence;
+using Hangfire;
 using Serilog;
 
 const string Allow_Origin_Policy = "Allow-Origin-Policy";
@@ -6,11 +8,23 @@ const string Allow_Origin_Policy = "Allow-Origin-Policy";
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddProblemDetails(options =>
+{
+    options.CustomizeProblemDetails = (context) =>
+    {
+        var env = context.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+        if (env.IsDevelopment())
+        {
+            context.ProblemDetails.Extensions["RequestId"] = context.HttpContext.TraceIdentifier;
+        }
+    };
+});
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(Allow_Origin_Policy, builder =>
     {
-        builder.WithOrigins("http://localhost:4200", "http://localhost:8114")
+        builder.WithOrigins("http://localhost:4200", "http://localhost:8114", "http://localhost:8081")
                .AllowAnyHeader()
                .AllowAnyMethod()
                .AllowCredentials();
@@ -40,6 +54,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+
 app.UseHealthChecks("/health");
 app.UseCors(Allow_Origin_Policy);
 app.UseHttpsRedirection();
@@ -47,6 +62,12 @@ app.UseSerilogRequestLogging();
 app.UseStaticFiles();
 
 app.UseMiddleware<RequestContextLoggingMiddleware>();
+
+app.UseHangfireDashboard();
+
+RecurringJob.AddOrUpdate<ProcessOutboxMessagesJob>("ProcessOutboxMessages",
+    task => task.ProcessOutboxMessagesAsync(),
+    "*/5 * * * * *");
 
 
 app.UseSwaggerUi(settings =>

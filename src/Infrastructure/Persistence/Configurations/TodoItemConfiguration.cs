@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CleanArchitechture.Infrastructure.Persistence.Configurations;
 
-public class TodoItemConfiguration : IEntityTypeConfiguration<TodoItem>
+internal sealed class TodoItemConfiguration : IEntityTypeConfiguration<TodoItem>
 {
     public void Configure(EntityTypeBuilder<TodoItem> builder)
     {

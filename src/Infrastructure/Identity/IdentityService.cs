@@ -3,7 +3,7 @@ using CleanArchitechture.Application.Common.Abstractions.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using static Dapper.SqlMapper;
+using StackExchange.Redis;
 
 namespace CleanArchitechture.Infrastructure.Identity;
 
@@ -52,30 +52,31 @@ public class IdentityService : IIdentityService
         return Result.Success(user.Id);
     }
 
-    public async Task<bool> IsInRoleAsync(string userId, string role, CancellationToken cancellation = default)
+    public async Task<Result> IsInRoleAsync(string userId, string role, CancellationToken cancellation = default)
     {
         var user = await _userManager.Users
             .SingleOrDefaultAsync(u => u.Id == userId, cancellation);
 
-        Guard.Against.NotFound(userId, nameof(userId));
+        if (user is null) return Result.Failure(Error.NotFound(nameof(user), ErrorMessages.USER_NOT_FOUND));
 
-        return user != null && await _userManager.IsInRoleAsync(user, role);
+        return await _userManager.IsInRoleAsync(user, role) 
+            ? Result.Success() 
+            : Result.Failure(Error.Forbidden(nameof(ErrorType.Forbidden), "You have no permission to access the resource"));
     }
 
-    public async Task<bool> AuthorizeAsync(string userId, string policyName, CancellationToken cancellation = default)
+    public async Task<Result> AuthorizeAsync(string userId, string policyName, CancellationToken cancellation = default)
     {
         var user = _userManager.Users.SingleOrDefault(u => u.Id == userId);
 
-        if (user is null)
-        {
-            return false;
-        }
+        if (user is null) return Result.Failure(Error.NotFound(nameof(user), ErrorMessages.USER_NOT_FOUND));
 
         var principal = await _userClaimsPrincipalFactory.CreateAsync(user);
 
         var result = await _authorizationService.AuthorizeAsync(principal, policyName);
 
-        return result.Succeeded;
+        return result.Succeeded 
+            ? Result.Success() 
+            : Result.Failure(Error.Unauthorized(nameof(ErrorType.Unauthorized), string.Empty));
     }
 
     public async Task<Result> DeleteUserAsync(string userId, CancellationToken cancellation = default)
