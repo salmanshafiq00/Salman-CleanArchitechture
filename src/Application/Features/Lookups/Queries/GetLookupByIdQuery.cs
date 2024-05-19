@@ -23,7 +23,7 @@ internal sealed class GetLookupByIdQueryHandler(ISqlConnectionFactory sqlConnect
                 L.Code {nameof(LookupResponse.Code)}, 
                 L.ParentId AS {nameof(LookupResponse.ParentId)}, 
                 L.Description AS {nameof(LookupResponse.Description)},
-                L.StatusName AS {nameof(LookupResponse.Status)}
+                L.Status AS {nameof(LookupResponse.Status)}
             FROM dbo.Lookups AS l
             LEFT JOIN dbo.Lookups AS p ON p.Id = l.ParentId
             WHERE l.Id = @Id
