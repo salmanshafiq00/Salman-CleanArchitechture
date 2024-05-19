@@ -34,14 +34,14 @@ public class LookupDetails : EndpointGroupBase
 
     }
 
-    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<IResult> CreateLookupDetail(ISender sender, [FromBody] CreateLookupDetailCommand command)
     {
         var result = await sender.Send(command);
 
         return result.Match(
-             onSuccess: () => Results.Ok(),
+             onSuccess: () => Results.Ok(result.Value),
              onFailure: result.ToProblemDetails);
     }
 

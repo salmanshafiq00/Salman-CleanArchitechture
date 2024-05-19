@@ -9,17 +9,16 @@ public record CreateLookupDetailCommand(
     string Description,
     bool Status,
     Guid LookupId,
-    Guid? ParentId = null) : ICacheInvalidatorCommand
+    Guid? ParentId = null) : ICacheInvalidatorCommand<Guid>
 {
    public string CacheKey => CacheKeys.LookupDetail;
 }
 
 internal sealed class CreateLookupDetailQueryHandler(
-    IApplicationDbContext dbContext,
-    IPublisher publisher) 
-    : ICommandHandler<CreateLookupDetailCommand>
+    IApplicationDbContext dbContext) 
+    : ICommandHandler<CreateLookupDetailCommand, Guid>
 {
-    public async Task<Result> Handle(CreateLookupDetailCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(CreateLookupDetailCommand request, CancellationToken cancellationToken)
     {
         var entity = new LookupDetail
         {
@@ -34,7 +33,7 @@ internal sealed class CreateLookupDetailQueryHandler(
         dbContext.LookupDetails.Add(entity);
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        return Result.Success();
+        return Result.Success(entity.Id);
         //return Result.Success(CommonMessage.SAVED_SUCCESSFULLY);
     }
 }

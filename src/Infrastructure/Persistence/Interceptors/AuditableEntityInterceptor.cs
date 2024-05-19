@@ -1,4 +1,5 @@
-﻿using CleanArchitechture.Application.Common.Abstractions.Identity;
+﻿using CleanArchitechture.Application.Common.Abstractions;
+using CleanArchitechture.Application.Common.Abstractions.Identity;
 using CleanArchitechture.Domain.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -9,11 +10,11 @@ namespace CleanArchitechture.Infrastructure.Persistence.Interceptors;
 internal sealed class AuditableEntityInterceptor : SaveChangesInterceptor
 {
     private readonly IUser _user;
-    private readonly TimeProvider _dateTime;
+    private readonly IDateTimeProvider _dateTime;
 
     public AuditableEntityInterceptor(
         IUser user,
-        TimeProvider dateTime)
+        IDateTimeProvider dateTime)
     {
         _user = user;
         _dateTime = dateTime;
@@ -42,13 +43,13 @@ internal sealed class AuditableEntityInterceptor : SaveChangesInterceptor
             if (entry.State == EntityState.Added)
             {
                 entry.Entity.CreatedBy = _user.Id;
-                entry.Entity.Created = _dateTime.GetUtcNow();
+                entry.Entity.Created = _dateTime.Now;
             } 
 
             if (entry.State == EntityState.Added || entry.State == EntityState.Modified || entry.HasChangedOwnedEntities())
             {
                 entry.Entity.LastModifiedBy = _user.Id;
-                entry.Entity.LastModified = _dateTime.GetUtcNow();
+                entry.Entity.LastModified = _dateTime.Now;
             }
         }
     }

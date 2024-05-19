@@ -1,4 +1,6 @@
-﻿namespace CleanArchitechture.Application.Features.LookupDetails.Queries;
+﻿using CleanArchitechture.Application.Features.Lookups.Queries;
+
+namespace CleanArchitechture.Application.Features.LookupDetails.Queries;
 
 [Authorize(Policy = Permissions.LookupDetails.View)]
 public record GetLookupDetailByIdQuery(Guid Id) : ICacheableQuery<LookupDetailResponse>
@@ -18,15 +20,13 @@ internal sealed class GetLookupDetailByIdQueryHandler(ISqlConnectionFactory sqlC
 
         var sql = $"""
             SELECT 
-                ld.Id, 
-                ld.Name, 
-                ld.Code, 
-                ld.ParentId, 
-                P.Name AS ParentName, 
-                ld.Description,
-                IIF(ld.Status = 1, 'Active', 'Inactive') AS Status,
-                ld.LookupId,
-                l.Name AS LookupName
+                ld.Id AS {nameof(LookupDetailResponse.Id)}, 
+                ld.Name AS {nameof(LookupDetailResponse.Name)}, 
+                ld.Code AS {nameof(LookupDetailResponse.Code)}, 
+                ld.ParentId  AS {nameof(LookupDetailResponse.ParentId)}, 
+                ld.Description AS {nameof(LookupDetailResponse.Description)},
+                ld.Status AS {nameof(LookupDetailResponse.Status)},
+                ld.LookupId AS {nameof(LookupDetailResponse.LookupId)},
             FROM dbo.LookupDetails AS ld
             INNER JOIN dbo.Lookups AS l ON l.Id = ld.LookupId
             LEFT JOIN dbo.LookupDetails AS p ON p.Id = ld.ParentId

@@ -17,15 +17,15 @@ internal sealed class GetLookupDetailListQueryHandler(ISqlConnectionFactory sqlC
 
         var sql = $"""
             SELECT 
-                ld.Id, 
-                ld.Name, 
-                ld.Code, 
-                ld.ParentId, 
-                p.Name AS ParentName, 
-                ld.Description,
-                IIF(ld.Status = 1, 'Active', 'Inactive') AS Status,
-                ld.LookupId, 
-                l.Name AS LookupName
+                ld.Id  AS {nameof(LookupDetailResponse.Id)}, 
+                ld.Name AS {nameof(LookupDetailResponse.Name)}, 
+                ld.Code AS {nameof(LookupDetailResponse.Code)}, 
+                ld.ParentId AS {nameof(LookupDetailResponse.ParentId)}, 
+                p.Name AS {nameof(LookupDetailResponse.ParentName)}, 
+                ld.Description AS {nameof(LookupDetailResponse.Id)},
+                IIF(ld.StatusName = 1, 'Active', 'Inactive') AS {nameof(LookupDetailResponse.StatusName)},
+                ld.LookupId AS {nameof(LookupDetailResponse.LookupId)}, 
+                l.Name AS {nameof(LookupDetailResponse.LookupName)}
             FROM dbo.LookupDetails AS ld
             INNER JOIN dbo.Lookups l ON l.Id = ld.LookupId
             LEFT JOIN dbo.LookupDetails AS p ON p.Id = ld.ParentId

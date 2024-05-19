@@ -97,7 +97,7 @@ namespace CleanArchitechture.Infrastructure.Persistence.Migrations
                     b.Property<Guid?>("ParentId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("Status")
+                    b.Property<bool>("StatusName")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
@@ -152,7 +152,7 @@ namespace CleanArchitechture.Infrastructure.Persistence.Migrations
                     b.Property<Guid?>("ParentId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("Status")
+                    b.Property<bool>("StatusName")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");

@@ -23,6 +23,7 @@ using CleanArchitechture.Infrastructure.Persistence.Outbox;
 using Hangfire;
 using CleanArchitechture.Infrastructure.BackgroundJobs;
 using Hangfire.SqlServer;
+using CleanArchitechture.Infrastructure.Services;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -58,6 +59,8 @@ public static class DependencyInjection
         services.AddScoped<ApplicationDbContextInitialiser>();
 
         services.AddScoped<ICommonQueryService, CommonQueryService>();
+
+        services.AddScoped<IDateTimeProvider, DateTimeService>();
 
         // Hangfire
         services.AddHangfire(options =>

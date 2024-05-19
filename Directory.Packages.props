@@ -36,8 +36,8 @@
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageVersion Include="Moq" Version="4.20.69" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageVersion Include="NSwag.AspNetCore" Version="14.0.3" />
-    <PackageVersion Include="NSwag.MSBuild" Version="14.0.3" />
+    <PackageVersion Include="NSwag.AspNetCore" Version="14.0.7" />
+    <PackageVersion Include="NSwag.MSBuild" Version="14.0.7" />
     <PackageVersion Include="nunit" Version="3.14.0" />
     <PackageVersion Include="NUnit.Analyzers" Version="3.9.0" />
     <PackageVersion Include="NUnit3TestAdapter" Version="4.5.0" />

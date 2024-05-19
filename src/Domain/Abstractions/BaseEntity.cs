@@ -2,13 +2,11 @@
 
 namespace CleanArchitechture.Domain.Abstractions;
 
-public abstract class BaseEntity
+public abstract class BaseEntity : IEntity<Guid>
 {
-    // This can easily be modified to be BaseEntity<T> and public T Id to support different key types.
-    // Using non-generic integer types for simplicity
-    public Guid Id { get; set; }
+    public virtual Guid Id { get; set; }
 
-    private readonly List<BaseEvent> _domainEvents = new();
+    private readonly List<BaseEvent> _domainEvents = [];
 
     [NotMapped]
     public IReadOnlyCollection<BaseEvent> DomainEvents => _domainEvents.AsReadOnly();

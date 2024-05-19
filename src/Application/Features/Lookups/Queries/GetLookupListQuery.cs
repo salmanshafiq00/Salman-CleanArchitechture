@@ -18,13 +18,13 @@ internal sealed class GetLookupListQueryHandler(ISqlConnectionFactory sqlConnect
 
         var sql = $"""
             SELECT 
-                L.Id, 
-                L.Name, 
-                L.Code, 
-                L.ParentId, 
-                P.Name AS ParentName, 
-                L.Description,
-                IIF(L.Status = 1, 'Active', 'Inactive') AS Status
+                L.Id AS {nameof(LookupResponse.Id)}, 
+                L.Name AS {nameof(LookupResponse.Name)}, 
+                L.Code {nameof(LookupResponse.Code)}, 
+                L.ParentId AS {nameof(LookupResponse.ParentId)}, 
+                P.Name AS {nameof(LookupResponse.ParentName)} , 
+                L.Description AS {nameof(LookupResponse.Description)},
+                IIF(L.StatusName = 1, 'Active', 'Inactive') AS {nameof(LookupResponse.StatusName)}
             FROM dbo.Lookups AS L
             LEFT JOIN dbo.Lookups AS P ON P.Id = L.ParentId
             """;
