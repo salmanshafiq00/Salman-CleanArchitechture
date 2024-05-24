@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace WebApi.Infrastructure.Permissions;
+namespace CleanArchitechture.Infrastructure.Identity.Permissions;
 
-public class PermissionAuthorizationHandler 
+public class PermissionAuthorizationHandler
     : AuthorizationHandler<PermissionRequirement>
 {
     protected override Task HandleRequirementAsync(
-        AuthorizationHandlerContext context, 
+        AuthorizationHandlerContext context,
         PermissionRequirement requirement)
     {
-        if(context.User.HasClaim(CustomClaimTypes.Permission, requirement.Permission))
+        if (context.User.HasClaim(CustomClaimTypes.Permission, requirement.Permission))
         {
             context.Succeed(requirement);
         }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 
-namespace CleanArchitechture.Infrastructure.Services.Token;
+namespace CleanArchitechture.Infrastructure.Identity.Services;
 
 internal interface IAccessTokenValidator
 {

@@ -1,13 +1,13 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using CleanArchitechture.Infrastructure.OptionsSetup.Jwt;
+using CleanArchitechture.Infrastructure.Identity.OptionsSetup;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace CleanArchitechture.Infrastructure.Services.Token;
+namespace CleanArchitechture.Infrastructure.Identity.Services;
 
 internal sealed class AccessTokenValidator(
-    JwtSecurityTokenHandler tokenHandler, 
+    JwtSecurityTokenHandler tokenHandler,
     IOptions<JwtOptions> options)
     : IAccessTokenValidator
 {

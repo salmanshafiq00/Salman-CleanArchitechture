@@ -8,9 +8,9 @@ using CleanArchitechture.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using CleanArchitechture.Infrastructure.OptionsSetup.Jwt;
+using CleanArchitechture.Infrastructure.Identity.OptionsSetup;
 
-namespace CleanArchitechture.Infrastructure.Services.Token;
+namespace CleanArchitechture.Infrastructure.Identity.Services;
 
 internal sealed class AccessTokenProvider(
     IOptionsSnapshot<JwtOptions> jwtOptions,

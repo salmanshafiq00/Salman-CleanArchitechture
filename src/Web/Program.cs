@@ -2,6 +2,8 @@ using CleanArchitechture.Infrastructure.Persistence;
 using CleanArchitechture.Web.Extensions;
 using Hangfire;
 using Serilog;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using HealthChecks.UI.Client;
 
 const string Allow_Origin_Policy = "Allow-Origin-Policy";
 
@@ -55,11 +57,16 @@ if (!app.Environment.IsDevelopment())
 }
 
 
-app.UseHealthChecks("/health");
 app.UseCors(Allow_Origin_Policy);
 app.UseHttpsRedirection();
 app.UseSerilogRequestLogging();
 app.UseStaticFiles();
+
+app.UseHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
+
 
 app.UseMiddleware<RequestContextLoggingMiddleware>();
 

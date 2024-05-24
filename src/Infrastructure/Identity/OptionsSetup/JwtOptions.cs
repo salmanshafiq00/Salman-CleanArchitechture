@@ -1,4 +1,4 @@
-﻿namespace CleanArchitechture.Infrastructure.OptionsSetup.Jwt;
+﻿namespace CleanArchitechture.Infrastructure.Identity.OptionsSetup;
 
 public class JwtOptions
 {

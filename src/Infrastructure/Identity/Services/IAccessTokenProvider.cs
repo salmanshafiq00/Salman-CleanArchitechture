@@ -1,4 +1,4 @@
-﻿namespace CleanArchitechture.Infrastructure.Services.Token;
+﻿namespace CleanArchitechture.Infrastructure.Identity.Services;
 
 internal interface IAccessTokenProvider
 {

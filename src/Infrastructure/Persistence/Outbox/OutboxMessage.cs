@@ -11,4 +11,6 @@ internal sealed record OutboxMessage(
 {
     public DateTime? ProcessedOn { get; set; } = null;
     public string? Error { get; set; } = null;
+
+    private OutboxMessage() : this(Guid.Empty, string.Empty, string.Empty, DateTime.MinValue) { }
 }

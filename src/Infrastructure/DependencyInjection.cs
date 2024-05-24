@@ -1,29 +1,28 @@
-﻿using CleanArchitechture.Application.Common.Caching;
+﻿using CleanArchitechture.Application.Common.Abstractions;
+using CleanArchitechture.Application.Common.Abstractions.Identity;
+using CleanArchitechture.Application.Common.Caching;
 using CleanArchitechture.Application.Common.DapperQueries;
 using CleanArchitechture.Domain.Constants;
 using CleanArchitechture.Infrastructure.Caching;
+using CleanArchitechture.Infrastructure.Identity;
+using CleanArchitechture.Infrastructure.Identity.OptionsSetup;
+using CleanArchitechture.Infrastructure.Identity.Permissions;
+using CleanArchitechture.Infrastructure.Identity.Services;
 using CleanArchitechture.Infrastructure.Persistence;
 using CleanArchitechture.Infrastructure.Persistence.Interceptors;
+using CleanArchitechture.Infrastructure.Persistence.Outbox;
 using CleanArchitechture.Infrastructure.Persistence.Services;
-using CleanArchitechture.Infrastructure.Identity;
-using CleanArchitechture.Infrastructure.OptionsSetup.Jwt;
-using CleanArchitechture.Infrastructure.Services.Token;
+using CleanArchitechture.Infrastructure.Services;
+using Hangfire;
+using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
-using WebApi.Infrastructure.Persistence;
-using WebApi.Infrastructure.Permissions;
 using StackExchange.Redis;
-using CleanArchitechture.Application.Common.Abstractions.Identity;
-using CleanArchitechture.Application.Common.Abstractions;
-using CleanArchitechture.Infrastructure.Persistence.Outbox;
-using Hangfire;
-using Hangfire.SqlServer;
-using CleanArchitechture.Infrastructure.Services;
-using Microsoft.Extensions.Caching.StackExchangeRedis;
+using WebApi.Infrastructure.Persistence;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -31,6 +30,7 @@ public static class DependencyInjection
 {
     private const string DefaultConnection = nameof(DefaultConnection);
     private const string RedisCache = nameof(RedisCache);
+
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
         var dbConString = configuration.GetConnectionString(DefaultConnection);
@@ -39,6 +39,20 @@ public static class DependencyInjection
         Guard.Against.Null(dbConString, message: "Connection string 'DefaultConnection' not found.");
         Guard.Against.Null(redisConString, message: "Connection string 'RedisCache' not found.");
 
+        AddDatabase(services, dbConString);
+        AddRedis(services, redisConString);
+        AddScopedServices(services);
+        AddCaching(services);
+        AddHangfireJobs(services, dbConString);
+        AddIdentity(services);
+        AddAuthenticationAndAuthorization(services);
+        AddHealthChecks(services, dbConString, redisConString);
+
+        return services;
+    }
+
+    private static void AddDatabase(IServiceCollection services, string dbConString)
+    {
         services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
         //services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
         services.AddScoped<ISaveChangesInterceptor, InsertOutboxMessagesInterceptor>();
@@ -55,19 +69,34 @@ public static class DependencyInjection
         services.AddScoped<IApplicationDbContext>(provider
             => provider.GetRequiredService<ApplicationDbContext>());
 
+        services.AddScoped<ApplicationDbContextInitialiser>();
+    }
+
+    private static void AddRedis(IServiceCollection services, string redisConString)
+    {
         services.AddSingleton(ConnectionMultiplexer.Connect(redisConString));
         services.AddStackExchangeRedisCache(options => options.Configuration = redisConString);
+    }
 
-        services.AddScoped<ApplicationDbContextInitialiser>();
-
+    private static void AddScopedServices(IServiceCollection services)
+    {
         services.AddScoped<ICommonQueryService, CommonQueryService>();
-
         services.AddScoped<IDateTimeProvider, DateTimeService>();
+    }
 
-        // Hangfire
-        services.AddHangfire(options =>
+    private static void AddCaching(IServiceCollection services)
+    {
+        services.AddDistributedMemoryCache();
+        services.ConfigureOptions<CacheOptionsSetup>();
+        services.AddSingleton<IInMemoryCacheService, InMemoryCacheService>();
+        services.AddSingleton<IDistributedCacheService, DistributedCacheService>();
+    }
+
+    private static void AddHangfireJobs(IServiceCollection services, string dbConString)
+    {
+        services.AddHangfire(config =>
         {
-            options.UseSqlServerStorage(dbConString, new SqlServerStorageOptions
+            config.UseSqlServerStorage(dbConString, new SqlServerStorageOptions
             {
                 QueuePollInterval = TimeSpan.Zero,
                 UseRecommendedIsolationLevel = true,
@@ -75,14 +104,17 @@ public static class DependencyInjection
             });
         });
 
-        AddBackgroundJobs(services, configuration);
+        services.AddHangfireServer(options => options.SchedulePollingInterval = TimeSpan.FromSeconds(1)); // which is going to configure my application to act as a hangfire server
 
+        services.AddScoped<IProcessOutboxMessagesJob, ProcessOutboxMessagesDapperJob>();
+    }
 
-        // Adding Caching
-        services.AddDistributedMemoryCache();
-        services.ConfigureOptions<CacheOptionsSetup>();
-        services.AddSingleton<IInMemoryCacheService, InMemoryCacheService>();
-        services.AddSingleton<IDistributedCacheService, DistributedCacheService>();
+    private static void AddIdentity(IServiceCollection services)
+    {
+        services.AddIdentityCore<ApplicationUser>()
+            .AddRoles<IdentityRole>()
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddApiEndpoints();
 
         services.AddTransient<IIdentityService, IdentityService>();
         //services.AddTransient<IIdentityRoleService, IdentityRoleService>();
@@ -90,11 +122,10 @@ public static class DependencyInjection
         services.AddTransient<IAccessTokenProvider, AccessTokenProvider>();
         services.AddTransient<IRefreshTokenProvider, RefreshTokenProvider>();
         services.AddTransient<ITokenProviderService, TokenProviderService>();
+    }
 
-
-        //services.AddAuthentication()
-        //    .AddBearerToken(IdentityConstants.BearerScheme);
-
+    private static void AddAuthenticationAndAuthorization(IServiceCollection services)
+    {
         services.AddAuthentication(options =>
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -107,42 +138,22 @@ public static class DependencyInjection
 
         services.AddAuthorizationBuilder();
 
-        services
-            .AddIdentityCore<ApplicationUser>()
-            .AddRoles<IdentityRole>()
-            .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddApiEndpoints();
-
         services.AddSingleton(TimeProvider.System);
-        services.AddTransient<IIdentityService, IdentityService>();
 
         services.AddAuthorization(options =>
         {
             options.AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator));
-
         });
 
         services.AddScoped<IAuthorizationHandler, PermissionAuthorizationHandler>();
         // For dynamically create policy if not exist
         services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
-
-        return services;
     }
 
-
-
-    private static void AddBackgroundJobs(IServiceCollection services, IConfiguration configuration)
+    private static void AddHealthChecks(IServiceCollection services, string dbConString, string redisConString)
     {
-        services.AddHangfire(config =>
-            config.UseSqlServerStorage(configuration.GetConnectionString(DefaultConnection), new SqlServerStorageOptions
-            {
-                QueuePollInterval = TimeSpan.Zero,
-                UseRecommendedIsolationLevel = true,
-                DisableGlobalLocks = true
-            }));
-
-        services.AddHangfireServer(options => options.SchedulePollingInterval = TimeSpan.FromSeconds(1)); // which is going to configure my application to act as a hangfire server
-
-        services.AddScoped<IProcessOutboxMessagesJob, ProcessOutboxMessagesDapperJob>();
+        services.AddHealthChecks()
+            .AddSqlServer(dbConString, name: "SQL Server")
+            .AddRedis(redisConString, name: "Redis");
     }
 }

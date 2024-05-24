@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace WebApi.Infrastructure.Permissions;
+namespace CleanArchitechture.Infrastructure.Identity.Permissions;
 public record PermissionRequirement(string Permission) : IAuthorizationRequirement;
 

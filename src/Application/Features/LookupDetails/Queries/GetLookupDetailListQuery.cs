@@ -22,8 +22,8 @@ internal sealed class GetLookupDetailListQueryHandler(ISqlConnectionFactory sqlC
                 ld.Code AS {nameof(LookupDetailResponse.Code)}, 
                 ld.ParentId AS {nameof(LookupDetailResponse.ParentId)}, 
                 p.Name AS {nameof(LookupDetailResponse.ParentName)}, 
-                ld.Description AS {nameof(LookupDetailResponse.Id)},
-                IIF(ld.StatusName = 1, 'Active', 'Inactive') AS {nameof(LookupDetailResponse.StatusName)},
+                ld.Description AS {nameof(LookupDetailResponse.Description)},
+                IIF(ld.Status = 1, 'Active', 'Inactive') AS {nameof(LookupDetailResponse.StatusName)},
                 ld.LookupId AS {nameof(LookupDetailResponse.LookupId)}, 
                 l.Name AS {nameof(LookupDetailResponse.LookupName)}
             FROM dbo.LookupDetails AS ld

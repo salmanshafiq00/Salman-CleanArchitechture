@@ -85,11 +85,10 @@ public class ProcessOutboxMessagesDapperJob(
         IDbTransaction transaction)
     {
         string sql = """
-            SELECT Id, Content
+            SELECT TOP (@BatchSize) Id, Content
             FROM OutboxMessage WITH (READPAST)
             WHERE ProcessedOn IS NULL
             ORDER BY CreatedOn
-            LIMIT @BatchSize
             """;
 
         IEnumerable<OutboxMessage> outboxMessages = await connection.QueryAsync<OutboxMessage>(

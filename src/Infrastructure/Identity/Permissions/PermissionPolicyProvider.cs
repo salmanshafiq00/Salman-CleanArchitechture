@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 
-namespace WebApi.Infrastructure.Permissions;
+namespace CleanArchitechture.Infrastructure.Identity.Permissions;
 
-public class PermissionPolicyProvider(IOptions<AuthorizationOptions> options) 
+public class PermissionPolicyProvider(IOptions<AuthorizationOptions> options)
     : DefaultAuthorizationPolicyProvider(options)
 {
     public override async Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)

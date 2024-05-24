@@ -3,7 +3,6 @@ using System.Net;
 using Application.Constants;
 using CleanArchitechture.Application.Common.Models;
 using CleanArchitechture.Application.Features.Identity.Models;
-using CleanArchitechture.Infrastructure.Services.Token;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -11,11 +10,11 @@ using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using CleanArchitechture.Infrastructure.OptionsSetup.Jwt;
 using CleanArchitechture.Application.Common.Abstractions.Identity;
 using CleanArchitechture.Application.Common.Abstractions;
+using CleanArchitechture.Infrastructure.Identity.OptionsSetup;
 
-namespace CleanArchitechture.Infrastructure.Identity;
+namespace CleanArchitechture.Infrastructure.Identity.Services;
 
 internal sealed class AuthService(
     UserManager<ApplicationUser> userManager,
@@ -38,7 +37,7 @@ internal sealed class AuthService(
 
         if (user is null)
         {
-            return Result.Failure<AuthenticatedResponse>(Error.NotFound(nameof(user) ,ErrorMessages.WRONG_USERNAME_PASSWORD));
+            return Result.Failure<AuthenticatedResponse>(Error.NotFound(nameof(user), ErrorMessages.WRONG_USERNAME_PASSWORD));
         }
 
         var result = await userManager.CheckPasswordAsync(user, password);

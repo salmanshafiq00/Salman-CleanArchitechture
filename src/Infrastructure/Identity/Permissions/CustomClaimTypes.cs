@@ -1,4 +1,4 @@
-﻿namespace WebApi.Infrastructure.Permissions;
+﻿namespace CleanArchitechture.Infrastructure.Identity.Permissions;
 
 public class CustomClaimTypes
 {

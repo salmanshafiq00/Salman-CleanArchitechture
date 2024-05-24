@@ -1,5 +1,4 @@
-﻿
-namespace CleanArchitechture.Infrastructure.Services.Token;
+﻿namespace CleanArchitechture.Infrastructure.Identity.Services;
 
 internal sealed class TokenProviderService(
     IAccessTokenProvider accessTokenProvider,

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 
-namespace CleanArchitechture.Infrastructure.Identity;
+namespace CleanArchitechture.Infrastructure.Identity.Services;
 
 public class IdentityService : IIdentityService
 {
@@ -59,8 +59,8 @@ public class IdentityService : IIdentityService
 
         if (user is null) return Result.Failure(Error.NotFound(nameof(user), ErrorMessages.USER_NOT_FOUND));
 
-        return await _userManager.IsInRoleAsync(user, role) 
-            ? Result.Success() 
+        return await _userManager.IsInRoleAsync(user, role)
+            ? Result.Success()
             : Result.Failure(Error.Forbidden(nameof(ErrorType.Forbidden), "You have no permission to access the resource"));
     }
 
@@ -74,8 +74,8 @@ public class IdentityService : IIdentityService
 
         var result = await _authorizationService.AuthorizeAsync(principal, policyName);
 
-        return result.Succeeded 
-            ? Result.Success() 
+        return result.Succeeded
+            ? Result.Success()
             : Result.Failure(Error.Unauthorized(nameof(ErrorType.Unauthorized), string.Empty));
     }
 
@@ -84,11 +84,11 @@ public class IdentityService : IIdentityService
         var user = await _userManager.Users
         .SingleOrDefaultAsync(u => u.Id == userId, cancellation);
 
-        if(user is null) return Result.Failure(Error.NotFound(nameof(user), ErrorMessages.USER_NOT_FOUND));
+        if (user is null) return Result.Failure(Error.NotFound(nameof(user), ErrorMessages.USER_NOT_FOUND));
 
         var result = await _userManager.DeleteAsync(user!);
 
-        if(!result.Succeeded)
+        if (!result.Succeeded)
         {
             return Result.Failure(Error.Failure("User.Delete", ErrorMessages.UNABLE_DELETE_USER));
         }

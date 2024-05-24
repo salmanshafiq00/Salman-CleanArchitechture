@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 
-namespace CleanArchitechture.Infrastructure.Services.Token;
+namespace CleanArchitechture.Infrastructure.Identity.Services;
 
 internal sealed class RefreshTokenProvider
     : IRefreshTokenProvider

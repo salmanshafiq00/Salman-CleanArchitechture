@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace WebApi.Infrastructure.Permissions;
+namespace CleanArchitechture.Infrastructure.Identity.Permissions;
 
 public static class PermissionHelper
 {
