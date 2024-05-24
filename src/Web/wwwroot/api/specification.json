@@ -1503,6 +1503,9 @@
           },
           "password": {
             "type": "string"
+          },
+          "isRemember": {
+            "type": "boolean"
           }
         }
       }

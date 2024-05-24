@@ -1,4 +1,6 @@
-﻿namespace CleanArchitechture.Web.Infrastructure;
+﻿using CleanArchitechture.Web.Extensions;
+
+namespace CleanArchitechture.Web.Extensions;
 
 public static class IEndpointRouteBuilderExtensions
 {

@@ -11,7 +11,6 @@ internal sealed class AccessTokenValidator(
     IOptions<JwtOptions> options)
     : IAccessTokenValidator
 {
-    private readonly JwtSecurityTokenHandler _tokenHandler;
     private readonly JwtOptions _jwtOptions = options.Value;
 
     public async Task<TokenValidationResult> ValidateTokenAsync(string accessToken)
@@ -28,6 +27,6 @@ internal sealed class AccessTokenValidator(
             ClockSkew = TimeSpan.Zero
         };
 
-        return await _tokenHandler.ValidateTokenAsync(accessToken, tokenParameters);
+        return await tokenHandler.ValidateTokenAsync(accessToken, tokenParameters);
     }
 }

@@ -17,7 +17,10 @@ internal sealed class InsertOutboxMessagesInterceptor : SaveChangesInterceptor
         DbContextEventData eventData, 
         InterceptionResult<int> result)
     {
-        InsertOutboxMessages(eventData.Context);
+        if (eventData.Context is not null) 
+        {
+            InsertOutboxMessages(eventData.Context);
+        }
         return base.SavingChanges(eventData, result);   
     }
 
@@ -26,14 +29,15 @@ internal sealed class InsertOutboxMessagesInterceptor : SaveChangesInterceptor
         InterceptionResult<int> result, 
         CancellationToken cancellationToken = default)
     {
-        InsertOutboxMessages(eventData.Context);
-        return  base.SavingChangesAsync(eventData, result, cancellationToken);   
+        if (eventData.Context is not null)
+        {
+            InsertOutboxMessages(eventData.Context);
+        }
+        return base.SavingChangesAsync(eventData, result, cancellationToken);   
     }
 
-    private static void InsertOutboxMessages(DbContext? context)
+    private static void InsertOutboxMessages(DbContext context)
     {
-        if (context is null) return;
-
         var entities = context.ChangeTracker
             .Entries<BaseEntity>()
             .Where(e => e.Entity.DomainEvents.Count != 0)

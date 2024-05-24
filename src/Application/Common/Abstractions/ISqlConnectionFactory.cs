@@ -9,4 +9,12 @@ public interface ISqlConnectionFactory
     IDbConnection CreateNewConnection();
 
     string GetConnectionString();
+
+    IDbTransaction BeginTransaction();
+
+    void CommitTransaction(IDbTransaction transaction);
+
+    void RollbackTransaction(IDbTransaction transaction);
+
+
 }

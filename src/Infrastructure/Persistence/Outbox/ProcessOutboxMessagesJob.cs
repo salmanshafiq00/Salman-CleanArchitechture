@@ -1,17 +1,16 @@
 ﻿using CleanArchitechture.Domain.Abstractions;
-using CleanArchitechture.Infrastructure.Persistence;
-using CleanArchitechture.Infrastructure.Persistence.Outbox;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace CleanArchitechture.Infrastructure.BackgroundJobs;
+namespace CleanArchitechture.Infrastructure.Persistence.Outbox;
 
 public class ProcessOutboxMessagesJob(
     ApplicationDbContext dbContext,
     IPublisher publisher,
-    ILogger<ProcessOutboxMessagesJob> logger)
+    ILogger<ProcessOutboxMessagesJob> logger) 
+    : IProcessOutboxMessagesJob
 {
     private static readonly JsonSerializerSettings SerializerSettings = new()
     {

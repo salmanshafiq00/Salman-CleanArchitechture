@@ -76,7 +76,7 @@
       "dateTimeType": "Date",
       "nullValue": "Undefined",
       "generateClientClasses": true,
-      "generateClientInterfaces": false,
+      "generateClientInterfaces": true,
       "generateOptionalParameters": false,
       "exportTypes": true,
       "wrapDtoExceptions": false,
@@ -105,7 +105,7 @@
       "excludedParameterNames": [],
       "handleReferences": false,
       "generateTypeCheckFunctions": false,
-      "generateConstructorInterface": true,
+      "generateConstructorInterface": false,
       "convertConstructorInterfaceData": false,
       "importRequiredTypes": true,
       "useGetBaseUrlMethod": false,
@@ -119,7 +119,8 @@
       "serviceHost": null,
       "serviceSchemes": null,
       //"output": "D:/Programming/Templates/ClientAppCoreUI/src/app/containers/module/lms/lms-api-service.ts",
-      "output": "D:/Programming/Angular/Custom-Templates/ClientApp/src/app/modules/lms/lms-api-service.ts",
+      //"output": "D:/Programming/Angular/Custom-Templates/ClientApp/src/app/modules/lms/lms-api-service.ts",
+      "output": "D:/Programming/Angular/Custom-Templates/sakai/src/app/modules/generated-clients/api-service.ts",
       "newLineBehavior": "Auto"
     }
   }

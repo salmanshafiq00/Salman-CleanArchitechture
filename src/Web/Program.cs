@@ -1,5 +1,5 @@
-using CleanArchitechture.Infrastructure.BackgroundJobs;
 using CleanArchitechture.Infrastructure.Persistence;
+using CleanArchitechture.Web.Extensions;
 using Hangfire;
 using Serilog;
 
@@ -24,7 +24,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(Allow_Origin_Policy, builder =>
     {
-        builder.WithOrigins("http://localhost:4200", "http://localhost:8114", "http://localhost:8081")
+        builder.WithOrigins("http://localhost:4200", "http://localhost:8114", "http://localhost:8081", "http://localhost:4444")
                .AllowAnyHeader()
                .AllowAnyMethod()
                .AllowCredentials();
@@ -63,12 +63,13 @@ app.UseStaticFiles();
 
 app.UseMiddleware<RequestContextLoggingMiddleware>();
 
-app.UseHangfireDashboard();
+app.UseHangfireDashboard(options: new DashboardOptions
+{
+    Authorization = [],
+    DarkModeEnabled = true,
+});
 
-RecurringJob.AddOrUpdate<ProcessOutboxMessagesJob>("ProcessOutboxMessages",
-    task => task.ProcessOutboxMessagesAsync(),
-    "*/5 * * * * *");
-
+app.UseBackgroundJobs();
 
 app.UseSwaggerUi(settings =>
 {

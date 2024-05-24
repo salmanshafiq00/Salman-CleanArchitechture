@@ -21,18 +21,20 @@ using CleanArchitechture.Application.Common.Abstractions.Identity;
 using CleanArchitechture.Application.Common.Abstractions;
 using CleanArchitechture.Infrastructure.Persistence.Outbox;
 using Hangfire;
-using CleanArchitechture.Infrastructure.BackgroundJobs;
 using Hangfire.SqlServer;
 using CleanArchitechture.Infrastructure.Services;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
 public static class DependencyInjection
 {
+    private const string DefaultConnection = nameof(DefaultConnection);
+    private const string RedisCache = nameof(RedisCache);
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        var dbConString = configuration.GetConnectionString("DefaultConnection");
-        var redisConString = configuration.GetConnectionString("RedisCache");
+        var dbConString = configuration.GetConnectionString(DefaultConnection);
+        var redisConString = configuration.GetConnectionString(RedisCache);
 
         Guard.Against.Null(dbConString, message: "Connection string 'DefaultConnection' not found.");
         Guard.Against.Null(redisConString, message: "Connection string 'RedisCache' not found.");
@@ -73,9 +75,8 @@ public static class DependencyInjection
             });
         });
 
-        services.AddHangfireServer();
+        AddBackgroundJobs(services, configuration);
 
-        services.AddScoped<ProcessOutboxMessagesJob>();
 
         // Adding Caching
         services.AddDistributedMemoryCache();
@@ -126,5 +127,22 @@ public static class DependencyInjection
         services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 
         return services;
+    }
+
+
+
+    private static void AddBackgroundJobs(IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddHangfire(config =>
+            config.UseSqlServerStorage(configuration.GetConnectionString(DefaultConnection), new SqlServerStorageOptions
+            {
+                QueuePollInterval = TimeSpan.Zero,
+                UseRecommendedIsolationLevel = true,
+                DisableGlobalLocks = true
+            }));
+
+        services.AddHangfireServer(options => options.SchedulePollingInterval = TimeSpan.FromSeconds(1)); // which is going to configure my application to act as a hangfire server
+
+        services.AddScoped<IProcessOutboxMessagesJob, ProcessOutboxMessagesDapperJob>();
     }
 }

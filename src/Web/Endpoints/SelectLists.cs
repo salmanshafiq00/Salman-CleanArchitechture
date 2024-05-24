@@ -2,6 +2,7 @@
 using CleanArchitechture.Application.Common.Constants.CommonSqlConstants;
 using CleanArchitechture.Application.Common.Models;
 using CleanArchitechture.Application.Features.Common.Queries;
+using CleanArchitechture.Web.Extensions;
 
 namespace CleanArchitechture.Web.Endpoints;
 

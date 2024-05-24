@@ -4,6 +4,7 @@ using CleanArchitechture.Application.TodoItems.Commands.DeleteTodoItem;
 using CleanArchitechture.Application.TodoItems.Commands.UpdateTodoItem;
 using CleanArchitechture.Application.TodoItems.Commands.UpdateTodoItemDetail;
 using CleanArchitechture.Application.TodoItems.Queries.GetTodoItemsWithPagination;
+using CleanArchitechture.Web.Extensions;
 
 namespace CleanArchitechture.Web.Endpoints;
 

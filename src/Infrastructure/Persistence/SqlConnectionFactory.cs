@@ -4,7 +4,7 @@ using CleanArchitechture.Application.Common.Abstractions;
 
 namespace WebApi.Infrastructure.Persistence;
 
-internal sealed class SqlConnectionFactory(string connectionString) 
+internal sealed class SqlConnectionFactory(string connectionString)
     : ISqlConnectionFactory, IDisposable
 {
     private IDbConnection _connection;
@@ -20,7 +20,7 @@ internal sealed class SqlConnectionFactory(string connectionString)
 
     public void Dispose()
     {
-        if(_connection is not null && _connection.State is ConnectionState.Open)
+        if (_connection is not null && _connection.State is ConnectionState.Open)
         {
             _connection.Dispose();
         }
@@ -33,11 +33,34 @@ internal sealed class SqlConnectionFactory(string connectionString)
 
     public IDbConnection GetOpenConnection()
     {
-        if(_connection is null || _connection.State is not ConnectionState.Open)
+        if (_connection is null || _connection.State is not ConnectionState.Open)
         {
             _connection = new SqlConnection(_connectionString);
             _connection.Open();
         }
         return _connection;
     }
+
+    public IDbTransaction BeginTransaction()
+    {
+        if (_connection is null || _connection.State is not ConnectionState.Open)
+            throw new InvalidOperationException("Connection must be open to begin a transaction.");
+
+        return _connection.BeginTransaction();
+    }
+
+    public void CommitTransaction(IDbTransaction transaction)
+    {
+        if (transaction is null) throw new ArgumentNullException(nameof(transaction));
+
+        transaction.Commit();
+    }
+
+    public void RollbackTransaction(IDbTransaction transaction)
+    {
+        if (transaction is null) throw new ArgumentNullException(nameof(transaction));
+
+        transaction.Rollback();
+    }
+
 }
