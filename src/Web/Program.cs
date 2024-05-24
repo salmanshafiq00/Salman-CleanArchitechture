@@ -10,6 +10,8 @@ const string Allow_Origin_Policy = "Allow-Origin-Policy";
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure Services
+
 builder.Services.AddProblemDetails(options =>
 {
     options.CustomizeProblemDetails = (context) =>
@@ -34,39 +36,43 @@ builder.Services.AddCors(options =>
 });
 
 builder.Host
-    .UseSerilog((context, loggerContext) 
+    .UseSerilog((context, loggerContext)
         => loggerContext.ReadFrom.Configuration(context.Configuration));
 
 // Add services to the container.
-builder.Services.AddKeyVaultIfConfigured(builder.Configuration);
-
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddWebServices();
 
-var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
+var app = builder.Build();
+
 if (app.Environment.IsDevelopment())
 {
     await app.InitialiseDatabaseAsync();
+
+    app.UseSwaggerUi(settings =>
+    {
+        settings.Path = "/api";
+        settings.DocumentPath = "/api/specification.json";
+    });
 }
-if (!app.Environment.IsDevelopment())
+else
 {
     app.UseHsts();
 }
-
 
 app.UseCors(Allow_Origin_Policy);
 app.UseHttpsRedirection();
 app.UseSerilogRequestLogging();
 app.UseStaticFiles();
 
-app.UseHealthChecks("/health", new HealthCheckOptions
+app.UseHealthChecks("/api/health", new HealthCheckOptions
 {
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
-
 
 app.UseMiddleware<RequestContextLoggingMiddleware>();
 
@@ -77,12 +83,6 @@ app.UseHangfireDashboard(options: new DashboardOptions
 });
 
 app.UseBackgroundJobs();
-
-app.UseSwaggerUi(settings =>
-{
-    settings.Path = "/api";
-    settings.DocumentPath = "/api/specification.json";
-});
 
 app.MapControllerRoute(
     name: "default",

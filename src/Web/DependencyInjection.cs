@@ -1,6 +1,4 @@
-﻿using Azure.Identity;
-using CleanArchitechture.Application.Common.Abstractions.Identity;
-using CleanArchitechture.Infrastructure.Persistence;
+﻿using CleanArchitechture.Application.Common.Abstractions.Identity;
 using CleanArchitechture.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,20 +13,57 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddWebServices(this IServiceCollection services)
     {
+        AddDatabaseDeveloperPageExceptionFilter(services);
+        AddScopedServices(services);
+        AddHttpContextAccessor(services);
+        AddExceptionHandlers(services);
+        AddRazorPages(services);
+        AddFluentValidationSchemaProcessor(services);
+        ConfigureApiBehavior(services);
+        AddEndpointsApiExplorer(services);
+        AddOpenApiDocument(services);
+
+        return services;
+    }
+
+    private static void AddDatabaseDeveloperPageExceptionFilter(IServiceCollection services)
+    {
         services.AddDatabaseDeveloperPageExceptionFilter();
+    }
 
+    private static void AddTransientServices(IServiceCollection services)
+    {
+        // Add transient services here, if any
+    }
+
+    private static void AddScopedServices(IServiceCollection services)
+    {
         services.AddScoped<IUser, CurrentUser>();
+    }
 
+    private static void AddSingletonServices(IServiceCollection services)
+    {
+        // Add singleton services here, if any
+    }
+
+    private static void AddHttpContextAccessor(IServiceCollection services)
+    {
         services.AddHttpContextAccessor();
+    }
 
-        services.AddHealthChecks()
-            .AddDbContextCheck<ApplicationDbContext>();
-
+    private static void AddExceptionHandlers(IServiceCollection services)
+    {
         services.AddExceptionHandler<CustomExceptionHandler>();
         services.AddExceptionHandler<GlobalExceptionHandler>();
+    }
 
+    private static void AddRazorPages(IServiceCollection services)
+    {
         services.AddRazorPages();
+    }
 
+    private static void AddFluentValidationSchemaProcessor(IServiceCollection services)
+    {
         services.AddScoped(provider =>
         {
             var validationRules = provider.GetService<IEnumerable<FluentValidationRule>>();
@@ -36,20 +71,27 @@ public static class DependencyInjection
 
             return new FluentValidationSchemaProcessor(provider, validationRules, loggerFactory);
         });
+    }
 
-        // Customise default API behaviour
+    private static void ConfigureApiBehavior(IServiceCollection services)
+    {
         services.Configure<ApiBehaviorOptions>(options =>
             options.SuppressModelStateInvalidFilter = true);
+    }
 
+    private static void AddEndpointsApiExplorer(IServiceCollection services)
+    {
         services.AddEndpointsApiExplorer();
+    }
 
+    private static void AddOpenApiDocument(IServiceCollection services)
+    {
         services.AddOpenApiDocument((configure, sp) =>
         {
             configure.Title = "CleanArchitechture API";
 
-
             // Add the fluent validations schema processor
-            var fluentValidationSchemaProcessor = 
+            var fluentValidationSchemaProcessor =
                 sp.CreateScope().ServiceProvider.GetRequiredService<FluentValidationSchemaProcessor>();
 
             configure.SchemaSettings.SchemaProcessors.Add(fluentValidationSchemaProcessor);
@@ -65,20 +107,5 @@ public static class DependencyInjection
 
             configure.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("JWT"));
         });
-
-        return services;
-    }
-
-    public static IServiceCollection AddKeyVaultIfConfigured(this IServiceCollection services, ConfigurationManager configuration)
-    {
-        var keyVaultUri = configuration["KeyVaultUri"];
-        if (!string.IsNullOrWhiteSpace(keyVaultUri))
-        {
-            configuration.AddAzureKeyVault(
-                new Uri(keyVaultUri),
-                new DefaultAzureCredential());
-        }
-
-        return services;
     }
 }
