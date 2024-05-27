@@ -12,7 +12,7 @@ public class LookupDetails : EndpointGroupBase
     {
         app.MapGroup(this)
            .RequireAuthorization()
-           .MapGet(GetLookupDetails)
+           .MapPost(GetLookupDetails, "GetLookupDetails")
            .MapGet(GetLookupDetail, "{id:Guid}")
            .MapPost(CreateLookupDetail)
            .MapPut(UpdateLookupDetail)
@@ -20,7 +20,7 @@ public class LookupDetails : EndpointGroupBase
     }
 
     [ProducesResponseType(typeof(PaginatedResponse<LookupDetailResponse>), StatusCodes.Status200OK)]
-    public async Task<IResult> GetLookupDetails(ISender sender, [AsParameters] GetLookupDetailListQuery query)
+    public async Task<IResult> GetLookupDetails(ISender sender,  GetLookupDetailListQuery query)
     {
         var result = await sender.Send(query);
         return TypedResults.Ok(result.Value);

@@ -4,7 +4,7 @@ namespace CleanArchitechture.Application.Features.Lookups.Queries;
 
 [Authorize(Policy = Permissions.Lookups.View)]
 public record GetLookupListQuery 
-    : GridFeatureModel , ICacheableQuery<PaginatedResponse<LookupResponse>>
+    : DataGridModel , ICacheableQuery<PaginatedResponse<LookupResponse>>
 {
     [JsonIgnore]
     public string CacheKey => $"Lookup_{Offset}_{PageSize}";
@@ -33,6 +33,8 @@ internal sealed class GetLookupListQueryHandler(ISqlConnectionFactory sqlConnect
 
         return await PaginatedResponse<LookupResponse>
             //.CreateAsync(connection, sql, sqlWithOrders, request.Offset, request.PageSize);
-            .CreateAsync(connection, sql, request);
+            .CreateAsync(connection, sql, request, dataFields: LookupResponse.DataFields);
+            //.CreateAsync(connection, sql, request, dataFields: new List<DataFieldModel>(LookupResponse.DataFields));
+            
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace CleanArchitechture.Application.Common.DapperQueries;
 
-public interface IGridFeature : IPaginated, ISortable, IFilterable
+public interface IDataGrid : IPaginated, ISortable, IGlobalFilterable, IFilterable
 {
     bool? AllowCache { get; set; }
 }
@@ -16,10 +16,16 @@ public interface ISortable
 {
     string SortField { get; set; }
     int? SortOrder { get; set; }
+    string? DefaultOrderFieldName { get; set; }
+}
+
+public interface IGlobalFilterable
+{
+    string GlobalFilterValue { get; set; }
 }
 
 public interface IFilterable
 {
-    string GlobalFilterValue { get; set; }
+    List<DataFilterModel> Filters { get; set; }
 }
 

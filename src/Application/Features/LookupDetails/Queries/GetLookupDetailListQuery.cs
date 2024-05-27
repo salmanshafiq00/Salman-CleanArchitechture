@@ -1,10 +1,11 @@
 ﻿using System.Text.Json.Serialization;
+using CleanArchitechture.Application.Features.Lookups.Queries;
 
 namespace CleanArchitechture.Application.Features.LookupDetails.Queries;
 
 [Authorize(Policy = Permissions.LookupDetails.View)]
 public record GetLookupDetailListQuery
-    : GridFeatureModel, ICacheableQuery<PaginatedResponse<LookupDetailResponse>>
+    : DataGridModel, ICacheableQuery<PaginatedResponse<LookupDetailResponse>>
 {
     [JsonInclude]
     public string CacheKey => $"LookupDetail_{PageNumber}_{PageSize}";
@@ -42,6 +43,6 @@ internal sealed class GetLookupDetailListQueryHandler(ISqlConnectionFactory sqlC
 
         return await PaginatedResponse<LookupDetailResponse>
             //.CreateAsync(connection, sql, sqlWithOrders, request.PageNumber, request.PageSize);
-            .CreateAsync(connection, sql, request);
+            .CreateAsync(connection, sql, request, dataFields: LookupResponse.DataFields);
     }
 }
