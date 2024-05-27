@@ -14,17 +14,16 @@
         "operationId": "GetLookupDetails",
         "parameters": [
           {
-            "name": "PageNumber",
+            "name": "AllowCache",
             "in": "query",
-            "required": true,
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "boolean",
+              "nullable": true
             },
             "x-position": 1
           },
           {
-            "name": "PageSize",
+            "name": "PageNumber",
             "in": "query",
             "required": true,
             "schema": {
@@ -34,13 +33,54 @@
             "x-position": 2
           },
           {
-            "name": "Keyword",
+            "name": "PageSize",
             "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 3
+          },
+          {
+            "name": "Offset",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 4
+          },
+          {
+            "name": "SortField",
+            "in": "query",
+            "required": true,
             "schema": {
               "type": "string",
               "nullable": true
             },
-            "x-position": 3
+            "x-position": 5
+          },
+          {
+            "name": "SortOrder",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            },
+            "x-position": 6
+          },
+          {
+            "name": "GlobalFilterValue",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 7
           }
         ],
         "responses": {
@@ -224,43 +264,24 @@
         ]
       }
     },
-    "/api/Lookups": {
-      "get": {
+    "/api/Lookups/GetLookups": {
+      "post": {
         "tags": [
           "Lookups"
         ],
         "operationId": "GetLookups",
-        "parameters": [
-          {
-            "name": "PageNumber",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
+        "requestBody": {
+          "x-name": "query",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetLookupListQuery"
+              }
+            }
           },
-          {
-            "name": "PageSize",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 2
-          },
-          {
-            "name": "Keyword",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 3
-          }
-        ],
+          "required": true,
+          "x-position": 1
+        },
         "responses": {
           "200": {
             "description": "",
@@ -273,7 +294,74 @@
             }
           }
         }
+      }
+    },
+    "/api/Lookups/{id}": {
+      "get": {
+        "tags": [
+          "Lookups"
+        ],
+        "operationId": "GetLookup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LookupResponse"
+                }
+              }
+            }
+          }
+        }
       },
+      "delete": {
+        "tags": [
+          "Lookups"
+        ],
+        "operationId": "DeleteLookup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Lookups": {
       "post": {
         "tags": [
           "Lookups"
@@ -352,77 +440,23 @@
         }
       }
     },
-    "/api/Lookups/{id}": {
-      "get": {
-        "tags": [
-          "Lookups"
-        ],
-        "operationId": "GetLookup",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "guid"
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LookupResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Lookups"
-        ],
-        "operationId": "DeleteLookup",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "guid"
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": ""
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/SelectLists/GetLookupSelectList": {
       "get": {
         "tags": [
           "SelectLists"
         ],
         "operationId": "GetLookupSelectList",
+        "parameters": [
+          {
+            "name": "allowCache",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -451,6 +485,17 @@
           "SelectLists"
         ],
         "operationId": "GetLookupDetailSelectList",
+        "parameters": [
+          {
+            "name": "allowCache",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -1134,6 +1179,58 @@
           }
         }
       },
+      "GetLookupListQuery": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/GridFeatureModel"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "expiration": {
+                "type": "string",
+                "format": "duration",
+                "nullable": true
+              }
+            }
+          }
+        ]
+      },
+      "GridFeatureModel": {
+        "type": "object",
+        "x-abstract": true,
+        "additionalProperties": false,
+        "properties": {
+          "allowCache": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "offset": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sortField": {
+            "type": "string"
+          },
+          "sortOrder": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "globalFilterValue": {
+            "type": "string"
+          }
+        }
+      },
       "CreateLookupCommand": {
         "type": "object",
         "additionalProperties": false,
@@ -1220,6 +1317,9 @@
           },
           "name": {
             "type": "string"
+          },
+          "isDefault": {
+            "type": "boolean"
           }
         }
       },

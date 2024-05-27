@@ -30,21 +30,30 @@ internal sealed class RequestLoggingBehaviour<TRequest, TResponse>
             userName = await _identityService.GetUserNameAsync(userId);
         }
 
-        _logger.LogInformation("Processing Request: {Name} {@UserId} {@UserName} {@Request}",
+        _logger.LogInformation("Processing Request ({Name}): {@UserId} {@UserName} {@Request}",
             requestName, userId, userName, request);
 
         TResponse result = await next().ConfigureAwait(false);
 
         if(result.IsSuccess)
         {
-            _logger.LogInformation("Completed Request: {@RequestName}, {@DateTimeUtc}", requestName, DateTime.Now);
+            _logger.LogInformation("Completed Request ({@RequestName}): {@DateTimeUtc}", requestName, DateTime.Now);
         }
         else
         {
+            if (result is IValidationResult validationResult)
+            {
+                foreach (var error in validationResult.Errors)
+                {
+                    _logger.LogError("Validation Error: {@Error}", error);
+                }
+            }
+
             using (LogContext.PushProperty("Error", result.Error, true))
             {
-                _logger.LogError("Completed Request with Failure: {RequestName}", requestName);
+                _logger.LogError("Completed Request with Failure ({RequestName}): {ErrorCode}", requestName, result.Error.Code);
             }
+
         }
 
         return result;

@@ -1,11 +1,15 @@
-﻿namespace CleanArchitechture.Application.Features.LookupDetails.Queries;
+﻿using System.Text.Json.Serialization;
+
+namespace CleanArchitechture.Application.Features.LookupDetails.Queries;
 
 [Authorize(Policy = Permissions.LookupDetails.View)]
-public record GetLookupDetailListQuery : PaginatedFilter, ICacheableQuery<PaginatedResponse<LookupDetailResponse>>
+public record GetLookupDetailListQuery
+    : GridFeatureModel, ICacheableQuery<PaginatedResponse<LookupDetailResponse>>
 {
+    [JsonInclude]
     public string CacheKey => $"LookupDetail_{PageNumber}_{PageSize}";
-
     public TimeSpan? Expiration => null;
+
 }
 
 internal sealed class GetLookupDetailListQueryHandler(ISqlConnectionFactory sqlConnection) 
@@ -36,6 +40,8 @@ internal sealed class GetLookupDetailListQueryHandler(ISqlConnectionFactory sqlC
             ORDER BY ld.Created
             """;
 
-        return await PaginatedResponse<LookupDetailResponse>.CreateAsync(connection, sql, sqlWithOrders, request.PageNumber, request.PageSize);
+        return await PaginatedResponse<LookupDetailResponse>
+            //.CreateAsync(connection, sql, sqlWithOrders, request.PageNumber, request.PageSize);
+            .CreateAsync(connection, sql, request);
     }
 }

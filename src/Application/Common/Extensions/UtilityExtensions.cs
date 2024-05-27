@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace CleanArchitechture.Application.Common.Extensions;
@@ -23,6 +24,13 @@ public static class UtilityExtensions
     public static string SplitWordByUppper(this string value)
     {
         return Regex.Replace(value, "(\\B[A-Z])", " $1").Trim();
+    }
+
+    public static IEnumerable<string> GetColumnNameFromClass(Type model)
+    {
+        PropertyInfo[] properties = model.GetProperties();
+
+        return properties.Select(prop => prop.Name);
     }
 }
 

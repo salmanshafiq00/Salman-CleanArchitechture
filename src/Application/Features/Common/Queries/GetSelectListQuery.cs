@@ -1,14 +1,11 @@
-﻿using CleanArchitechture.Application.Common.Abstractions;
-using CleanArchitechture.Application.Common.Abstractions.Messaging;
+﻿namespace CleanArchitechture.Application.Features.Common.Queries;
 
-namespace CleanArchitechture.Application.Features.Common.Queries;
-
-public record GetSelectListQuery(string Sql, object Parameters, string Key) 
+public record GetSelectListQuery(string Sql, object Parameters, string Key, bool? AllowCacheList = null) 
     : ICacheableQuery<List<SelectListModel>>
 {
     public TimeSpan? Expiration => null;
-
     public string CacheKey => Key;
+    public bool? AllowCache => AllowCacheList ?? true;
 }
 
 internal sealed class GetSelectListQueryHandler(

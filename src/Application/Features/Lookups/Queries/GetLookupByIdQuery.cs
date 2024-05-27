@@ -4,12 +4,12 @@
 public record GetLookupByIdQuery(Guid Id) : ICacheableQuery<LookupResponse?>
 {
     public string CacheKey => $"Lookup_{Id}";
-
     public TimeSpan? Expiration => null;
+    public bool? AllowCache => true;
 
 }
 
-internal sealed class GetLookupByIdQueryHandler(ISqlConnectionFactory sqlConnection) 
+internal sealed class GetLookupByIdQueryHandler(ISqlConnectionFactory sqlConnection)
     : IQueryHandler<GetLookupByIdQuery, LookupResponse?>
 {
     public async Task<Result<LookupResponse?>> Handle(GetLookupByIdQuery query, CancellationToken cancellationToken)

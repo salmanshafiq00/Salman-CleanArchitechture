@@ -9,6 +9,7 @@ public record GetLookupDetailByIdQuery(Guid Id) : ICacheableQuery<LookupDetailRe
 
     public TimeSpan? Expiration => null;
 
+    public bool? AllowCache => throw new NotImplementedException();
 }
 
 internal sealed class GetLookupDetailByIdQueryHandler(ISqlConnectionFactory sqlConnection) 

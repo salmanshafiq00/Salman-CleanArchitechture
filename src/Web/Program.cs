@@ -4,6 +4,7 @@ using Hangfire;
 using Serilog;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using HealthChecks.UI.Client;
+using CleanArchitechture.Application.Common.Abstractions;
 
 const string Allow_Origin_Policy = "Allow-Origin-Policy";
 
@@ -48,6 +49,9 @@ builder.Services.AddWebServices();
 // Configure the HTTP request pipeline.
 
 var app = builder.Build();
+
+// Set the service provider
+ServiceLocator.ServiceProvider = app.Services;
 
 if (app.Environment.IsDevelopment())
 {

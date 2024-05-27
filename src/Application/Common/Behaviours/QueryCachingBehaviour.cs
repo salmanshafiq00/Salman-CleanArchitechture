@@ -12,13 +12,16 @@ internal sealed class QueryCachingBehaviour<TRequest, TResponse>(
         RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
-        TResponse? cachedResult = await cacheService.GetAsync<TResponse>(request.CacheKey, cancellationToken);
-
-        if (cachedResult is not null)
+        if (request.AllowCache ?? true) 
         {
-            logger.LogInformation($"Cache hit for {typeof(TRequest).FullName}");
+            TResponse? cachedResult = await cacheService.GetAsync<TResponse>(request.CacheKey, cancellationToken);
 
-            return cachedResult;
+            if (cachedResult is not null)
+            {
+                logger.LogInformation($"Cache hit for {typeof(TRequest).FullName}");
+
+                return cachedResult;
+            }
         }
 
         TResponse result = await next();

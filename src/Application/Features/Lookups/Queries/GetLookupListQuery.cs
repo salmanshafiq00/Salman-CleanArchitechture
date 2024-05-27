@@ -1,11 +1,13 @@
-﻿namespace CleanArchitechture.Application.Features.Lookups.Queries;
+﻿using System.Text.Json.Serialization;
+
+namespace CleanArchitechture.Application.Features.Lookups.Queries;
 
 [Authorize(Policy = Permissions.Lookups.View)]
 public record GetLookupListQuery 
-    : PaginatedFilter, ICacheableQuery<PaginatedResponse<LookupResponse>>
+    : GridFeatureModel , ICacheableQuery<PaginatedResponse<LookupResponse>>
 {
-    public string CacheKey => $"Lookup_{PageNumber}_{PageSize}";
-
+    [JsonIgnore]
+    public string CacheKey => $"Lookup_{Offset}_{PageSize}";
     public TimeSpan? Expiration => null;
 }
 
@@ -24,17 +26,13 @@ internal sealed class GetLookupListQueryHandler(ISqlConnectionFactory sqlConnect
                 L.ParentId AS {nameof(LookupResponse.ParentId)}, 
                 P.Name AS {nameof(LookupResponse.ParentName)} , 
                 L.Description AS {nameof(LookupResponse.Description)},
-                IIF(L.StatusName = 1, 'Active', 'Inactive') AS {nameof(LookupResponse.StatusName)}
+                IIF(L.Status = 1, 'Active', 'Inactive') AS {nameof(LookupResponse.StatusName)}
             FROM dbo.Lookups AS L
             LEFT JOIN dbo.Lookups AS P ON P.Id = L.ParentId
             """;
 
-        var sqlWithOrders = $"""
-            {sql} 
-            ORDER BY L.Created
-            """;
-
         return await PaginatedResponse<LookupResponse>
-            .CreateAsync(connection, sql, sqlWithOrders, request.PageNumber, request.PageSize);
+            //.CreateAsync(connection, sql, sqlWithOrders, request.Offset, request.PageSize);
+            .CreateAsync(connection, sql, request);
     }
 }
