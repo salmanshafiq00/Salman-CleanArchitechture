@@ -3,6 +3,7 @@ using System.Text;
 using CleanArchitechture.Application.Common.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using static CleanArchitechture.Application.Common.DapperQueries.Constants;
+using static CleanArchitechture.Application.Common.DapperQueries.SqlConstants;
 
 namespace CleanArchitechture.Application.Common.DapperQueries;
 
@@ -60,7 +61,7 @@ public class PaginatedResponse<TEntity>
 
         #region Sorting (ORDER BY)
 
-        string defaultOrderBy = $"ORDER BY {gridModel.DefaultOrderFieldName ?? "(SELECT NULL)"}";
+        string defaultOrderBy = $"{S.ORDERBY} {gridModel.DefaultOrderFieldName ?? "(SELECT NULL)"}";
 
         string sqlOrderBy = GetOrderBySql(gridModel);
 
@@ -102,7 +103,7 @@ public class PaginatedResponse<TEntity>
             .QueryAsync<TEntity>(paginatedSql, param);
 
         var count = await connection
-            .ExecuteScalarAsync<int>($"SELECT COUNT(*) FROM ({sql}) as CountQuery", param);
+            .ExecuteScalarAsync<int>($"{S.SELECT} {S.COUNT}(*) {S.FROM} ({sql}) as CountQuery", param);
 
         return new PaginatedResponse<TEntity>(
             items.AsList(),
@@ -117,7 +118,7 @@ public class PaginatedResponse<TEntity>
 
     private static bool HasWhereClause(string sql)
     {
-        return sql.IndexOf("WHERE", StringComparison.OrdinalIgnoreCase) >= 0;
+        return sql.IndexOf($"{S.WHERE}", StringComparison.OrdinalIgnoreCase) >= 0;
     }
 
     private static void SetWhereCluaseIfNotExist(ref string sql)
@@ -126,7 +127,7 @@ public class PaginatedResponse<TEntity>
         {
             return;
         }
-        string defaultWhereSql = "WHERE 1 = 1";
+        string defaultWhereSql = $"{S.WHERE} 1 = 1";
 
         sql = $"""
             {sql} 
@@ -153,12 +154,12 @@ public class PaginatedResponse<TEntity>
         {
             if (isFirst)
             {
-                globalFilter.Append($"(LOWER({dataField.DbField}) LIKE @GlobalFilterValue");
+                globalFilter.Append($"({S.LOWER}({dataField.DbField}) {S.LIKE} @GlobalFilterValue");
                 isFirst = false;
             }
             else
             {
-                globalFilter.Append($" OR LOWER({dataField.DbField}) LIKE @GlobalFilterValue");
+                globalFilter.Append($" OR {S.LOWER}({dataField.DbField}) {S.LIKE} @GlobalFilterValue");
             }
         }
 
@@ -166,16 +167,16 @@ public class PaginatedResponse<TEntity>
 
         sql = $"""
             {sql} 
-            AND {globalFilter.ToString()}
+            {S.AND} {globalFilter.ToString()}
             """;
     }
 
     private static void SetFilterSql(
-        ref string sql, 
+        ref string sql,
         DataGridModel gridModel,
         IReadOnlyCollection<DataFieldModel> dataFields)
     {
-        if (!gridModel.Filters.Any() 
+        if (!gridModel.Filters.Any()
             || !gridModel.Filters.Any(x => string.IsNullOrEmpty(x.Value)))
         {
             return;
@@ -185,9 +186,7 @@ public class PaginatedResponse<TEntity>
 
         foreach (var filter in gridModel.Filters.Where(x => !string.IsNullOrEmpty(x.Value)))
         {
-            string sqlOperator = string.IsNullOrEmpty(filter.Operator) ? "AND" : filter.Operator.ToUpper();
-
-            filterBuilder.Append(sqlOperator);
+            string sqlOperator = string.IsNullOrEmpty(filter.Operator) ? $"{S.AND}" : filter.Operator.ToUpper();
 
             var dataField = GetDataField(dataFields, filter.Field);
 
@@ -195,32 +194,54 @@ public class PaginatedResponse<TEntity>
 
             string condition = string.Empty;
 
-            if (dataField?.DbDataType == FieldDataType.NVARCHAR) 
+            if (dataField?.DataType == FieldDataType.Type_String)
             {
                 condition = filter.MatchMode switch
                 {
-                    "startsWith" => $"LOWER({filter.Field}) LIKE LOWER('{filter.Value}%')",
-                    "contains" => $"LOWER({filter.Field}) LIKE LOWER('%{filter.Value}%')",
-                    "notContains" => $"LOWER({filter.Field}) NOT LIKE LOWER('%{filter.Value}%')",
-                    "endsWith" => $"LOWER({filter.Field}) LIKE LOWER('%{filter.Value}')",
-                    "equals" => $"LOWER({filter.Field}) = LOWER('{filter.Value}')",
-                    "notEquals" => $"LOWER({filter.Field}) != LOWER('{filter.Value}')",
+                    MatchMode.StartsWith => $"{S.LOWER}({dataField.DbField}) {S.LIKE} {S.LOWER}('{filter.Value}%')",
+                    MatchMode.EndsWith => $"{S.LOWER}({dataField.DbField}) {S.LIKE} {S.LOWER}('%{filter.Value}')",
+                    MatchMode.Contains => $"{S.LOWER}({dataField.DbField}) {S.LIKE} {S.LOWER}('%{filter.Value}%')",
+                    MatchMode.NotContains => $"{S.LOWER}({dataField.DbField}) {S.LIKE} {S.LOWER}('%{filter.Value}%')",
+                    MatchMode.Equality => $"{S.LOWER}({dataField.DbField}) = {S.LOWER}('{filter.Value}')",
+                    MatchMode.NotEquals => $"{S.LOWER}({dataField.DbField}) != {S.LOWER}('{filter.Value}')",
                     _ => throw new InvalidOperationException($"Unknown MatchMode: {filter.MatchMode}")
                 };
             }
-            else if (dataField?.DbDataType == FieldDataType.BIT)
+            else if (dataField?.DataType == FieldDataType.Type_Select)
             {
                 condition = filter.MatchMode switch
                 {
-                    "equals" => $"{filter.Field} = {filter.Value}",
-                    "notEquals" => $"{filter.Field} != {filter.Value}",
+                    MatchMode.StartsWith => $"{S.LOWER}({dataField.DbField}) {S.LIKE} {S.LOWER}('{filter.Value}%')",
+                    MatchMode.EndsWith => $"{S.LOWER}({dataField.DbField}) {S.LIKE} {S.LOWER}('%{filter.Value}')",
+                    MatchMode.Contains => $"{S.LOWER}({dataField.DbField}) {S.LIKE} {S.LOWER}('%{filter.Value}%')",
+                    MatchMode.NotContains => $"{S.LOWER}({dataField.DbField}) {S.LIKE} {S.LOWER}('%{filter.Value}%')",
+                    MatchMode.Equality => $"{dataField.DbField} = {filter.Value}",
+                    MatchMode.NotEquals => $"{dataField.DbField} != {filter.Value}",
+                    _ => throw new InvalidOperationException($"Unknown MatchMode: {filter.MatchMode}")
+                };
+
+            }
+            else if (dataField?.DataType == FieldDataType.Type_MultiSelect)
+            {
+                condition = filter.MatchMode switch
+                {
+                    MatchMode.StartsWith => $"{S.LOWER}({dataField.DbField}) {S.IN} {S.LOWER}('{filter.Value}%')",
+                    MatchMode.EndsWith => $"{S.LOWER}({dataField.DbField}) {S.IN} {S.LOWER}('%{filter.Value}')",
+                    MatchMode.Contains => $"{S.LOWER}({dataField.DbField}) {S.IN} {S.LOWER}('%{filter.Value}%')",
+                    MatchMode.NotContains => $"{S.LOWER}({dataField.DbField}) {S.IN} {S.LOWER}('%{filter.Value}%')",
+                    MatchMode.Equality => $"{dataField.DbField} = {filter.Value}",
+                    MatchMode.NotEquals => $"{dataField.DbField} != {filter.Value}",
                     _ => throw new InvalidOperationException($"Unknown MatchMode: {filter.MatchMode}")
                 };
 
             }
 
-            filterBuilder.Append(" ");
-            filterBuilder.Append(condition);
+            if (!string.IsNullOrEmpty(condition))
+            {
+                filterBuilder.Append(sqlOperator);
+                filterBuilder.Append(" ");
+                filterBuilder.Append(condition);
+            }
         }
 
         sql = $"""
@@ -269,9 +290,9 @@ public class PaginatedResponse<TEntity>
     }
 
     private static DataFieldModel? GetDataField(
-        IReadOnlyCollection<DataFieldModel> dataFields, 
+        IReadOnlyCollection<DataFieldModel> dataFields,
         string field)
     {
-        return dataFields.FirstOrDefault(x => string.Equals(x.DbField, field));
+        return dataFields.FirstOrDefault(x => string.Equals(x.Field, field, StringComparison.OrdinalIgnoreCase));
     }
 }

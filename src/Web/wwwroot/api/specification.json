@@ -964,12 +964,6 @@
           "dataType": {
             "type": "string"
           },
-          "dbField": {
-            "type": "string"
-          },
-          "dbDataType": {
-            "type": "string"
-          },
           "visible": {
             "type": "boolean"
           },

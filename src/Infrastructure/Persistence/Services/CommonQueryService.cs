@@ -27,7 +27,7 @@ internal sealed class CommonQueryService(ISqlConnectionFactory sqlConnection) : 
             sql.Append($" AND {filter} <> @{filter}");
         }
 
-        sql.Append(") THEN 1 ELSE 0 END AS BIT)");
+        sql.Append(") THEN 1 ELSE 0 END AS bool)");
 
         return await connection.ExecuteScalarAsync<bool>(sql.ToString(), param);
     }

@@ -29,8 +29,8 @@ public class DataFieldModel
     public string Field { get; set; } = string.Empty;
     public string Header { get; set; } = string.Empty;
     public string DataType { get; set; } = string.Empty;
+    [JsonIgnore]
     public string DbField { get; set; } = string.Empty;
-    public string DbDataType { get; set; } = string.Empty;
     public bool Visible { get; set; }
     public int SortOrder { get; set; }
     public bool IsSortable { get; set; }
