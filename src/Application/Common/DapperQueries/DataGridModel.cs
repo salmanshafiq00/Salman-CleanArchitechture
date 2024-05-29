@@ -32,6 +32,7 @@ public class DataFieldModel
     public string DbField { get; set; } = string.Empty;
     public string DbDataType { get; set; } = string.Empty;
     public bool Visible { get; set; }
+    public int SortOrder { get; set; }
     public bool IsSortable { get; set; }
     public bool IsGlobalFilterable { get; set; }
     public bool IsFilterable { get; set; }

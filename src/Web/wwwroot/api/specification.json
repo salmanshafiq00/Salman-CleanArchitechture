@@ -973,6 +973,10 @@
           "visible": {
             "type": "boolean"
           },
+          "sortOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
           "isSortable": {
             "type": "boolean"
           },
