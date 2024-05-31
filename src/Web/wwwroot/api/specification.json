@@ -908,6 +908,12 @@
             "items": {
               "$ref": "#/components/schemas/DataFieldModel"
             }
+          },
+          "filters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DataFilterModel"
+            }
           }
         }
       },
@@ -961,7 +967,7 @@
           "header": {
             "type": "string"
           },
-          "dataType": {
+          "fieldType": {
             "type": "string"
           },
           "visible": {
@@ -978,6 +984,52 @@
             "type": "boolean"
           },
           "isFilterable": {
+            "type": "boolean"
+          },
+          "dsName": {
+            "type": "string"
+          }
+        }
+      },
+      "DataFilterModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "field": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "matchMode": {
+            "type": "string"
+          },
+          "operator": {
+            "type": "string"
+          },
+          "dsName": {
+            "type": "string"
+          },
+          "dataSource": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SelectListModel"
+            }
+          }
+        }
+      },
+      "SelectListModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "isDefault": {
             "type": "boolean"
           }
         }
@@ -1044,24 +1096,6 @@
             "items": {
               "$ref": "#/components/schemas/DataFilterModel"
             }
-          }
-        }
-      },
-      "DataFilterModel": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "field": {
-            "type": "string"
-          },
-          "value": {
-            "type": "string"
-          },
-          "matchMode": {
-            "type": "string"
-          },
-          "operator": {
-            "type": "string"
           }
         }
       },
@@ -1212,6 +1246,12 @@
             "items": {
               "$ref": "#/components/schemas/DataFieldModel"
             }
+          },
+          "filters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DataFilterModel"
+            }
           }
         }
       },
@@ -1245,7 +1285,8 @@
           },
           "parentName": {
             "type": "string"
-          }
+          },
+          "dataSources": {}
         }
       },
       "GetLookupListQuery": {
@@ -1339,22 +1380,6 @@
           },
           "cacheKey": {
             "type": "string"
-          }
-        }
-      },
-      "SelectListModel": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "guid"
-          },
-          "name": {
-            "type": "string"
-          },
-          "isDefault": {
-            "type": "boolean"
           }
         }
       },

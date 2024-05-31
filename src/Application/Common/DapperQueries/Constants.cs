@@ -2,15 +2,15 @@
 
 public static class Constants
 {
-    public static class FieldDataType
+    public static class TField
     {
-        public const string Type_String = "string";
-        public const string Type_Bool = "bool";
-        public const string Type_Select = "select";
-        public const string Type_MultiSelect = "multiselect";
-        public const string Type_Date = "date";
-        public const string Type_DateTime = "datetime";
-        public const string Type_DateRange = "daterange";
+        public const string TString = "string";
+        public const string TBool = "bool";
+        public const string TSelect = "select";
+        public const string TMultiSelect = "multiselect";
+        public const string TDate = "date";
+        public const string TDateTime = "datetime";
+        public const string TDateRange = "daterange";
     }
 
     public static class MatchMode
@@ -57,7 +57,5 @@ public static class SqlConstants
         public const string O_JOIN = "OUT JOIN";
         public const string UPPER = nameof(UPPER);
         public const string LOWER = nameof(LOWER);
-
-
     }
 }

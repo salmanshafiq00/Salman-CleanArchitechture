@@ -1,6 +1,5 @@
 ﻿using System.Data;
 using System.Text;
-using CleanArchitechture.Application.Common.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using static CleanArchitechture.Application.Common.DapperQueries.Constants;
 using static CleanArchitechture.Application.Common.DapperQueries.SqlConstants;
@@ -19,8 +18,10 @@ public class PaginatedResponse<TEntity>
     public bool HasNextPage => PageNumber < TotalPages;
 
     [System.Text.Json.Serialization.JsonInclude]
-
     public IReadOnlyCollection<DataFieldModel> DataFields { get; init; } = [];
+
+    [System.Text.Json.Serialization.JsonInclude]
+    public HashSet<DataFilterModel> Filters { get; init; } = [];
 
     public PaginatedResponse() { }
 
@@ -29,13 +30,15 @@ public class PaginatedResponse<TEntity>
         int count,
         int pageNumber,
         int pageSize,
-        IReadOnlyCollection<DataFieldModel> dataFields)
+        IReadOnlyCollection<DataFieldModel> dataFields,
+        HashSet<DataFilterModel> filters)
     {
         PageNumber = pageNumber;
         TotalPages = (int)Math.Ceiling(count / (double)pageSize);
         TotalCount = count;
         Items = items;
         DataFields = dataFields;
+        Filters = filters;
     }
 
     public static async Task<PaginatedResponse<TEntity>> CreateAsync(
@@ -57,7 +60,6 @@ public class PaginatedResponse<TEntity>
         SetFilterSql(ref sql, gridModel, dataFields);
 
         #endregion
-
 
         #region Sorting (ORDER BY)
 
@@ -83,8 +85,6 @@ public class PaginatedResponse<TEntity>
 
         #endregion
 
-        logger?.LogInformation("Executing SQL: {Sql}", paginatedSql);
-
         #region Parameters
 
         var param = new DynamicParameters(parameters);
@@ -98,6 +98,7 @@ public class PaginatedResponse<TEntity>
 
         #endregion
 
+        logger?.LogInformation("Executing SQL: {Sql}", paginatedSql);
 
         var items = await connection
             .QueryAsync<TEntity>(paginatedSql, param);
@@ -105,14 +106,19 @@ public class PaginatedResponse<TEntity>
         var count = await connection
             .ExecuteScalarAsync<int>($"{S.SELECT} {S.COUNT}(*) {S.FROM} ({sql}) as CountQuery", param);
 
+        SetFiltersToGridModel(gridModel, dataFields);
+
         return new PaginatedResponse<TEntity>(
             items.AsList(),
             count,
             (gridModel.Offset / gridModel.PageSize) + 1,
             gridModel.PageSize,
-            dataFields);
+            dataFields,
+            [.. gridModel.Filters]);
     }
 
+
+    // Functions -----------
 
     #region Filtering Functions (WHERE)
 
@@ -176,7 +182,7 @@ public class PaginatedResponse<TEntity>
         DataGridModel gridModel,
         IReadOnlyCollection<DataFieldModel> dataFields)
     {
-        if (!gridModel.Filters.Any()
+        if (gridModel.Filters.Count == 0
             || !gridModel.Filters.Any(x => string.IsNullOrEmpty(x.Value)))
         {
             return;
@@ -194,7 +200,7 @@ public class PaginatedResponse<TEntity>
 
             string condition = string.Empty;
 
-            if (dataField?.DataType == FieldDataType.Type_String)
+            if (dataField?.FieldType == TField.TString)
             {
                 condition = filter.MatchMode switch
                 {
@@ -207,7 +213,7 @@ public class PaginatedResponse<TEntity>
                     _ => throw new InvalidOperationException($"Unknown MatchMode: {filter.MatchMode}")
                 };
             }
-            else if (dataField?.DataType == FieldDataType.Type_Select)
+            else if (dataField?.FieldType == TField.TSelect)
             {
                 condition = filter.MatchMode switch
                 {
@@ -221,7 +227,7 @@ public class PaginatedResponse<TEntity>
                 };
 
             }
-            else if (dataField?.DataType == FieldDataType.Type_MultiSelect)
+            else if (dataField?.FieldType == TField.TMultiSelect)
             {
                 condition = filter.MatchMode switch
                 {
@@ -254,7 +260,6 @@ public class PaginatedResponse<TEntity>
 
     #endregion
 
-
     #region Sorting Functions (ORDER BY)
 
     private static string GetOrderBySql(DataGridModel gridModel)
@@ -272,27 +277,50 @@ public class PaginatedResponse<TEntity>
 
     #endregion
 
-    private static string GetCondition(DataFilterModel filter)
-    {
-
-        string condition = filter.MatchMode switch
-        {
-            "startsWith" => $"LOWER({filter.Field}) LIKE LOWER('{filter.Value}%')",
-            "contains" => $"LOWER({filter.Field}) LIKE LOWER('%{filter.Value}%')",
-            "notContains" => $"LOWER({filter.Field}) NOT LIKE LOWER('%{filter.Value}%')",
-            "endsWith" => $"LOWER({filter.Field}) LIKE LOWER('%{filter.Value}')",
-            "equals" => $"LOWER({filter.Field}) = LOWER('{filter.Value}')",
-            "notEquals" => $"LOWER({filter.Field}) != LOWER('{filter.Value}')",
-            _ => throw new InvalidOperationException($"Unknown MatchMode: {filter.MatchMode}")
-        };
-
-        return condition;
-    }
+    #region Other Functions
 
     private static DataFieldModel? GetDataField(
         IReadOnlyCollection<DataFieldModel> dataFields,
         string field)
     {
-        return dataFields.FirstOrDefault(x => string.Equals(x.Field, field, StringComparison.OrdinalIgnoreCase));
+        return dataFields.FirstOrDefault(x => 
+            string.Equals(x.Field, field, StringComparison.OrdinalIgnoreCase));
     }
+
+    private static void SetFiltersToGridModel(
+        DataGridModel gridModel,
+        IReadOnlyCollection<DataFieldModel> fields)
+    {
+        var filters = new HashSet<DataFilterModel>();
+
+        foreach (var field in fields.Where(x => x.IsFilterable))
+        {
+            if ((field.FieldType == TField.TSelect || field.FieldType == TField.TMultiSelect)
+                && !string.IsNullOrEmpty(field.DSName))
+            {
+                filters.Add(new DataFilterModel
+                {
+                    Field = field.Field,
+                    DSName = field.DSName,
+                    DataSource = []
+                });
+            }
+            else if ( field.FieldType == TField.TString)
+            {
+                filters.Add(new DataFilterModel
+                {
+                    Field = field.Field,
+                });
+            }
+        }
+        if (filters.Count > 0)
+        {
+            gridModel.Filters.AddRange(filters);
+        }
+    }
+
+
+    #endregion
+
+
 }

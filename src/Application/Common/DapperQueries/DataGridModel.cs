@@ -4,6 +4,7 @@ namespace CleanArchitechture.Application.Common.DapperQueries;
 
 public abstract record DataGridModel : IDataGrid
 {
+    // Caching
     public bool? AllowCache { get; set; } = true;
 
     // Pagination
@@ -28,7 +29,7 @@ public class DataFieldModel
 {
     public string Field { get; set; } = string.Empty;
     public string Header { get; set; } = string.Empty;
-    public string DataType { get; set; } = string.Empty;
+    public string FieldType { get; set; } = string.Empty;
     [JsonIgnore]
     public string DbField { get; set; } = string.Empty;
     public bool Visible { get; set; }
@@ -36,6 +37,7 @@ public class DataFieldModel
     public bool IsSortable { get; set; }
     public bool IsGlobalFilterable { get; set; }
     public bool IsFilterable { get; set; }
+    public string DSName { get; set; } = string.Empty;
 }
 
 public class DataFilterModel
@@ -44,6 +46,8 @@ public class DataFilterModel
     public string Value { get; set; } = string.Empty;
     public string MatchMode { get; set; } = string.Empty;
     public string Operator { get; set; } = string.Empty;
+    public string DSName {  get; set; } = string.Empty;
+    public List<SelectListModel> DataSource { get; set; } = [];
 }
 
 
