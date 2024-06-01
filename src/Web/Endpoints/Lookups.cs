@@ -27,15 +27,6 @@ public class Lookups : EndpointGroupBase
     {
         var result = await sender.Send(query);
 
-        var parentList = await sender.Send(new GetSelectListQuery(
-                Sql: SelectListSqls.GetLookupSelectListSql,
-                Parameters: new { },
-                Key: CacheKeys.Lookup_All_SelectList,
-                AllowCacheList: true)
-            );
-
-        result.Value.OptionsDataSources.parentList = parentList.Value;
-        result.Value.OptionsDataSources.nameList = parentList.Value;
         return TypedResults.Ok(result.Value);
     }
 

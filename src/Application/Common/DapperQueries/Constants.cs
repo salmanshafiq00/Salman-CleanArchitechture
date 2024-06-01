@@ -15,12 +15,27 @@ public static class Constants
 
     public static class MatchMode
     {
-        public const string StartsWith = "startsWith";
-        public const string EndsWith = "endsWith";
-        public const string Contains = "contains";
-        public const string NotContains = "notContains";
-        public const string Equality = "equals";
-        public const string NotEquals = "notEquals";
+        public const string STARTS_WITH = "startsWith";
+        public const string ENDS_WITH = "endsWith";
+        public const string CONTAINS = "contains";
+        public const string NOT_CONTAINS = "notContains";
+        public const string EQUALS = "equals";
+        public const string NOT_EQUALS = "notEquals";
+        public const string IN = "in";
+        public const string NOTIN = "notin";
+        public const string DATE_IS = "dateIs";
+        public const string DATE_IS_NOT = "dateIsNot";
+        public const string DATE_BEFORE = "dateBefore";
+        public const string DATE_AFTER = "dateAfter";
+        public const string LESS_THAN = "lt";
+        public const string LESS_THAN_OR_EQUAL_TO = "lte";
+        public const string GREATER_THAN = "gt";
+        public const string GREATER_THAN_OR_EQUAL_TO = "gte";
+        public const string BETWEEN = "between";
+        public const string IS = "is";
+        public const string IS_NOT = "isNot";
+        public const string BEFORE = "before";
+        public const string AFTER = "after";
     }
 }
 
@@ -58,5 +73,8 @@ public static class SqlConstants
         public const string UPPER = nameof(UPPER);
         public const string LOWER = nameof(LOWER);
         public const string NOT = nameof(NOT);
+        public const string CONV = "CONVERT";
+        public const string IS = "IS";
+        public const string IS_NOT = "IS NOT";
     }
 }

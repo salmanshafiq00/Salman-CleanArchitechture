@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using static CleanArchitechture.Application.Common.DapperQueries.SqlConstants;
 
 namespace CleanArchitechture.Application.Features.Lookups.Queries;
 
@@ -22,11 +23,12 @@ internal sealed class GetLookupListQueryHandler(ISqlConnectionFactory sqlConnect
             SELECT 
                 L.Id AS {nameof(LookupResponse.Id)}, 
                 L.Name AS {nameof(LookupResponse.Name)}, 
-                L.Code {nameof(LookupResponse.Code)}, 
+                L.Code AS {nameof(LookupResponse.Code)}, 
                 L.ParentId AS {nameof(LookupResponse.ParentId)}, 
                 P.Name AS {nameof(LookupResponse.ParentName)} , 
                 L.Description AS {nameof(LookupResponse.Description)},
-                IIF(L.Status = 1, 'Active', 'Inactive') AS {nameof(LookupResponse.StatusName)}
+                IIF(L.Status = 1, 'Active', 'Inactive') AS {nameof(LookupResponse.StatusName)},
+                {S.CONV}(DATE, L.Created) AS {nameof(LookupResponse.Created)}
             FROM dbo.Lookups AS L
             LEFT JOIN dbo.Lookups AS P ON P.Id = L.ParentId
             """;

@@ -999,6 +999,9 @@
           "field": {
             "type": "string"
           },
+          "fieldType": {
+            "type": "string"
+          },
           "value": {
             "type": "string"
           },
@@ -1287,6 +1290,10 @@
           },
           "parentName": {
             "type": "string"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },
