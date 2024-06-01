@@ -164,12 +164,21 @@ public class PaginatedResponse<TEntity>
         {
             if (isFirst)
             {
-                globalFilter.Append($"({S.LOWER}({dataField.DbField}) {S.LIKE} @GlobalFilterValue");
+                globalFilter.Append("(");
                 isFirst = false;
             }
             else
             {
-                globalFilter.Append($" OR {S.LOWER}({dataField.DbField}) {S.LIKE} @GlobalFilterValue");
+                globalFilter.Append(" OR ");
+            }
+
+            if (dataField.FieldType == TField.TDate)
+            {
+                globalFilter.Append($"{S.CONV}(NVARCHAR(10), {dataField.DbField}, 103) {S.LIKE} @GlobalFilterValue");
+            }
+            else
+            {
+                globalFilter.Append($"{S.LOWER}({dataField.DbField}) {S.LIKE} @GlobalFilterValue");
             }
         }
 
@@ -292,7 +301,7 @@ public class PaginatedResponse<TEntity>
         IReadOnlyCollection<DataFieldModel> dataFields,
         string field)
     {
-        return dataFields.FirstOrDefault(x => 
+        return dataFields.FirstOrDefault(x =>
             string.Equals(x.Field, field, StringComparison.OrdinalIgnoreCase));
     }
 
