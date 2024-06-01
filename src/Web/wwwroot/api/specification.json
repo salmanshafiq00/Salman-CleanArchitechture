@@ -914,7 +914,8 @@
             "items": {
               "$ref": "#/components/schemas/DataFilterModel"
             }
-          }
+          },
+          "optionsDataSources": {}
         }
       },
       "LookupDetailResponse": {
@@ -1252,7 +1253,8 @@
             "items": {
               "$ref": "#/components/schemas/DataFilterModel"
             }
-          }
+          },
+          "optionsDataSources": {}
         }
       },
       "LookupResponse": {
@@ -1285,8 +1287,7 @@
           },
           "parentName": {
             "type": "string"
-          },
-          "dataSources": {}
+          }
         }
       },
       "GetLookupListQuery": {

@@ -1,4 +1,7 @@
-﻿using CleanArchitechture.Application.Common.DapperQueries;
+﻿using CleanArchitechture.Application.Common.Caching;
+using CleanArchitechture.Application.Common.Constants.CommonSqlConstants;
+using CleanArchitechture.Application.Common.DapperQueries;
+using CleanArchitechture.Application.Features.Common.Queries;
 using CleanArchitechture.Application.Features.Lookups.Commands;
 using CleanArchitechture.Application.Features.Lookups.Queries;
 using CleanArchitechture.Web.Extensions;
@@ -23,6 +26,16 @@ public class Lookups : EndpointGroupBase
     public async Task<IResult> GetLookups(ISender sender, [FromBody] GetLookupListQuery query)
     {
         var result = await sender.Send(query);
+
+        var parentList = await sender.Send(new GetSelectListQuery(
+                Sql: SelectListSqls.GetLookupSelectListSql,
+                Parameters: new { },
+                Key: CacheKeys.Lookup_All_SelectList,
+                AllowCacheList: true)
+            );
+
+        result.Value.OptionsDataSources.parentList = parentList.Value;
+        result.Value.OptionsDataSources.nameList = parentList.Value;
         return TypedResults.Ok(result.Value);
     }
 

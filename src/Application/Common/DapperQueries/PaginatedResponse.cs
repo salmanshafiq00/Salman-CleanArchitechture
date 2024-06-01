@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Dynamic;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using static CleanArchitechture.Application.Common.DapperQueries.Constants;
@@ -22,6 +23,9 @@ public class PaginatedResponse<TEntity>
 
     [System.Text.Json.Serialization.JsonInclude]
     public HashSet<DataFilterModel> Filters { get; init; } = [];
+
+    public dynamic OptionsDataSources { get; set; } = new ExpandoObject();
+
 
     public PaginatedResponse() { }
 
@@ -217,10 +221,6 @@ public class PaginatedResponse<TEntity>
             {
                 condition = filter.MatchMode switch
                 {
-                    MatchMode.StartsWith => $"{S.LOWER}({dataField.DbField}) {S.LIKE} {S.LOWER}('{filter.Value}%')",
-                    MatchMode.EndsWith => $"{S.LOWER}({dataField.DbField}) {S.LIKE} {S.LOWER}('%{filter.Value}')",
-                    MatchMode.Contains => $"{S.LOWER}({dataField.DbField}) {S.LIKE} {S.LOWER}('%{filter.Value}%')",
-                    MatchMode.NotContains => $"{S.LOWER}({dataField.DbField}) {S.LIKE} {S.LOWER}('%{filter.Value}%')",
                     MatchMode.Equality => $"{dataField.DbField} = {filter.Value}",
                     MatchMode.NotEquals => $"{dataField.DbField} != {filter.Value}",
                     _ => throw new InvalidOperationException($"Unknown MatchMode: {filter.MatchMode}")
@@ -231,12 +231,8 @@ public class PaginatedResponse<TEntity>
             {
                 condition = filter.MatchMode switch
                 {
-                    MatchMode.StartsWith => $"{S.LOWER}({dataField.DbField}) {S.IN} {S.LOWER}('{filter.Value}%')",
-                    MatchMode.EndsWith => $"{S.LOWER}({dataField.DbField}) {S.IN} {S.LOWER}('%{filter.Value}')",
-                    MatchMode.Contains => $"{S.LOWER}({dataField.DbField}) {S.IN} {S.LOWER}('%{filter.Value}%')",
-                    MatchMode.NotContains => $"{S.LOWER}({dataField.DbField}) {S.IN} {S.LOWER}('%{filter.Value}%')",
-                    MatchMode.Equality => $"{dataField.DbField} = {filter.Value}",
-                    MatchMode.NotEquals => $"{dataField.DbField} != {filter.Value}",
+                    MatchMode.Equality => $"{S.LOWER}({dataField.DbField}) {S.IN} ({S.LOWER}('{filter.Value}'))",
+                    MatchMode.NotEquals => $"{S.LOWER}({dataField.DbField}) {S.NOT} {S.IN} ({S.LOWER}('{filter.Value}'))",
                     _ => throw new InvalidOperationException($"Unknown MatchMode: {filter.MatchMode}")
                 };
 

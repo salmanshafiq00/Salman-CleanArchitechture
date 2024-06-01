@@ -57,5 +57,6 @@ public static class SqlConstants
         public const string O_JOIN = "OUT JOIN";
         public const string UPPER = nameof(UPPER);
         public const string LOWER = nameof(LOWER);
+        public const string NOT = nameof(NOT);
     }
 }
