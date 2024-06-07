@@ -1345,9 +1345,6 @@
             "type": "string",
             "format": "guid",
             "nullable": true
-          },
-          "cacheKey": {
-            "type": "string"
           }
         }
       },

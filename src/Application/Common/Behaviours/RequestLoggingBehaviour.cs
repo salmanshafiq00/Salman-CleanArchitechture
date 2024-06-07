@@ -37,7 +37,7 @@ internal sealed class RequestLoggingBehaviour<TRequest, TResponse>
 
         if(result.IsSuccess)
         {
-            _logger.LogInformation("Completed Request ({@RequestName}): {@DateTimeUtc}", requestName, DateTime.Now);
+            _logger.LogInformation("Completed Request ({@RequestName}): {@DateTime}, {@Result}", requestName, DateTime.Now, result);
         }
         else
         {

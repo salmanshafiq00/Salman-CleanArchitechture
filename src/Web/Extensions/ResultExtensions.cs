@@ -17,7 +17,7 @@ public static class ResultExtensions
                 detail: result.Error.Description,
                 extensions: new Dictionary<string, object?>
                 {
-                      {nameof(validationResult.Errors), validationResult.Errors }
+                      {"errors", validationResult.Errors }
                 });
         }
 

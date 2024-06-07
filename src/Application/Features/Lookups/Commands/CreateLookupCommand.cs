@@ -1,4 +1,5 @@
-﻿using CleanArchitechture.Domain.Common;
+﻿using System.Text.Json.Serialization;
+using CleanArchitechture.Domain.Common;
 
 namespace CleanArchitechture.Application.Features.Lookups.Commands;
 
@@ -9,6 +10,7 @@ public record CreateLookupCommand(
     bool Status,
     Guid? ParentId = null) : ICacheInvalidatorCommand<Guid>
 {
+    [JsonIgnore]
     public string CacheKey => CacheKeys.Lookup;
 }
 
