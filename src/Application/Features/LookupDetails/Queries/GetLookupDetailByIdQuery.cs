@@ -1,15 +1,16 @@
-﻿using CleanArchitechture.Application.Features.Lookups.Queries;
+﻿using System.Text.Json.Serialization;
+using CleanArchitechture.Application.Features.Lookups.Queries;
 
 namespace CleanArchitechture.Application.Features.LookupDetails.Queries;
 
 [Authorize(Policy = Permissions.LookupDetails.View)]
 public record GetLookupDetailByIdQuery(Guid Id) : ICacheableQuery<LookupDetailResponse>
 {
+    [JsonIgnore]
     public string CacheKey => $"LookupDetail_{Id}";
-
+    [JsonIgnore]
     public TimeSpan? Expiration => null;
-
-    public bool? AllowCache => throw new NotImplementedException();
+    public bool? AllowCache => true;
 }
 
 internal sealed class GetLookupDetailByIdQueryHandler(ISqlConnectionFactory sqlConnection) 

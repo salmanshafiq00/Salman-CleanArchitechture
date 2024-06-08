@@ -1,9 +1,14 @@
-﻿namespace CleanArchitechture.Application.Features.Lookups.Queries;
+﻿using System.Text.Json.Serialization;
+using static CleanArchitechture.Application.Common.DapperQueries.SqlConstants;
+
+namespace CleanArchitechture.Application.Features.Lookups.Queries;
 
 [Authorize(Policy = Permissions.Lookups.View)]
 public record GetLookupByIdQuery(Guid Id) : ICacheableQuery<LookupResponse?>
 {
+    [JsonIgnore]
     public string CacheKey => $"Lookup_{Id}";
+    [JsonIgnore]
     public TimeSpan? Expiration => null;
     public bool? AllowCache => true;
 
@@ -23,7 +28,8 @@ internal sealed class GetLookupByIdQueryHandler(ISqlConnectionFactory sqlConnect
                 L.Code {nameof(LookupResponse.Code)}, 
                 L.ParentId AS {nameof(LookupResponse.ParentId)}, 
                 L.Description AS {nameof(LookupResponse.Description)},
-                L.Status AS {nameof(LookupResponse.Status)}
+                L.Status AS {nameof(LookupResponse.Status)},
+                {S.CONV}(DATE, L.Created) AS {nameof(LookupResponse.Created)}
             FROM dbo.Lookups AS l
             LEFT JOIN dbo.Lookups AS p ON p.Id = l.ParentId
             WHERE l.Id = @Id

@@ -9,8 +9,6 @@ public record GetLookupDetailListQuery
 {
     [JsonInclude]
     public string CacheKey => $"LookupDetail_{PageNumber}_{PageSize}";
-    public TimeSpan? Expiration => null;
-
 }
 
 internal sealed class GetLookupDetailListQueryHandler(ISqlConnectionFactory sqlConnection) 

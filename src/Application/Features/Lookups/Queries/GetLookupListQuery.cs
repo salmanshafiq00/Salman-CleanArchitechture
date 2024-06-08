@@ -9,7 +9,6 @@ public record GetLookupListQuery
 {
     [JsonIgnore]
     public string CacheKey => $"Lookup_{Offset}_{PageSize}";
-    public TimeSpan? Expiration => null;
 }
 
 internal sealed class GetLookupListQueryHandler(ISqlConnectionFactory sqlConnection) 

@@ -1049,11 +1049,6 @@
             "properties": {
               "cacheKey": {
                 "type": "string"
-              },
-              "expiration": {
-                "type": "string",
-                "format": "duration",
-                "nullable": true
               }
             }
           }
@@ -1304,14 +1299,7 @@
           },
           {
             "type": "object",
-            "additionalProperties": false,
-            "properties": {
-              "expiration": {
-                "type": "string",
-                "format": "duration",
-                "nullable": true
-              }
-            }
+            "additionalProperties": false
           }
         ]
       },

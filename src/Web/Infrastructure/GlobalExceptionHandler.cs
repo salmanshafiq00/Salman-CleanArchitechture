@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 
 namespace WebApi.Web.Infrastructure;
 
@@ -7,6 +8,8 @@ public class GlobalExceptionHandler(
     ILogger<GlobalExceptionHandler> logger) 
     : IExceptionHandler
 {
+    private const string CorrelationIdHeaderName = "X-Correlation-Id";
+    private const string CorrelationId = "correlationId";
     public async ValueTask<bool> TryHandleAsync(
         HttpContext httpContext, 
         Exception exception, 
@@ -27,7 +30,9 @@ public class GlobalExceptionHandler(
         var env = httpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
         if(env.IsDevelopment())
         {
-            problemDetails.Extensions["RequestId"] = httpContext.TraceIdentifier;
+            //httpContext.Items.TryGetValue("correlationId", out var correlationId);
+            httpContext.Request.Headers.TryGetValue(CorrelationIdHeaderName, out StringValues correlationId);
+            problemDetails.Extensions[CorrelationId] = correlationId.FirstOrDefault() ?? httpContext.TraceIdentifier;
         }
 
         await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken).ConfigureAwait(false);

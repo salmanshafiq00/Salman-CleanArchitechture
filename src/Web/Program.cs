@@ -8,22 +8,22 @@ using CleanArchitechture.Application.Common.Abstractions;
 
 const string Allow_Origin_Policy = "Allow-Origin-Policy";
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure Services
 
-builder.Services.AddProblemDetails(options =>
-{
-    options.CustomizeProblemDetails = (context) =>
-    {
-        var env = context.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
-        if (env.IsDevelopment())
-        {
-            context.ProblemDetails.Extensions["RequestId"] = context.HttpContext.TraceIdentifier;
-        }
-    };
-});
+//builder.Services.AddProblemDetails(options =>
+//{
+//    options.CustomizeProblemDetails = (context) =>
+//    {
+//        var env = context.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+//        if (env.IsDevelopment())
+//        {
+//            context.HttpContext.Items.TryGetValue("correlationId", out var correlationId);
+//            context.ProblemDetails.Extensions["correlationId"] = correlationId?.ToString() ?? context.HttpContext.TraceIdentifier;
+//        }
+//    };
+//});
 
 builder.Services.AddCors(options =>
 {

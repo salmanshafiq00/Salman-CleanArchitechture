@@ -1,7 +1,7 @@
 ﻿using CleanArchitechture.Application.Common.Abstractions.Identity;
 using CleanArchitechture.Web.Services;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.Extensions.Primitives;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 using WebApi.Web.Infrastructure;
@@ -11,8 +11,11 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class DependencyInjection
 {
+    private const string CorrelationIdHeaderName = "X-Correlation-Id";
+    private const string CorrelationId = "correlationId";
     public static IServiceCollection AddWebServices(this IServiceCollection services)
     {
+        AddCustomProblemDetails(services);
         AddDatabaseDeveloperPageExceptionFilter(services);
         AddScopedServices(services);
         AddHttpContextAccessor(services);
@@ -24,6 +27,22 @@ public static class DependencyInjection
         AddOpenApiDocument(services);
 
         return services;
+    }
+
+    public static void AddCustomProblemDetails(this IServiceCollection services)
+    {
+        services.AddProblemDetails(options =>
+        {
+            options.CustomizeProblemDetails = (context) =>
+            {
+                var env = context.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
+                if (env.IsDevelopment())
+                {
+                    context.HttpContext.Request.Headers.TryGetValue(CorrelationIdHeaderName, out StringValues correlationId);
+                    context.ProblemDetails.Extensions[CorrelationId] = correlationId.FirstOrDefault() ?? context.HttpContext.TraceIdentifier;
+                }
+            };
+        });
     }
 
     private static void AddDatabaseDeveloperPageExceptionFilter(IServiceCollection services)

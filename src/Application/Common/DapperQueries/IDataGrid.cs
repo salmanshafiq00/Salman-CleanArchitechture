@@ -3,6 +3,7 @@
 public interface IDataGrid : IPaginated, ISortable, IGlobalFilterable, IFilterable
 {
     bool? AllowCache { get; set; }
+    //TimeSpan? Expiration { get; set; }
 }
 
 public interface IPaginated

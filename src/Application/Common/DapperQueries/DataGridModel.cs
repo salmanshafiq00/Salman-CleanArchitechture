@@ -6,6 +6,8 @@ public abstract record DataGridModel : IDataGrid
 {
     // Caching
     public bool? AllowCache { get; set; } = true;
+    [JsonIgnore]
+    public TimeSpan? Expiration { get; set; } = null;
 
     // Pagination
     public int PageNumber { get; set; } = 1;

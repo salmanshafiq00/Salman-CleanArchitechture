@@ -4,7 +4,7 @@ internal sealed class CacheInvalidationBehaviour<TRequest, TResponse>(
     ILogger<CacheInvalidationBehaviour<TRequest, TResponse>> logger,
     IDistributedCacheService distributedCache)
     : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : ICacheInvalidatorCommand<TResponse>
+    where TRequest : ICacheInvalidatorCommand
 {
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
