@@ -1,4 +1,5 @@
-﻿using CleanArchitechture.Application.Common.Abstractions.Identity;
+﻿using System.Text.Json;
+using CleanArchitechture.Application.Common.Abstractions.Identity;
 using CleanArchitechture.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
@@ -17,6 +18,7 @@ public static class DependencyInjection
     {
         AddCustomProblemDetails(services);
         AddDatabaseDeveloperPageExceptionFilter(services);
+        AddJsonConfiguration(services);
         AddScopedServices(services);
         AddHttpContextAccessor(services);
         AddExceptionHandlers(services);
@@ -48,6 +50,16 @@ public static class DependencyInjection
     private static void AddDatabaseDeveloperPageExceptionFilter(IServiceCollection services)
     {
         services.AddDatabaseDeveloperPageExceptionFilter();
+    }
+
+    private static void AddJsonConfiguration(IServiceCollection services)
+    {
+        services.AddControllers().AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+            options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+            //options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+        });
     }
 
     private static void AddTransientServices(IServiceCollection services)

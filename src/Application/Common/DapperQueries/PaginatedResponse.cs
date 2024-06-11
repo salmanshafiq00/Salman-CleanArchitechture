@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Dynamic;
 using System.Text;
+using System.Text.Json.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using static CleanArchitechture.Application.Common.DapperQueries.Constants;
 using static CleanArchitechture.Application.Common.DapperQueries.SqlConstants;
@@ -10,7 +11,7 @@ namespace CleanArchitechture.Application.Common.DapperQueries;
 public class PaginatedResponse<TEntity>
     where TEntity : class
 {
-    [System.Text.Json.Serialization.JsonInclude]
+    [JsonInclude]
     public IReadOnlyCollection<TEntity> Items { get; init; }
     public int PageNumber { get; init; }
     public int TotalPages { get; init; }
@@ -18,13 +19,14 @@ public class PaginatedResponse<TEntity>
     public bool HasPreviousPage => PageNumber > 1;
     public bool HasNextPage => PageNumber < TotalPages;
 
-    [System.Text.Json.Serialization.JsonInclude]
+    [JsonInclude]
     public IReadOnlyCollection<DataFieldModel> DataFields { get; init; } = [];
 
-    [System.Text.Json.Serialization.JsonInclude]
+    [JsonInclude]
     public HashSet<DataFilterModel> Filters { get; init; } = [];
 
-    public dynamic OptionsDataSources { get; set; } = new ExpandoObject();
+    [JsonInclude]
+    public Dictionary<string, object> OptionsDataSources { get; set; } = [];
 
 
     public PaginatedResponse() { }
@@ -250,10 +252,10 @@ public class PaginatedResponse<TEntity>
             {
                 condition = filter.MatchMode switch
                 {
-                    MatchMode.DATE_IS => $"{dataField.DbField} {S.IS} '{filter.Value}'",
-                    MatchMode.DATE_IS_NOT => $"{dataField.DbField} {S.IS_NOT} '{filter.Value}'",
-                    MatchMode.DATE_BEFORE => $"{dataField.DbField} < '{filter.Value}'",
-                    MatchMode.DATE_AFTER => $"{dataField.DbField} > '{filter.Value}'",
+                    MatchMode.DATE_IS => $"{S.CONV}(DATE, {dataField.DbField}) = '{filter.Value}'",
+                    MatchMode.DATE_IS_NOT => $"{S.CONV}(DATE, {dataField.DbField}) <> '{filter.Value}'",
+                    MatchMode.DATE_BEFORE => $"{S.CONV}(DATE, {dataField.DbField}) < '{filter.Value}'",
+                    MatchMode.DATE_AFTER => $"{S.CONV}(DATE, {dataField.DbField}) > '{filter.Value}'",
                     _ => throw new InvalidOperationException($"Unknown MatchMode: {filter.MatchMode}")
                 };
             }

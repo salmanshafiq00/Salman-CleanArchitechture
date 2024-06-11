@@ -915,7 +915,10 @@
               "$ref": "#/components/schemas/DataFilterModel"
             }
           },
-          "optionsDataSources": {}
+          "optionsDataSources": {
+            "type": "object",
+            "additionalProperties": {}
+          }
         }
       },
       "LookupDetailResponse": {
@@ -1035,6 +1038,9 @@
           },
           "isDefault": {
             "type": "boolean"
+          },
+          "severity": {
+            "type": "string"
           }
         }
       },
@@ -1059,6 +1065,9 @@
         "x-abstract": true,
         "additionalProperties": false,
         "properties": {
+          "isInitialLoaded": {
+            "type": "boolean"
+          },
           "allowCache": {
             "type": "boolean",
             "nullable": true
@@ -1252,7 +1261,10 @@
               "$ref": "#/components/schemas/DataFilterModel"
             }
           },
-          "optionsDataSources": {}
+          "optionsDataSources": {
+            "type": "object",
+            "additionalProperties": {}
+          }
         }
       },
       "LookupResponse": {

@@ -5,6 +5,7 @@ public class SelectListModel
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public bool IsDefault { get; set; }
+    public string Severity { get; set; } = string.Empty;
 }
 
 public class SelectListModel<TId> : SelectListModel

@@ -1,6 +1,7 @@
 ﻿using CleanArchitechture.Application.Common.Caching;
 using CleanArchitechture.Application.Common.Constants.CommonSqlConstants;
 using CleanArchitechture.Application.Common.DapperQueries;
+using CleanArchitechture.Application.Common.Extensions;
 using CleanArchitechture.Application.Features.Common.Queries;
 using CleanArchitechture.Application.Features.Lookups.Commands;
 using CleanArchitechture.Application.Features.Lookups.Queries;
@@ -25,7 +26,19 @@ public class Lookups : EndpointGroupBase
     [ProducesResponseType(typeof(PaginatedResponse<LookupResponse>), StatusCodes.Status200OK)]
     public async Task<IResult> GetLookups(ISender sender, [FromBody] GetLookupListQuery query)
     {
-        var result = await sender.Send(query);
+       var result = await sender.Send(query);
+
+        if (!query.IsInitialLoaded) 
+        { 
+            var parentSelectList = await sender.Send(new GetSelectListQuery(
+                Sql: SelectListSqls.GetLookupSelectListSql,
+                Parameters: new { },
+                Key: CacheKeys.Lookup_All_SelectList,
+                AllowCacheList: false)
+            );
+            result.Value.OptionsDataSources.Add("parentSelectList", parentSelectList.Value);
+            result.Value.OptionsDataSources.Add("statusSelectList", UtilityExtensions.GetActiveInactiveSelectList());
+        }
 
         return TypedResults.Ok(result.Value);
     }

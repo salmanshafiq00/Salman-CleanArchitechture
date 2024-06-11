@@ -4,6 +4,7 @@ namespace CleanArchitechture.Application.Common.DapperQueries;
 
 public abstract record DataGridModel : IDataGrid
 {
+    public bool IsInitialLoaded { get; set; } = false;
     // Caching
     public bool? AllowCache { get; set; } = true;
     [JsonIgnore]
@@ -52,10 +53,4 @@ public class DataFilterModel
     public string DSName {  get; set; } = string.Empty;
     public List<SelectListModel> DataSource { get; set; } = [];
 }
-
-
-//[JsonIgnore]
-//public abstract string CacheKey { get; }
-//[JsonIgnore]
-//public virtual TimeSpan? Expiration { get; set; } = null;
 
