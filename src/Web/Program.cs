@@ -1,29 +1,16 @@
+using CleanArchitechture.Application.Common.Abstractions;
 using CleanArchitechture.Infrastructure.Persistence;
 using CleanArchitechture.Web.Extensions;
 using Hangfire;
-using Serilog;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using HealthChecks.UI.Client;
-using CleanArchitechture.Application.Common.Abstractions;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Serilog;
 
 const string Allow_Origin_Policy = "Allow-Origin-Policy";
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure Services
-
-//builder.Services.AddProblemDetails(options =>
-//{
-//    options.CustomizeProblemDetails = (context) =>
-//    {
-//        var env = context.HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
-//        if (env.IsDevelopment())
-//        {
-//            context.HttpContext.Items.TryGetValue("correlationId", out var correlationId);
-//            context.ProblemDetails.Extensions["correlationId"] = correlationId?.ToString() ?? context.HttpContext.TraceIdentifier;
-//        }
-//    };
-//});
 
 builder.Services.AddCors(options =>
 {

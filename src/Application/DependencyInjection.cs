@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using CleanArchitechture.Application.Common.Behaviours;
+using CleanArchitechture.Application.Features.Common.Queries;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -23,6 +24,8 @@ public static class DependencyInjection
             cfg.AddOpenBehavior(typeof(PerformanceBehaviour<,>));
         });
 
+        services.AddTransient(typeof(IRequestHandler<GetSelectListQuery<string>, Result<List<SelectListModel<string>>>>), typeof(GetSelectListQueryHandler<string>));
+        //services.AddTransient(typeof(IRequestHandler<,>), typeof(GetSelectListQueryHandler<>));
         return services;
     }
 }

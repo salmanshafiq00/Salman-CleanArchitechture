@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using System.Dynamic;
 using System.Text;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.DependencyInjection;
@@ -52,7 +51,9 @@ public class PaginatedResponse<TEntity>
          string sql,
          DataGridModel gridModel,
          IReadOnlyCollection<DataFieldModel> dataFields,
-         object? parameters = default)
+         object? parameters = default,
+         string? groupBy = null,
+         string? having = null)
     {
         var logger = ServiceLocator.ServiceProvider
             .GetRequiredService<ILogger<PaginatedResponse<TEntity>>>();
@@ -64,6 +65,18 @@ public class PaginatedResponse<TEntity>
         SetGlobalFilterSql(gridModel, ref sql, dataFields);
 
         SetFilterSql(ref sql, gridModel, dataFields);
+
+        #endregion
+
+        #region Group By
+
+        if (groupBy is not null)
+        {
+            sql = $"""
+            {sql}
+            {groupBy} 
+            """;
+        }
 
         #endregion
 
@@ -256,6 +269,8 @@ public class PaginatedResponse<TEntity>
                     MatchMode.DATE_IS_NOT => $"{S.CONV}(DATE, {dataField.DbField}) <> '{filter.Value}'",
                     MatchMode.DATE_BEFORE => $"{S.CONV}(DATE, {dataField.DbField}) < '{filter.Value}'",
                     MatchMode.DATE_AFTER => $"{S.CONV}(DATE, {dataField.DbField}) > '{filter.Value}'",
+                    MatchMode.DATE_IS_OR_BEFORE => $"{S.CONV}(DATE, {dataField.DbField}) <= '{filter.Value}'",
+                    MatchMode.DATE_IS_OR_AFTER => $"{S.CONV}(DATE, {dataField.DbField}) >= '{filter.Value}'",
                     _ => throw new InvalidOperationException($"Unknown MatchMode: {filter.MatchMode}")
                 };
             }

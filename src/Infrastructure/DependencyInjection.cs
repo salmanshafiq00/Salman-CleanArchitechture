@@ -29,17 +29,20 @@ namespace Microsoft.Extensions.DependencyInjection;
 public static class DependencyInjection
 {
     private const string DefaultConnection = nameof(DefaultConnection);
+    private const string IdentityConnection = nameof(IdentityConnection);
     private const string RedisCache = nameof(RedisCache);
 
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
         var dbConString = configuration.GetConnectionString(DefaultConnection);
+        var identityConString = configuration.GetConnectionString(IdentityConnection);
         var redisConString = configuration.GetConnectionString(RedisCache);
 
-        Guard.Against.Null(dbConString, message: "Connection string 'DefaultConnection' not found.");
+        Guard.Against.Null(dbConString, message: $"Connection string '{nameof(DefaultConnection)}' not found.");
+        Guard.Against.Null(identityConString, message: $"Connection string '{nameof(IdentityConnection)}' not found.");
         Guard.Against.Null(redisConString, message: "Connection string 'RedisCache' not found.");
 
-        AddDatabase(services, dbConString);
+        AddDatabase(services, dbConString, identityConString);
         AddRedis(services, redisConString);
         AddScopedServices(services);
         AddCaching(services);
@@ -51,7 +54,7 @@ public static class DependencyInjection
         return services;
     }
 
-    private static void AddDatabase(IServiceCollection services, string dbConString)
+    private static void AddDatabase(IServiceCollection services, string dbConString, string identityConString)
     {
         services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
         //services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
@@ -69,7 +72,9 @@ public static class DependencyInjection
         services.AddScoped<IApplicationDbContext>(provider
             => provider.GetRequiredService<ApplicationDbContext>());
 
-        services.AddScoped<ApplicationDbContextInitialiser>();
+        services.AddScoped<IdentityDbContextInitialiser>();
+
+        services.AddDbContext<IdentityContext>(options => options.UseSqlServer(identityConString));
     }
 
     private static void AddRedis(IServiceCollection services, string redisConString)
@@ -113,11 +118,12 @@ public static class DependencyInjection
     {
         services.AddIdentityCore<ApplicationUser>()
             .AddRoles<IdentityRole>()
-            .AddEntityFrameworkStores<ApplicationDbContext>()
+            //.AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddEntityFrameworkStores<IdentityContext>()
             .AddApiEndpoints();
 
         services.AddTransient<IIdentityService, IdentityService>();
-        //services.AddTransient<IIdentityRoleService, IdentityRoleService>();
+        services.AddTransient<IIdentityRoleService, IdentityRoleService>();
         services.AddTransient<IAuthService, AuthService>();
         services.AddTransient<IAccessTokenProvider, AccessTokenProvider>();
         services.AddTransient<IRefreshTokenProvider, RefreshTokenProvider>();

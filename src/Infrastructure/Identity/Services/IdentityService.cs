@@ -1,5 +1,7 @@
 ﻿using Application.Constants;
 using CleanArchitechture.Application.Common.Abstractions.Identity;
+using CleanArchitechture.Application.Features.Admin.AppUsers.Commands;
+using CleanArchitechture.Application.Features.Admin.AppUsers.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -32,17 +34,21 @@ public class IdentityService : IIdentityService
     }
 
     public async Task<Result<string>> CreateUserAsync(
-        string userName,
-        string password,
+        CreateAppUserCommand command,
         CancellationToken cancellation = default)
     {
         var user = new ApplicationUser
         {
-            UserName = userName,
-            Email = userName,
+            UserName = command.Username,
+            Email = command.Email,
+            FirstName = command.FirstName,
+            LastName = command.LastName,
+            IsActive = command.IsActive,
+            PhotoUrl = command.PhotoUrl,
+            PhoneNumber = command.PhoneNumber
         };
 
-        var result = await _userManager.CreateAsync(user, password);
+        var result = await _userManager.CreateAsync(user, command.Password);
 
         if (!result.Succeeded)
         {
@@ -50,6 +56,60 @@ public class IdentityService : IIdentityService
         }
 
         return Result.Success(user.Id);
+    }
+
+    public async Task<Result> UpdateUserAsync(
+       UpdateAppUserCommand command,
+       CancellationToken cancellation = default)
+    {
+        var user = await _userManager.Users
+            .SingleOrDefaultAsync(u => u.Id == command.Id, cancellation);
+
+        if (user is null)
+            return Result.Failure(Error.Failure("User.Update", ErrorMessages.USER_NOT_FOUND));
+
+        user.UserName = command.Username;
+        user.Email = command.Email;
+        user.FirstName = command.FirstName;
+        user.LastName = command.LastName;
+        user.IsActive = command.IsActive;
+        user.PhotoUrl = command.PhotoUrl;
+        user.PhoneNumber = command.PhoneNumber;
+        user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, command.Password);
+
+        var result = await _userManager.UpdateAsync(user);
+
+        if (!result.Succeeded)
+        {
+            return Result.Failure(Error.Failure("User.Update", ErrorMessages.UNABLE_UPDATE_USER));
+        }
+
+        return Result.Success();
+    }
+
+    public async Task<Result<AppUserModel>> GetUserAsync(
+      string id,
+      CancellationToken cancellation = default)
+    {
+        var user = await _userManager.Users
+            .SingleOrDefaultAsync(u => u.Id == id, cancellation);
+
+        if (user is null)
+            return Result.Failure<AppUserModel>(Error.Failure("User.Get", ErrorMessages.USER_NOT_FOUND));
+
+        var appUser = new AppUserModel
+        {
+            Id = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            IsActive = user.IsActive,
+            PhotoUrl = user.PhotoUrl,
+            Username = user.UserName,
+            Email = user.Email,
+            PhoneNumber = user.PhoneNumber
+        };
+
+        return Result.Success(appUser);
     }
 
     public async Task<Result> IsInRoleAsync(string userId, string role, CancellationToken cancellation = default)
@@ -96,11 +156,28 @@ public class IdentityService : IIdentityService
         return Result.Success();
     }
 
-    public async Task<IDictionary<string, string?>> FetchUsers(string roleName, CancellationToken cancellation = default)
+    public async Task<IDictionary<string, string?>> GetUsersByRole(
+        string roleName, 
+        CancellationToken cancellation = default)
     {
         var result = await _userManager.GetUsersInRoleAsync(roleName);
 
         return result?.ToDictionary(x => x.UserName, y => $"{y.FirstName} {y.LastName}");
         //return result?.ToDictionary(x => x.UserName, y => $"");
+    }
+
+    public async Task<Result> AddToRolesAsync(
+        AddToRolesCommand command,
+        CancellationToken cancellation = default)
+    {
+        var user = await _userManager.FindByIdAsync(command.Id);
+
+        if (user is null) return Result.Failure(Error.NotFound(nameof(user), ErrorMessages.USER_NOT_FOUND));
+
+        var result = await _userManager.AddToRolesAsync(user, command.RoleNames);
+
+        return result.Succeeded
+            ? Result.Success()
+            : Result.Failure(Error.Unauthorized(nameof(ErrorType.Unauthorized), string.Empty));
     }
 }

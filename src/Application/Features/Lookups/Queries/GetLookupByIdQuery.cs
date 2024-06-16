@@ -3,8 +3,8 @@ using static CleanArchitechture.Application.Common.DapperQueries.SqlConstants;
 
 namespace CleanArchitechture.Application.Features.Lookups.Queries;
 
-[Authorize(Policy = Permissions.Lookups.View)]
-public record GetLookupByIdQuery(Guid Id) : ICacheableQuery<LookupResponse?>
+[Authorize(Policy = Permissions.CommonSetup.Lookups.View)]
+public record GetLookupByIdQuery(Guid Id) : ICacheableQuery<LookupModel?>
 {
     [JsonIgnore]
     public string CacheKey => $"Lookup_{Id}";
@@ -15,26 +15,26 @@ public record GetLookupByIdQuery(Guid Id) : ICacheableQuery<LookupResponse?>
 }
 
 internal sealed class GetLookupByIdQueryHandler(ISqlConnectionFactory sqlConnection)
-    : IQueryHandler<GetLookupByIdQuery, LookupResponse?>
+    : IQueryHandler<GetLookupByIdQuery, LookupModel?>
 {
-    public async Task<Result<LookupResponse?>> Handle(GetLookupByIdQuery query, CancellationToken cancellationToken)
+    public async Task<Result<LookupModel?>> Handle(GetLookupByIdQuery query, CancellationToken cancellationToken)
     {
         var connection = sqlConnection.GetOpenConnection();
 
         var sql = $"""
             SELECT 
-                L.Id AS {nameof(LookupResponse.Id)}, 
-                L.Name AS {nameof(LookupResponse.Name)}, 
-                L.Code {nameof(LookupResponse.Code)}, 
-                L.ParentId AS {nameof(LookupResponse.ParentId)}, 
-                L.Description AS {nameof(LookupResponse.Description)},
-                L.Status AS {nameof(LookupResponse.Status)},
-                {S.CONV}(DATE, L.Created) AS {nameof(LookupResponse.Created)}
+                L.Id AS {nameof(LookupModel.Id)}, 
+                L.Name AS {nameof(LookupModel.Name)}, 
+                L.Code {nameof(LookupModel.Code)}, 
+                L.ParentId AS {nameof(LookupModel.ParentId)}, 
+                L.Description AS {nameof(LookupModel.Description)},
+                L.Status AS {nameof(LookupModel.Status)},
+                {S.CONV}(DATE, L.Created) AS {nameof(LookupModel.Created)}
             FROM dbo.Lookups AS l
             LEFT JOIN dbo.Lookups AS p ON p.Id = l.ParentId
             WHERE l.Id = @Id
             """;
 
-        return await connection.QueryFirstOrDefaultAsync<LookupResponse>(sql, new { query.Id });
+        return await connection.QueryFirstOrDefaultAsync<LookupModel>(sql, new { query.Id });
     }
 }

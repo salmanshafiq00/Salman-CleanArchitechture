@@ -1,6 +1,10 @@
 ﻿namespace CleanArchitechture.Application.Features.Common.Queries;
 
-public record GetSelectListQuery(string Sql, object Parameters, string Key, bool? AllowCacheList = null) 
+public record GetSelectListQuery(
+    string Sql, 
+    object Parameters, 
+    string Key, 
+    bool? AllowCacheList = null) 
     : ICacheableQuery<List<SelectListModel>>
 {
     public TimeSpan? Expiration => null;

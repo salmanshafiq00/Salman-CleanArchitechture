@@ -15,4 +15,11 @@ public static class SelectListSqls
         WHERE 1 = 1
         ORDER BY Name
         """;
+
+    public const string GetRoleSelectListSql = """
+        SELECT Id, Name 
+        FROM [identity].Roles r
+        WHERE 1 = 1
+        ORDER BY Name
+        """;
 }

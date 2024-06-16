@@ -1,16 +1,10 @@
-﻿using CleanArchitechture.Application.Features.Identity.Models;
-using CleanArchitechture.Domain.Common;
-using CleanArchitechture.Domain.Todos;
+﻿using CleanArchitechture.Domain.Common;
 
 namespace CleanArchitechture.Application.Common.Abstractions;
 
 public interface IApplicationDbContext
 {
-    DbSet<TodoList> TodoLists { get; }
-
-    DbSet<TodoItem> TodoItems { get; }
-
-    DbSet<RefreshToken> RefreshTokens { get; }
+    //DbSet<RefreshToken> RefreshTokens { get; }
 
     DbSet<Lookup> Lookups { get; }
 

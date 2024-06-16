@@ -19,7 +19,7 @@ namespace CleanArchitechture.Infrastructure.Identity.Services;
 internal sealed class AuthService(
     UserManager<ApplicationUser> userManager,
     ITokenProviderService tokenProvider,
-    IApplicationDbContext dbContext,
+    IdentityContext dbContext,
     IOptionsSnapshot<JwtOptions> jwtOptions)
     : IAuthService
 {

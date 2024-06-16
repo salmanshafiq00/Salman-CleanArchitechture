@@ -23,7 +23,7 @@ public class Lookups : EndpointGroupBase
            .MapDelete(DeleteLookup, "{id:Guid}");
     }
 
-    [ProducesResponseType(typeof(PaginatedResponse<LookupResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(PaginatedResponse<LookupModel>), StatusCodes.Status200OK)]
     public async Task<IResult> GetLookups(ISender sender, [FromBody] GetLookupListQuery query)
     {
        var result = await sender.Send(query);
@@ -43,7 +43,7 @@ public class Lookups : EndpointGroupBase
         return TypedResults.Ok(result.Value);
     }
 
-    [ProducesResponseType(typeof(LookupResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(LookupModel), StatusCodes.Status200OK)]
     public async Task<IResult> GetLookup(ISender sender,[FromRoute] Guid id)
     {
         var result = await sender.Send(new GetLookupByIdQuery(id));

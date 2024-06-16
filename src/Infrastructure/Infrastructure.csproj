@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <Folder Include="BackgroundJobs\" />
+    <Folder Include="Identity\Configurations\" />
   </ItemGroup>
 
 </Project>

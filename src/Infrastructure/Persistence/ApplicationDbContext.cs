@@ -1,23 +1,15 @@
 ﻿using System.Reflection;
 using CleanArchitechture.Application.Common.Abstractions;
-using CleanArchitechture.Application.Features.Identity.Models;
 using CleanArchitechture.Domain.Common;
-using CleanArchitechture.Domain.Todos;
-using CleanArchitechture.Infrastructure.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitechture.Infrastructure.Persistence;
 
-public sealed class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbContext
+public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-    public DbSet<TodoList> TodoLists => Set<TodoList>();
-
-    public DbSet<TodoItem> TodoItems => Set<TodoItem>();
-
-    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    //public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
     public DbSet<Lookup> Lookups => Set<Lookup>();
 

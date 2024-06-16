@@ -27,6 +27,8 @@ public static class Constants
         public const string DATE_IS_NOT = "dateIsNot";
         public const string DATE_BEFORE = "dateBefore";
         public const string DATE_AFTER = "dateAfter";
+        public const string DATE_IS_OR_AFTER = "dateIsOrAfter";
+        public const string DATE_IS_OR_BEFORE = "dateIsOrBefore";
         public const string LESS_THAN = "lt";
         public const string LESS_THAN_OR_EQUAL_TO = "lte";
         public const string GREATER_THAN = "gt";
@@ -36,6 +38,7 @@ public static class Constants
         public const string IS_NOT = "isNot";
         public const string BEFORE = "before";
         public const string AFTER = "after";
+
     }
 }
 

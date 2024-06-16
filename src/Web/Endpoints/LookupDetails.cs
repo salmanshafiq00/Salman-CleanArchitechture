@@ -19,14 +19,14 @@ public class LookupDetails : EndpointGroupBase
            .MapDelete(DeleteLookupDetail, "{id:Guid}");
     }
 
-    [ProducesResponseType(typeof(PaginatedResponse<LookupDetailResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(PaginatedResponse<LookupDetailModel>), StatusCodes.Status200OK)]
     public async Task<IResult> GetLookupDetails(ISender sender,  GetLookupDetailListQuery query)
     {
         var result = await sender.Send(query);
         return TypedResults.Ok(result.Value);
     }
 
-    [ProducesResponseType(typeof(LookupDetailResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(LookupDetailModel), StatusCodes.Status200OK)]
     public async Task<IResult> GetLookupDetail(ISender sender, Guid id)
     {
         var result = await sender.Send(new GetLookupDetailByIdQuery(id));
