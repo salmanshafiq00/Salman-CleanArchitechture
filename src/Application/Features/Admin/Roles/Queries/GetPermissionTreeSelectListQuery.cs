@@ -3,7 +3,7 @@ using CleanArchitechture.Application.Common.Abstractions.Identity;
 
 namespace CleanArchitechture.Application.Features.Admin.Roles.Queries;
 
-public record GetPermissionNodeListQuery
+public record GetPermissionTreeSelectListQuery
     : ICacheableQuery<List<TreeNodeModel>>
 {
     [JsonIgnore]
@@ -15,9 +15,9 @@ public record GetPermissionNodeListQuery
 }
 
 internal sealed class GetPermissionNodeListQueryHandler(IIdentityRoleService roleService)
-    : IQueryHandler<GetPermissionNodeListQuery, List<TreeNodeModel>>
+    : IQueryHandler<GetPermissionTreeSelectListQuery, List<TreeNodeModel>>
 {
-    public async Task<Result<List<TreeNodeModel>>> Handle(GetPermissionNodeListQuery request, CancellationToken cancellationToken)
+    public async Task<Result<List<TreeNodeModel>>> Handle(GetPermissionTreeSelectListQuery request, CancellationToken cancellationToken)
     {
         return await Task.FromResult(roleService.GetAllPermissions().Value.ToList());
     }

@@ -33,7 +33,7 @@ public static class UtilityExtensions
         return properties.Select(prop => prop.Name);
     }
 
-    public static List<SelectListModel<int>> GetActiveInactiveSelectList() =>
+    public static List<SelectListModel> GetActiveInactiveSelectList() =>
         [
             new() {Id = 1, Name = "Active", Severity = "success"},
             new() {Id = 0, Name = "Inactive", Severity = "danger"}

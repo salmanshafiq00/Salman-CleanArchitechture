@@ -22,4 +22,11 @@ public static class SelectListSqls
         WHERE 1 = 1
         ORDER BY Name
         """;
+
+    public const string GetAppMenuSelectListSql = """
+        SELECT Id, Label AS Name
+        FROM [dbo].AppMenus 
+        WHERE 1 = 1
+        ORDER BY Label
+        """;
 }

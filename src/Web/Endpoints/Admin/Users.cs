@@ -31,7 +31,7 @@ public class Users : EndpointGroupBase
 
         if (!query.IsInitialLoaded)
         {
-            var roleSelectList = await sender.Send(new GetSelectListQuery<string>(
+            var roleSelectList = await sender.Send(new GetSelectListQuery(
                 Sql: SelectListSqls.GetRoleSelectListSql,
                 Parameters: new { },
                 Key: CacheKeys.Role_All_SelectList,
@@ -50,7 +50,7 @@ public class Users : EndpointGroupBase
     {
         var result = await sender.Send(new GetAppUserByIdQuery(id));
 
-        var roleSelectList = await sender.Send(new GetSelectListQuery<string>(
+        var roleSelectList = await sender.Send(new GetSelectListQuery(
                 Sql: SelectListSqls.GetRoleSelectListSql,
                 Parameters: new { },
                 Key: CacheKeys.Role_All_SelectList,

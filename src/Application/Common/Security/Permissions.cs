@@ -75,6 +75,13 @@ public static class Permissions
             public const string Edit = "Permissions.ManageRoleClaims.Edit";
             public const string Delete = "Permissions.ManageRoleClaims.Delete";
         }
+        public static class AppMenus
+        {
+            public const string View = "Permissions.AppMenus.View";
+            public const string Create = "Permissions.AppMenus.Create";
+            public const string Edit = "Permissions.AppMenus.Edit";
+            public const string Delete = "Permissions.AppMenus.Delete";
+        }
     }
 
     #endregion

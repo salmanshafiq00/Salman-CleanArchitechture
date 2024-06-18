@@ -1,17 +1,12 @@
 ﻿namespace CleanArchitechture.Application.Common.Models;
 
-public class SelectListModel<TId>
+public class SelectListModel
 {
-    public TId Id { get; set; }
+    public dynamic Id { get; set; }
     public string Name { get; set; } = string.Empty;
     public bool IsDefault { get; set; }
     public string Severity { get; set; } = string.Empty;
 }
-
-public class SelectListModel : SelectListModel<Guid>
-{
-}
-
 
 public class SelectListModelDynamic : SelectListModel
 {

@@ -42,10 +42,10 @@ public class SelectLists : EndpointGroupBase
         return result.Value;
     }
 
-    [ProducesResponseType(typeof(List<SelectListModel<string>>), StatusCodes.Status200OK)]
-    public async Task<List<SelectListModel<string>>> GetRoleSelectList(ISender sender, [FromQuery] bool? allowCache = null)
+    [ProducesResponseType(typeof(List<SelectListModel>), StatusCodes.Status200OK)]
+    public async Task<List<SelectListModel>> GetRoleSelectList(ISender sender, [FromQuery] bool? allowCache = null)
     {
-        var result = await sender.Send(new GetSelectListQuery<string>(
+        var result = await sender.Send(new GetSelectListQuery(
                 Sql: SelectListSqls.GetRoleSelectListSql,
                 Parameters: new { },
                 Key: CacheKeys.Role_All_SelectList,

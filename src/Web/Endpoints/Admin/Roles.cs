@@ -32,7 +32,7 @@ public class Roles : EndpointGroupBase
     public async Task<IResult> GetRole(ISender sender, [FromRoute] string id)
     {
         var result = await sender.Send(new GetRoleByIdQuery(id));
-        var permissionNodeList = await sender.Send(new GetPermissionNodeListQuery()).ConfigureAwait(false);
+        var permissionNodeList = await sender.Send(new GetPermissionTreeSelectListQuery()).ConfigureAwait(false);
         result.Value.OptionsDataSources["permissionNodeList"] = permissionNodeList.Value;
 
         return result.Match(
@@ -65,7 +65,7 @@ public class Roles : EndpointGroupBase
 
 
 
-    [ProducesResponseType(typeof(IList<TreeNodeModel<Guid>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IList<TreeNodeModel>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<IResult> GetRolePermissions(ISender sender, [FromRoute] string id)
     {

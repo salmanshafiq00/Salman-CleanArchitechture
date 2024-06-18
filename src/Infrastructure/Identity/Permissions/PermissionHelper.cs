@@ -31,11 +31,11 @@ public static class PermissionHelper
         return treeNodes;
     }
 
-    private static void TraversePermissions(Type type, IList<TreeNodeModel<Guid>> nodes, Guid parentKey)
+    private static void TraversePermissions(Type type, IList<TreeNodeModel> nodes, Guid parentKey)
     {
         foreach (var nestedType in type.GetNestedTypes(BindingFlags.Public | BindingFlags.Static))
         {
-            var node = new TreeNodeModel<Guid>
+            var node = new TreeNodeModel
             {
                 Key = Guid.NewGuid(),
                 Label = nestedType.Name,
@@ -47,7 +47,7 @@ public static class PermissionHelper
 
             foreach (var field in nestedType.GetFields(BindingFlags.Public | BindingFlags.Static))
             {
-                var childNode = new TreeNodeModel<Guid>
+                var childNode = new TreeNodeModel
                 {
                     Key = Guid.NewGuid(),
                     Label = field.GetValue(null).ToString(),
