@@ -10,7 +10,7 @@ public class ApplicationUser : IdentityUser
     public bool IsActive { get; set; }
     public int UserType { get; set; }
     public Guid? UserTypeId { get; set; }
-    public string PhotoUrl { get; set; } = string.Empty;
+    public string? PhotoUrl { get; set; } = string.Empty;
 
     public IList<RefreshToken> RefreshTokens { get; private set; } = [];
 }

@@ -14,7 +14,8 @@ public class SelectLists : EndpointGroupBase
         app.MapGroup(this)
             .RequireAuthorization()
             .MapGet(GetLookupSelectList, "GetLookupSelectList")
-            .MapGet(GetLookupDetailSelectList, "GetLookupDetailSelectList");
+            .MapGet(GetLookupDetailSelectList, "GetLookupDetailSelectList")
+            .MapGet(GetRoleSelectList, "GetRoleSelectList");
     }
 
     [ProducesResponseType(typeof(List<SelectListModel>), StatusCodes.Status200OK)]
@@ -36,6 +37,18 @@ public class SelectLists : EndpointGroupBase
                 Sql: SelectListSqls.GetLookupDetailSelectListSql,
                 Parameters: new { },
                 Key: CacheKeys.LookupDetail_All_SelectList,
+                AllowCacheList: allowCache));
+
+        return result.Value;
+    }
+
+    [ProducesResponseType(typeof(List<SelectListModel<string>>), StatusCodes.Status200OK)]
+    public async Task<List<SelectListModel<string>>> GetRoleSelectList(ISender sender, [FromQuery] bool? allowCache = null)
+    {
+        var result = await sender.Send(new GetSelectListQuery<string>(
+                Sql: SelectListSqls.GetRoleSelectListSql,
+                Parameters: new { },
+                Key: CacheKeys.Role_All_SelectList,
                 AllowCacheList: allowCache));
 
         return result.Value;

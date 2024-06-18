@@ -42,7 +42,7 @@ internal sealed class GetAppUserListQueryHandler(ISqlConnectionFactory sqlConnec
                     U.PhoneNumber AS {nameof(AppUserModel.PhoneNumber)},
                     IIF(U.IsActive = 1, 'Active', 'Inactive') AS {nameof(AppUserModel.Status)},
                     U.PhotoUrl AS {nameof(AppUserModel.PhotoUrl)},
-                    STRING_AGG(R.Name, ', ') AS {nameof(AppUserModel.Roles)}
+                    STRING_AGG(R.Name, ', ') AS {nameof(AppUserModel.AssignedRoles)}
                 FROM [identity].Users AS U
                 LEFT JOIN [identity].UserRoles AS UR ON UR.UserId = U.Id
                 LEFT JOIN [identity].Roles AS R ON R.Id = UR.RoleId

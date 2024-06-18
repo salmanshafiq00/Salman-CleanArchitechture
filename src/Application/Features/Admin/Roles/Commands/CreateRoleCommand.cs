@@ -4,7 +4,8 @@ using CleanArchitechture.Application.Common.Abstractions.Identity;
 namespace CleanArchitechture.Application.Features.Admin.Roles.Commands;
 
 public record CreateRoleCommand(
-     string name
+     string Name,
+     List<string> Permissions
     ) : ICacheInvalidatorCommand<string>
 {
     [JsonIgnore]
@@ -15,7 +16,7 @@ internal sealed class CreateRoleCommandHandler(IIdentityRoleService roleService)
 {
     public async Task<Result<string>> Handle(CreateRoleCommand request, CancellationToken cancellationToken)
     {
-        return await roleService.CreateRoleAsync(request.name, cancellationToken);
+        return await roleService.CreateRoleAsync(request.Name, request.Permissions, cancellationToken);
     }
 }
 

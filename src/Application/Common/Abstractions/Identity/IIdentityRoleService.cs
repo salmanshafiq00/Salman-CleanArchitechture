@@ -5,10 +5,10 @@ namespace CleanArchitechture.Application.Common.Abstractions.Identity;
 
 public interface IIdentityRoleService
 {
-    Task<Result<string>> CreateRoleAsync(string name, CancellationToken cancellation = default);
-    Task<Result> UpdateRoleAsync(UpdateRoleCommand command, CancellationToken cancellation = default);
+    Task<Result<string>> CreateRoleAsync(string name, List<string> permissions, CancellationToken cancellation = default);
+    Task<Result> UpdateRoleAsync(string id, string name, List<string> permissions, CancellationToken cancellation = default);
     Task<Result<RoleModel>> GetRoleAsync(string id, CancellationToken cancellation = default);
     Task<Result> DeleteRoleAsync(string id, CancellationToken cancellation = default);
     Task<Result> AddOrRemoveClaimsToRoleAsync(string roleId, List<string> permissions, CancellationToken cancellation = default);
-    Result<IList<TreeNodeModel<Guid>>> GetAllPermissions(string roleId);
+    Result<IList<TreeNodeModel>> GetAllPermissions();
 }

@@ -12,11 +12,11 @@ public class Roles : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-            .MapPost(CreateRole, "CreateRole")
-            .MapPut(UpdateRole, "UpdateRole")
+            .MapPost(GetRoles)
             .MapGet(GetRole, "GetRole/{id}")
-            .MapGet(GetRolePermissions, "GetRolePermissions/{id}")
-            .MapGet(GetRoles);
+            .MapPost(Create, "Create")
+            .MapPut(UpdateRole, "UpdateRole")
+            .MapGet(GetRolePermissions, "GetRolePermissions/{id}");
     }
 
     [ProducesResponseType(typeof(PaginatedResponse<RoleModel>), StatusCodes.Status200OK)]
@@ -27,9 +27,22 @@ public class Roles : EndpointGroupBase
         return TypedResults.Ok(result.Value);
     }
 
+    [ProducesResponseType(typeof(RoleModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    public async Task<IResult> GetRole(ISender sender, [FromRoute] string id)
+    {
+        var result = await sender.Send(new GetRoleByIdQuery(id));
+        var permissionNodeList = await sender.Send(new GetPermissionNodeListQuery()).ConfigureAwait(false);
+        result.Value.OptionsDataSources["permissionNodeList"] = permissionNodeList.Value;
+
+        return result.Match(
+             onSuccess: () => Results.Ok(result.Value),
+             onFailure: result.ToProblemDetails);
+    }
+
     [ProducesResponseType(typeof(string), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IResult> CreateRole(ISender sender, [FromBody] CreateRoleCommand command)
+    public async Task<IResult> Create(ISender sender, [FromBody] CreateRoleCommand command)
     {
         
         var result = await sender.Send(command);
@@ -50,16 +63,7 @@ public class Roles : EndpointGroupBase
              onFailure: result.ToProblemDetails);
     }
 
-    [ProducesResponseType(typeof(RoleModel) ,StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IResult> GetRole(ISender sender, [FromRoute] string id)
-    {
-        var result = await sender.Send(new GetRoleByIdQuery(id));
 
-        return result.Match(
-             onSuccess: () => Results.Ok(result.Value),
-             onFailure: result.ToProblemDetails);
-    }
 
     [ProducesResponseType(typeof(IList<TreeNodeModel<Guid>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]

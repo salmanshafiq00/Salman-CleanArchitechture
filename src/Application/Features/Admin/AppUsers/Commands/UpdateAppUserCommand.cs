@@ -6,13 +6,13 @@ namespace CleanArchitechture.Application.Features.Admin.AppUsers.Commands;
 public record UpdateAppUserCommand(
      string Id,
      string Username,
-     string Password,
      string Email,
      string FirstName,
      string LastName,
      string PhoneNumber,
      string PhotoUrl,
-     bool IsActive
+     bool IsActive,
+     List<string>? Roles
     ) : ICacheInvalidatorCommand
 {
     [JsonIgnore]

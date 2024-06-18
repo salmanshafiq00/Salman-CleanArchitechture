@@ -7,6 +7,7 @@ using CleanArchitechture.Application.Features.Admin.AppUsers.Queries;
 using CleanArchitechture.Application.Features.Common.Queries;
 using CleanArchitechture.Web.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using NSwag.Annotations;
 
 namespace CleanArchitechture.Web.Endpoints.Admin;
 
@@ -15,11 +16,12 @@ public class Users : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
+            .MapPost(GetUsers)
+            .MapGet(GetUser, "GetUser/{id}")
             .MapPost(CreateUser, "CreateUser")
             .MapPut(UpdateUser, "UpdateUser")
-            .MapPost(AddToRoles, "AddToRoles")
-            .MapGet(GetUser, "GetUser/{id}")
-            .MapPost(GetUsers);
+            .MapPost(AddToRoles, "AddToRoles");
+
     }
 
     [ProducesResponseType(typeof(PaginatedResponse<AppUserModel>), StatusCodes.Status200OK)]
@@ -42,7 +44,26 @@ public class Users : EndpointGroupBase
         return TypedResults.Ok(result.Value);
     }
 
-    [ProducesResponseType(typeof(string), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(AppUserModel), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    public async Task<IResult> GetUser(ISender sender, [FromRoute] string id)
+    {
+        var result = await sender.Send(new GetAppUserByIdQuery(id));
+
+        var roleSelectList = await sender.Send(new GetSelectListQuery<string>(
+                Sql: SelectListSqls.GetRoleSelectListSql,
+                Parameters: new { },
+                Key: CacheKeys.Role_All_SelectList,
+                AllowCacheList: false)
+            );
+        result.Value.OptionsDataSources.Add("roleSelectList", roleSelectList.Value);
+
+        return result.Match(
+             onSuccess: () => Results.Ok(result.Value),
+             onFailure: result.ToProblemDetails);
+    }
+
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<IResult> CreateUser(ISender sender, [FromBody] CreateAppUserCommand command)
     {
@@ -75,14 +96,5 @@ public class Users : EndpointGroupBase
              onFailure: result.ToProblemDetails);
     }
 
-    [ProducesResponseType(typeof(AppUserModel) ,StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IResult> GetUser(ISender sender, [FromRoute] string id)
-    {
-        var result = await sender.Send(new GetAppUserByIdQuery(id));
 
-        return result.Match(
-             onSuccess: () => Results.Ok(result.Value),
-             onFailure: result.ToProblemDetails);
-    }
 }

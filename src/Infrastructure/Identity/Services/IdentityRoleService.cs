@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+﻿using System.Security.Claims;
 using Application.Constants;
 using CleanArchitechture.Application.Common.Abstractions.Identity;
 using CleanArchitechture.Application.Common.Models;
@@ -8,7 +8,6 @@ using CleanArchitechture.Infrastructure.Identity.Permissions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using CleanArchitechture.Application.Common.Security;
 
 namespace CleanArchitechture.Infrastructure.Identity.Services;
 
@@ -20,6 +19,7 @@ internal class IdentityRoleService(
 {
     public async Task<Result<string>> CreateRoleAsync(
         string name,
+        List<string> permissions,
         CancellationToken cancellation = default)
     {
         var role = new IdentityRole
@@ -29,6 +29,14 @@ internal class IdentityRoleService(
         };
 
         var result = await roleManager.CreateAsync(role);
+
+        if (result.Succeeded) 
+        {
+            foreach (var permission in permissions) 
+            {
+                await roleManager.AddClaimAsync(role, new Claim(CustomClaimTypes.Permission, permission));
+            }
+        }
 
         return result.Succeeded
             ? Result.Success(role.Id)
@@ -44,7 +52,7 @@ internal class IdentityRoleService(
         if (role is null)
             Result.Failure(Error.Failure("Role.Delete", ErrorMessages.ROLE_NOT_FOUND));
 
-        var result = await roleManager.DeleteAsync(role);
+        var result = await roleManager.DeleteAsync(role!);
 
         return result.Succeeded
             ? Result.Success()
@@ -61,25 +69,35 @@ internal class IdentityRoleService(
         if (role is null)
             Result.Failure<RoleModel>(Error.Failure("Role.Delete", ErrorMessages.ROLE_NOT_FOUND));
 
+        var permissions = await roleManager.GetClaimsAsync(role);
+
         return Result.Success(new RoleModel
         {
-            Id = role.Id,
-            Name = role.Name
+            Id = role!.Id,
+            Name = role.Name!,
+            Permissions = permissions?.Select(x => x.Value).ToList()
         });
     }
 
     public async Task<Result> UpdateRoleAsync(
-        UpdateRoleCommand command,
+        string id,
+        string name,
+        List<string> permissions,
         CancellationToken cancellation = default)
     {
-        var role = await roleManager.FindByIdAsync(command.Id);
+        var role = await roleManager.FindByIdAsync(id);
 
         if (role is null)
             Result.Failure(Error.Failure("Role.Update", ErrorMessages.ROLE_NOT_FOUND));
 
-        role.Name = command.name;
+        role!.Name = name;
 
         var result = await roleManager.UpdateAsync(role);
+
+        if (result.Succeeded)
+        {
+             await RemoveAndAddPermissionAsync(identityContext, role!, permissions, cancellation);
+        }
 
         return result.Succeeded
             ? Result.Success()
@@ -90,7 +108,7 @@ internal class IdentityRoleService(
 
     public async Task<Result> AddOrRemoveClaimsToRoleAsync(
         string roleId, 
-        List<string> claims, 
+        List<string> permissions, 
         CancellationToken cancellation = default)
     {
         var role = await roleManager.FindByIdAsync(roleId);
@@ -98,12 +116,12 @@ internal class IdentityRoleService(
         if (role is null)
             Result.Failure(Error.Failure("Role.Update", ErrorMessages.ROLE_NOT_FOUND));
 
-        var result = await RemoveAndAddPermissionAsync(identityContext, role, claims, cancellation);
+        var result = await RemoveAndAddPermissionAsync(identityContext, role!, permissions, cancellation);
 
         return result ? Result.Success() : Result.Failure(Error.Failure("Role.Permission", ErrorMessages.UNABLE_UPDATE_PERMISSION));
     }
 
-    public Result<IList<TreeNodeModel<Guid>>> GetAllPermissions(string roleId) 
+    public Result<IList<TreeNodeModel>> GetAllPermissions() 
     {
         return Result.Success(PermissionHelper.MapPermissionsToTree());
     }

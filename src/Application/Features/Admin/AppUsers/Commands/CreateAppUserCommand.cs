@@ -11,7 +11,8 @@ public record CreateAppUserCommand(
      string LastName,
      string PhoneNumber,
      string PhotoUrl,
-     bool IsActive
+     bool IsActive,
+     List<string>? Roles
     ) : ICacheInvalidatorCommand<string>
 {
     [JsonIgnore]

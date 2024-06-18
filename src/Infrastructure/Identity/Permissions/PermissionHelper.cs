@@ -15,11 +15,11 @@ public static class PermissionHelper
         }
     }
 
-    public static IList<TreeNodeModel<Guid>> MapPermissionsToTree()
+    public static IList<TreeNodeModel> MapPermissionsToTree()
     {
         var rootType = typeof(Application.Common.Security.Permissions);
-        var treeNodes = new List<TreeNodeModel<Guid>>();
-        var rootNode = new TreeNodeModel<Guid>
+        var treeNodes = new List<TreeNodeModel>();
+        var rootNode = new TreeNodeModel
         {
             Key = Guid.NewGuid(),
             Label = "Permissions",

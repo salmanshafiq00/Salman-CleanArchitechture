@@ -5,7 +5,8 @@ namespace CleanArchitechture.Application.Features.Admin.Roles.Commands;
 
 public record UpdateRoleCommand(
      string Id,
-     string name
+     string Name,
+     List<string> Permissions
     ) : ICacheInvalidatorCommand
 {
     [JsonIgnore]
@@ -17,6 +18,6 @@ internal sealed class UpdateRoleCommandHandler(IIdentityRoleService roleService)
 {
     public async Task<Result> Handle(UpdateRoleCommand request, CancellationToken cancellationToken)
     {
-        return await roleService.UpdateRoleAsync( request, cancellationToken );
+        return await roleService.UpdateRoleAsync(request.Id, request.Name, request.Permissions, cancellationToken );
     }
 }

@@ -92,7 +92,7 @@ internal sealed class DistributedCacheService(
         if (!keys.Any())
         {
             // Fetch the keys from Redis using the specified prefix pattern
-            keys = await GetKeysFromRedis(prefixKey);
+            keys = GetKeysFromRedis(prefixKey);
         }
 
         // Remove the keys asynchronously
@@ -143,7 +143,7 @@ internal sealed class DistributedCacheService(
         return parts.Length > 0 ? parts[0] : input;
     }
 
-    private async Task<IEnumerable<string>> GetKeysFromRedis(string prefixKey)
+    private IEnumerable<string> GetKeysFromRedis(string prefixKey)
     {
         var server = connectionMultiplexer.GetServer(connectionMultiplexer.GetEndPoints().First());
         var keys = server.Keys(pattern: $"{prefixKey}*");

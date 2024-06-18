@@ -461,12 +461,163 @@
         ]
       }
     },
-    "/api/Roles/CreateRole": {
+    "/api/SelectLists/GetRoleSelectList": {
+      "get": {
+        "tags": [
+          "SelectLists"
+        ],
+        "operationId": "GetRoleSelectList",
+        "parameters": [
+          {
+            "name": "allowCache",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SelectListModelOfString"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/TreeNodeLists/GetAllPermissionNodeList": {
+      "get": {
+        "tags": [
+          "TreeNodeLists"
+        ],
+        "operationId": "GetAllPermissionNodeList",
+        "parameters": [
+          {
+            "name": "allowCache",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TreeNodeModel"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/Roles": {
       "post": {
         "tags": [
           "Roles"
         ],
-        "operationId": "CreateRole",
+        "operationId": "GetRoles",
+        "requestBody": {
+          "x-name": "query",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetRoleListQuery"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponseOfRoleModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Roles/GetRole/{id}": {
+      "get": {
+        "tags": [
+          "Roles"
+        ],
+        "operationId": "GetRole",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Roles/Create": {
+      "post": {
+        "tags": [
+          "Roles"
+        ],
+        "operationId": "Create",
         "requestBody": {
           "x-name": "command",
           "content": {
@@ -538,47 +689,6 @@
         }
       }
     },
-    "/api/Roles/GetRole/{id}": {
-      "get": {
-        "tags": [
-          "Roles"
-        ],
-        "operationId": "GetRole",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RoleModel"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/Roles/GetRolePermissions/{id}": {
       "get": {
         "tags": [
@@ -623,18 +733,18 @@
         }
       }
     },
-    "/api/Roles": {
-      "get": {
+    "/api/Users": {
+      "post": {
         "tags": [
-          "Roles"
+          "Users"
         ],
-        "operationId": "GetRoles",
+        "operationId": "GetUsers",
         "requestBody": {
           "x-name": "query",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/GetRoleListQuery"
+                "$ref": "#/components/schemas/GetAppUserListQuery"
               }
             }
           },
@@ -647,7 +757,48 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedResponseOfRoleModel"
+                  "$ref": "#/components/schemas/PaginatedResponseOfAppUserModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Users/GetUser/{id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "GetUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppUserModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -674,7 +825,7 @@
           "x-position": 1
         },
         "responses": {
-          "201": {
+          "200": {
             "description": "",
             "content": {
               "application/json": {
@@ -760,79 +911,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Users/GetUser/{id}": {
-      "get": {
-        "tags": [
-          "Users"
-        ],
-        "operationId": "GetUser",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AppUserModel"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Users": {
-      "post": {
-        "tags": [
-          "Users"
-        ],
-        "operationId": "GetUsers",
-        "requestBody": {
-          "x-name": "query",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/GetAppUserListQuery"
-              }
-            }
-          },
-          "required": true,
-          "x-position": 1
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginatedResponseOfAppUserModel"
                 }
               }
             }
@@ -1442,38 +1520,35 @@
           }
         }
       },
-      "CreateRoleCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "name": {
-            "type": "string"
-          }
-        }
-      },
-      "UpdateRoleCommand": {
+      "SelectListModelOfString": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
           "id": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "name": {
+            "type": "string"
+          },
+          "isDefault": {
+            "type": "boolean"
+          },
+          "severity": {
             "type": "string"
           }
         }
       },
-      "RoleModel": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "string"
+      "TreeNodeModel": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/TreeNodeModelOfGuid"
           },
-          "name": {
-            "type": "string"
+          {
+            "type": "object",
+            "additionalProperties": false
           }
-        }
+        ]
       },
       "TreeNodeModelOfGuid": {
         "type": "object",
@@ -1499,7 +1574,16 @@
           "disabed": {
             "type": "boolean"
           },
+          "visible": {
+            "type": "boolean"
+          },
           "isActive": {
+            "type": "boolean"
+          },
+          "partialSelected": {
+            "type": "boolean"
+          },
+          "leaf": {
             "type": "boolean"
           },
           "children": {
@@ -1556,6 +1640,28 @@
           }
         }
       },
+      "RoleModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "permissions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "optionsDataSources": {
+            "type": "object",
+            "additionalProperties": {}
+          }
+        }
+      },
       "GetRoleListQuery": {
         "allOf": [
           {
@@ -1567,77 +1673,14 @@
           }
         ]
       },
-      "CreateAppUserCommand": {
+      "CreateRoleCommand": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "username": {
+          "name": {
             "type": "string"
           },
-          "password": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "firstName": {
-            "type": "string"
-          },
-          "lastName": {
-            "type": "string"
-          },
-          "phoneNumber": {
-            "type": "string"
-          },
-          "photoUrl": {
-            "type": "string"
-          },
-          "isActive": {
-            "type": "boolean"
-          }
-        }
-      },
-      "UpdateAppUserCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "username": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "firstName": {
-            "type": "string"
-          },
-          "lastName": {
-            "type": "string"
-          },
-          "phoneNumber": {
-            "type": "string"
-          },
-          "photoUrl": {
-            "type": "string"
-          },
-          "isActive": {
-            "type": "boolean"
-          }
-        }
-      },
-      "AddToRolesCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "roleNames": {
+          "permissions": {
             "type": "array",
             "items": {
               "type": "string"
@@ -1645,42 +1688,21 @@
           }
         }
       },
-      "AppUserModel": {
+      "UpdateRoleCommand": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
           "id": {
             "type": "string"
           },
-          "username": {
+          "name": {
             "type": "string"
           },
-          "password": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "firstName": {
-            "type": "string"
-          },
-          "lastName": {
-            "type": "string"
-          },
-          "phoneNumber": {
-            "type": "string"
-          },
-          "photoUrl": {
-            "type": "string"
-          },
-          "isActive": {
-            "type": "boolean"
-          },
-          "status": {
-            "type": "string"
-          },
-          "roles": {
-            "type": "string"
+          "permissions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       },
@@ -1730,6 +1752,58 @@
           }
         }
       },
+      "AppUserModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "photoUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string"
+          },
+          "assignedRoles": {
+            "type": "string"
+          },
+          "optionsDataSources": {
+            "type": "object",
+            "additionalProperties": {}
+          },
+          "roles": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
       "GetAppUserListQuery": {
         "allOf": [
           {
@@ -1740,6 +1814,101 @@
             "additionalProperties": false
           }
         ]
+      },
+      "CreateAppUserCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "username",
+          "password",
+          "firstName",
+          "lastName"
+        ],
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "photoUrl": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "roles": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "UpdateAppUserCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "photoUrl": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "roles": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "AddToRolesCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "roleNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
       },
       "AuthenticatedResponse": {
         "type": "object",

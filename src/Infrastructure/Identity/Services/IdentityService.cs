@@ -14,15 +14,18 @@ public class IdentityService : IIdentityService
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IUserClaimsPrincipalFactory<ApplicationUser> _userClaimsPrincipalFactory;
     private readonly IAuthorizationService _authorizationService;
+    private readonly IdentityContext _identityContext;
 
     public IdentityService(
         UserManager<ApplicationUser> userManager,
         IUserClaimsPrincipalFactory<ApplicationUser> userClaimsPrincipalFactory,
-        IAuthorizationService authorizationService)
+        IAuthorizationService authorizationService,
+        IdentityContext identityContext)
     {
         _userManager = userManager;
         _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
         _authorizationService = authorizationService;
+        _identityContext = identityContext;
     }
 
     public async Task<string?> GetUserNameAsync(string userId, CancellationToken cancellation = default)
@@ -50,20 +53,28 @@ public class IdentityService : IIdentityService
 
         var result = await _userManager.CreateAsync(user, command.Password);
 
-        if (!result.Succeeded)
+        if (result.Succeeded && command.Roles?.Count > 0)
         {
-            return Result.Failure<string>(Error.Failure("User.Create", ErrorMessages.UNABLE_CREATE_USER));
+            _identityContext.UserRoles.AddRange(command.Roles.Select(x => new IdentityUserRole<string>
+            {
+                UserId = user.Id,
+                RoleId = x
+            }));
+
+            await _identityContext.SaveChangesAsync(cancellation);
         }
 
-        return Result.Success(user.Id);
+        return result.ToApplicationResult<string>(user.Id);
     }
 
     public async Task<Result> UpdateUserAsync(
        UpdateAppUserCommand command,
        CancellationToken cancellation = default)
     {
-        var user = await _userManager.Users
-            .SingleOrDefaultAsync(u => u.Id == command.Id, cancellation);
+
+        var user = await _identityContext.Users
+            .SingleOrDefaultAsync(u => u.Id == command.Id, cancellation)
+            .ConfigureAwait(false);
 
         if (user is null)
             return Result.Failure(Error.Failure("User.Update", ErrorMessages.USER_NOT_FOUND));
@@ -75,16 +86,35 @@ public class IdentityService : IIdentityService
         user.IsActive = command.IsActive;
         user.PhotoUrl = command.PhotoUrl;
         user.PhoneNumber = command.PhoneNumber;
-        user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, command.Password);
 
-        var result = await _userManager.UpdateAsync(user);
-
-        if (!result.Succeeded)
+        if (command.Roles?.Count > 0)
         {
-            return Result.Failure(Error.Failure("User.Update", ErrorMessages.UNABLE_UPDATE_USER));
+            await DeleteAndAddUserRoles(command.Roles, user, cancellation);
         }
 
+
+        await _identityContext.SaveChangesAsync(cancellation);
+
         return Result.Success();
+    }
+
+    private async Task DeleteAndAddUserRoles(
+        List<string> roles, 
+        ApplicationUser user, 
+        CancellationToken cancellation)
+    {
+        var existedRoles = await _identityContext.UserRoles
+                    .Where(x => x.UserId.ToLower() == user.Id)
+                    .ToListAsync(cancellation);
+
+        _identityContext.UserRoles.RemoveRange(existedRoles);
+
+        _identityContext.UserRoles
+            .AddRange(roles.Select(x => new IdentityUserRole<string>
+            {
+                UserId = user.Id,
+                RoleId = x
+            }));
     }
 
     public async Task<Result<AppUserModel>> GetUserAsync(
@@ -108,6 +138,9 @@ public class IdentityService : IIdentityService
             Email = user.Email,
             PhoneNumber = user.PhoneNumber
         };
+
+        appUser.Roles = await _userManager.GetRolesAsync(user);
+
 
         return Result.Success(appUser);
     }
@@ -157,12 +190,12 @@ public class IdentityService : IIdentityService
     }
 
     public async Task<IDictionary<string, string?>> GetUsersByRole(
-        string roleName, 
+        string roleName,
         CancellationToken cancellation = default)
     {
         var result = await _userManager.GetUsersInRoleAsync(roleName);
 
-        return result?.ToDictionary(x => x.UserName, y => $"{y.FirstName} {y.LastName}");
+        return result?.ToDictionary(x => x.UserName, y => $"{y.FirstName} {y.LastName}")!;
         //return result?.ToDictionary(x => x.UserName, y => $"");
     }
 

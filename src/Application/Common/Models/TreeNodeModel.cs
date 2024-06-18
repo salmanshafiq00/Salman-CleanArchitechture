@@ -8,7 +8,10 @@ public class TreeNodeModel<TKey>
     public TKey? ParentId { get; set; }
     public bool DisabledCheckbox { get; set; } = false;
     public bool Disabed { get; set; } = false;
-    public bool IsActive { get; set; } 
+    public bool Visible { get; set; } = true;
+    public bool IsActive { get; set; } = true;
+    public bool partialSelected { get; set; }
+    public bool Leaf { get { return Children.Count == 0; } }
     public IList<TreeNodeModel<TKey>> Children { get; set; } = [];
 }
 

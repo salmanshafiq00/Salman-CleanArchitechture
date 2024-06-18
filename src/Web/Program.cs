@@ -55,17 +55,21 @@ else
     app.UseHsts();
 }
 
-app.UseCors(Allow_Origin_Policy);
 app.UseHttpsRedirection();
-app.UseSerilogRequestLogging();
 app.UseStaticFiles();
+app.UseMiddleware<RequestContextLoggingMiddleware>();
+
+app.UseCors(Allow_Origin_Policy);
+
+//app.UseAuthentication();
+//app.UseAuthorization();
+app.UseSerilogRequestLogging();
 
 app.UseHealthChecks("/api/health", new HealthCheckOptions
 {
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
 
-app.UseMiddleware<RequestContextLoggingMiddleware>();
 
 app.UseHangfireDashboard(options: new DashboardOptions
 {
