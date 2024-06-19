@@ -1,10 +1,15 @@
 ﻿using System.Security.Claims;
 using Application.Constants;
+using CleanArchitechture.Application.Common.Abstractions;
 using CleanArchitechture.Application.Common.Abstractions.Identity;
 using CleanArchitechture.Application.Common.Models;
 using CleanArchitechture.Application.Features.Admin.Roles.Commands;
 using CleanArchitechture.Application.Features.Admin.Roles.Queries;
+using CleanArchitechture.Domain.Admin;
+using CleanArchitechture.Domain.Shared;
 using CleanArchitechture.Infrastructure.Identity.Permissions;
+using CleanArchitechture.Infrastructure.Persistence;
+using CleanArchitechture.Infrastructure.Persistence.Migrations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -14,38 +19,104 @@ namespace CleanArchitechture.Infrastructure.Identity.Services;
 internal class IdentityRoleService(
     RoleManager<IdentityRole> roleManager,
     IdentityContext identityContext,
+    IApplicationDbContext appDbContext,
     ILogger<IdentityRoleService> logger)
     : IIdentityRoleService
 {
     public async Task<Result<string>> CreateRoleAsync(
         string name,
+        List<Guid> rolemenus,
         List<string> permissions,
         CancellationToken cancellation = default)
     {
-        var role = new IdentityRole
-        {
-            Name = name,
-            NormalizedName = name.ToUpper()
-        };
+        using var transaction = await identityContext.Database.BeginTransactionAsync(cancellation);
 
-        var result = await roleManager.CreateAsync(role);
-
-        if (result.Succeeded) 
+        try
         {
-            foreach (var permission in permissions) 
+            var role = new IdentityRole
             {
-                await roleManager.AddClaimAsync(role, new Claim(CustomClaimTypes.Permission, permission));
-            }
-        }
+                Name = name,
+                NormalizedName = name.ToUpper()
+            };
 
-        return result.Succeeded
-            ? Result.Success(role.Id)
-            : Result.Failure<string>(Error.Failure("Role.Create", ErrorMessages.UNABLE_CREATE_ROLE));
+            await identityContext.Roles.AddAsync(role, cancellation);
+            await identityContext.SaveChangesAsync(cancellation);
+
+            foreach (var appmenuId in rolemenus ?? [])
+            {
+                appDbContext.RoleMenus.Add(new RoleMenu
+                {
+                    RoleId = role.Id,
+                    AppMenuId = appmenuId,
+                });
+            }
+
+            foreach (var permission in permissions)
+            {
+                identityContext.RoleClaims.Add(new IdentityRoleClaim<string>
+                {
+                    RoleId = role.Id,
+                    ClaimType = CustomClaimTypes.Permission,
+                    ClaimValue = permission
+                });
+            }
+
+            await appDbContext.SaveChangesAsync(cancellation);
+            await identityContext.SaveChangesAsync(cancellation);
+
+            await transaction.CommitAsync(cancellation);
+
+            return Result.Success(role.Id);
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync(cancellation);
+            logger.LogError(ex, "Error occured to save role");
+            return Result.Failure<string>(Error.Failure("Role.Create", "Error occured to save role."));
+        }
+    }
+
+    public async Task<Result> UpdateRoleAsync(
+        string id,
+        string name,
+        List<Guid> rolemenus,
+        List<string> permissions,
+        CancellationToken cancellation = default)
+    {
+        using var transaction = await identityContext.Database.BeginTransactionAsync(cancellation);
+
+        try
+        {
+            var role = await identityContext.Roles.FindAsync(id, cancellation);
+
+            if (role is null)
+                Result.Failure(Error.Failure("Role.Update", ErrorMessages.ROLE_NOT_FOUND));
+
+            role!.Name = name;
+
+            await RemoveAndAddPermissionAsync(role!, permissions, cancellation);
+            await RemoveAndAddRoleMenuAsync(role!, rolemenus, cancellation);
+
+            await identityContext.SaveChangesAsync(cancellation);
+            await appDbContext.SaveChangesAsync(cancellation);
+
+            await transaction.CommitAsync(cancellation);
+
+            return Result.Success();
+
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync(cancellation);
+            logger.LogError(ex, "Error occured to update role");
+            return Result.Failure<string>(Error.Failure("Role.Create", "Error occured to update role."));
+
+        }
     }
 
     public async Task<Result> DeleteRoleAsync(
-        string id,
-        CancellationToken cancellation = default)
+            string id,
+            CancellationToken cancellation = default)
     {
         var role = await roleManager.FindByIdAsync(id);
 
@@ -71,44 +142,24 @@ internal class IdentityRoleService(
 
         var permissions = await roleManager.GetClaimsAsync(role);
 
+        var roleMenus = await appDbContext.RoleMenus
+            .AsNoTracking()
+            .Where(x => x.RoleId.ToLower() == id.ToLower())
+            .Select(x => x.AppMenuId)
+            .ToListAsync();
+
         return Result.Success(new RoleModel
         {
             Id = role!.Id,
             Name = role.Name!,
+            RoleMenus = roleMenus,
             Permissions = permissions?.Select(x => x.Value).ToList()
         });
     }
 
-    public async Task<Result> UpdateRoleAsync(
-        string id,
-        string name,
-        List<string> permissions,
-        CancellationToken cancellation = default)
-    {
-        var role = await roleManager.FindByIdAsync(id);
-
-        if (role is null)
-            Result.Failure(Error.Failure("Role.Update", ErrorMessages.ROLE_NOT_FOUND));
-
-        role!.Name = name;
-
-        var result = await roleManager.UpdateAsync(role);
-
-        if (result.Succeeded)
-        {
-             await RemoveAndAddPermissionAsync(identityContext, role!, permissions, cancellation);
-        }
-
-        return result.Succeeded
-            ? Result.Success()
-            : Result.Failure(Error.Failure("Role.Delete", ErrorMessages.UNABLE_UPDATE_ROLE));
-    }
-
-
-
     public async Task<Result> AddOrRemoveClaimsToRoleAsync(
-        string roleId, 
-        List<string> permissions, 
+        string roleId,
+        List<string> permissions,
         CancellationToken cancellation = default)
     {
         var role = await roleManager.FindByIdAsync(roleId);
@@ -116,18 +167,19 @@ internal class IdentityRoleService(
         if (role is null)
             Result.Failure(Error.Failure("Role.Update", ErrorMessages.ROLE_NOT_FOUND));
 
-        var result = await RemoveAndAddPermissionAsync(identityContext, role!, permissions, cancellation);
+        var result = await RemoveAndAddPermissionAsync(role!, permissions, cancellation);
+
+        await identityContext.SaveChangesAsync(cancellation);
 
         return result ? Result.Success() : Result.Failure(Error.Failure("Role.Permission", ErrorMessages.UNABLE_UPDATE_PERMISSION));
     }
 
-    public Result<IList<TreeNodeModel>> GetAllPermissions() 
+    public Result<IList<TreeNodeModel>> GetAllPermissions()
     {
         return Result.Success(PermissionHelper.MapPermissionsToTree());
     }
 
     private async Task<bool> RemoveAndAddPermissionAsync(
-        IdentityContext identityContext,
         IdentityRole role,
         List<string> permissions,
         CancellationToken cancellationToken = default)
@@ -149,16 +201,44 @@ internal class IdentityRoleService(
 
             identityContext.RoleClaims.AddRange(newPermissions);
 
-            await identityContext.SaveChangesAsync(cancellationToken);
-
             return true;
 
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Fail to update role permission");
-            return true; 
+            return true;
         }
+    }
 
+    private async Task<bool> RemoveAndAddRoleMenuAsync(
+        IdentityRole role,
+        List<Guid> rolemenus,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var existedRoleMenus = await appDbContext.RoleMenus
+            .Where(x => x.RoleId == role.Id)
+            .ToListAsync(cancellationToken);
+
+            appDbContext.RoleMenus.RemoveRange(existedRoleMenus);
+
+            foreach (var appmenuId in rolemenus ?? [])
+            {
+                appDbContext.RoleMenus.Add(new RoleMenu
+                {
+                    RoleId = role.Id,
+                    AppMenuId = appmenuId,
+                });
+            }
+            return true;
+
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Fail to update RoleMenu");
+            return true;
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using CleanArchitechture.Application.Common.Abstractions;
 using CleanArchitechture.Application.Features.Identity.Models;
+using CleanArchitechture.Domain.Admin;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

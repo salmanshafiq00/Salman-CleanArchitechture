@@ -1996,6 +1996,13 @@
           "name": {
             "type": "string"
           },
+          "roleMenus": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "guid"
+            }
+          },
           "permissions": {
             "type": "array",
             "items": {
@@ -2026,6 +2033,13 @@
           "name": {
             "type": "string"
           },
+          "rolemenus": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "guid"
+            }
+          },
           "permissions": {
             "type": "array",
             "items": {
@@ -2043,6 +2057,13 @@
           },
           "name": {
             "type": "string"
+          },
+          "rolemenus": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "guid"
+            }
           },
           "permissions": {
             "type": "array",

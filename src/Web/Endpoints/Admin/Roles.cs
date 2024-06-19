@@ -1,5 +1,6 @@
 ﻿using CleanArchitechture.Application.Common.DapperQueries;
 using CleanArchitechture.Application.Common.Models;
+using CleanArchitechture.Application.Features.Admin.AppMenus.Queries;
 using CleanArchitechture.Application.Features.Admin.Roles.Commands;
 using CleanArchitechture.Application.Features.Admin.Roles.Queries;
 using CleanArchitechture.Web.Extensions;
@@ -32,8 +33,11 @@ public class Roles : EndpointGroupBase
     public async Task<IResult> GetRole(ISender sender, [FromRoute] string id)
     {
         var result = await sender.Send(new GetRoleByIdQuery(id));
+
         var permissionNodeList = await sender.Send(new GetPermissionTreeSelectListQuery()).ConfigureAwait(false);
         result.Value.OptionsDataSources["permissionNodeList"] = permissionNodeList.Value;
+        var appMenuTreeList = await sender.Send(new GetAppMenuTreeSelectList()).ConfigureAwait(false);
+        result.Value.OptionsDataSources["appMenuTreeList"] = appMenuTreeList.Value;
 
         return result.Match(
              onSuccess: () => Results.Ok(result.Value),

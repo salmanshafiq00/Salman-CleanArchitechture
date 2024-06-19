@@ -15,6 +15,7 @@ public sealed class ApplicationDbContext : DbContext, IApplicationDbContext
     #region Admin
 
     public DbSet<AppMenu> AppMenus => Set<AppMenu>();
+    public DbSet<RoleMenu> RoleMenus => Set<RoleMenu>();
     #endregion
 
     public DbSet<Lookup> Lookups => Set<Lookup>();

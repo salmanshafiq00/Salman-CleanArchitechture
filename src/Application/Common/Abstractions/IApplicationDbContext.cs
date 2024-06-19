@@ -10,6 +10,7 @@ public interface IApplicationDbContext
     #region Admin
 
     DbSet<AppMenu> AppMenus { get; }
+    DbSet<RoleMenu> RoleMenus { get; }
     #endregion
 
     #region Common Setup

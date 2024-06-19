@@ -5,6 +5,7 @@ namespace CleanArchitechture.Application.Features.Admin.Roles.Commands;
 
 public record CreateRoleCommand(
      string Name,
+     List<Guid> Rolemenus,
      List<string> Permissions
     ) : ICacheInvalidatorCommand<string>
 {
@@ -16,7 +17,7 @@ internal sealed class CreateRoleCommandHandler(IIdentityRoleService roleService)
 {
     public async Task<Result<string>> Handle(CreateRoleCommand request, CancellationToken cancellationToken)
     {
-        return await roleService.CreateRoleAsync(request.Name, request.Permissions, cancellationToken);
+        return await roleService.CreateRoleAsync(request.Name, request.Rolemenus, request.Permissions, cancellationToken);
     }
 }
 

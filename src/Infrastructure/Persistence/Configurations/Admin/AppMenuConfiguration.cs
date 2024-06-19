@@ -1,24 +1,27 @@
-﻿using CleanArchitechture.Domain.Common;
+﻿using CleanArchitechture.Domain.Admin;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CleanArchitechture.Infrastructure.Persistence.Configurations;
 
-internal sealed class LookupConfiguration : IEntityTypeConfiguration<Lookup>
+internal sealed class AppMenuConfiguration : IEntityTypeConfiguration<AppMenu>
 {
-    public void Configure(EntityTypeBuilder<Lookup> builder)
+    public void Configure(EntityTypeBuilder<AppMenu> builder)
     {
-        builder.Property(t => t.Name)
+        builder.Property(t => t.Label)
             .HasMaxLength(200)
             .IsRequired();
 
-        builder.HasIndex(t => t.Name).IsUnique();
+        builder.HasIndex(t => t.Label).IsUnique();
 
-        builder.Property(t => t.Code)
-            .HasMaxLength(10)
+        builder.Property(t => t.Url)
+            .HasMaxLength(500)
             .IsRequired();
 
+        builder.Property(t => t.Tooltip)
+            .HasMaxLength(100);
+
         builder.Property(t => t.Description)
-            .HasMaxLength(1000);
+            .HasMaxLength(500);
     }
 }
