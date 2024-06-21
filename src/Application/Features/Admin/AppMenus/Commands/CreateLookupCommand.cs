@@ -28,7 +28,7 @@ internal sealed class CreateAppMenuQueryHandler(
         var entity = new AppMenu
         {
             Label = request.Label,
-            Url = request.Url,
+            RouterLink = request.Url,
             Icon = request.Icon,
             Tooltip = request.Tooltip,
             IsActive = request.IsActive,

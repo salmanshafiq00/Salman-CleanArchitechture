@@ -26,7 +26,7 @@ internal sealed class GetAppMenuTreeSelectListHandler(ISqlConnectionFactory sqlC
             SELECT 
                 M.Id AS {nameof(AppMenuModel.Id)}, 
                 M.Label AS {nameof(AppMenuModel.Label)}, 
-                M.Url AS {nameof(AppMenuModel.Url)}, 
+                M.RouterLink AS {nameof(AppMenuModel.RouterLink)}, 
                 M.ParentId AS {nameof(AppMenuModel.ParentId)}, 
                 M.Description AS {nameof(AppMenuModel.Description)},
                 M.Visible AS {nameof(AppMenuModel.Visible)},

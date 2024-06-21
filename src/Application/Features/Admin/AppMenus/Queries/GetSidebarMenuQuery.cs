@@ -19,7 +19,7 @@ public class SidebarMenuModel
 {
     public Guid Id { get; set; }
     public string Label { get; set; } = string.Empty;
-    public string Url { get; set; } = string.Empty;
+    public string RouterLink { get; set; } = string.Empty;
     public string Icon { get; set; } = string.Empty;
     public bool Visible { get; set; }
     public string Tooltip { get; set; } = string.Empty;
@@ -43,7 +43,7 @@ internal sealed class GetSidebarMenuQueryHandler(ISqlConnectionFactory sqlConnec
                 M.ParentId AS {nameof(SidebarMenuModel.ParentId)}, 
                 P.Label AS {nameof(SidebarMenuModel.ParentLabel)}, 
                 M.Label AS {nameof(SidebarMenuModel.Label)}, 
-                M.Url AS {nameof(SidebarMenuModel.Url)}, 
+                M.RouterLink AS {nameof(SidebarMenuModel.RouterLink)}, 
                 M.Icon AS {nameof(SidebarMenuModel.Icon)}, 
                 M.Visible AS {nameof(SidebarMenuModel.Visible)},
                 M.Tooltip AS {nameof(SidebarMenuModel.Tooltip)},
@@ -82,7 +82,7 @@ internal sealed class GetSidebarMenuQueryHandler(ISqlConnectionFactory sqlConnec
                 {
                     Id = x.Id,
                     Label = x.Label,
-                    Url = x.Url,
+                    RouterLink = x.RouterLink,
                     Icon = x.Icon,
                     Visible = x.Visible,
                     Tooltip = x.Tooltip,

@@ -1859,7 +1859,7 @@
           "label": {
             "type": "string"
           },
-          "url": {
+          "routerLink": {
             "type": "string"
           },
           "icon": {
@@ -1922,7 +1922,7 @@
           "label": {
             "type": "string"
           },
-          "url": {
+          "routerLink": {
             "type": "string"
           },
           "icon": {

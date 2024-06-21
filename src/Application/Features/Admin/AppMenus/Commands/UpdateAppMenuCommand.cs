@@ -29,7 +29,7 @@ internal sealed class UpdateAppMenuCommandHandler(
         if (entity is null) return Result.Failure(Error.NotFound(nameof(entity), ErrorMessages.EntityNotFound));
 
         entity.Label = request.Label;
-        entity.Url = request.Url;
+        entity.RouterLink = request.Url;
         entity.Icon = request.Icon;
         entity.Tooltip = request.Tooltip;
         entity.IsActive = request.IsActive;

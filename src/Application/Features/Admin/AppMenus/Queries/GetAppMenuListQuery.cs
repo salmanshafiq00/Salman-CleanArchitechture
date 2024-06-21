@@ -22,7 +22,7 @@ internal sealed class GetAppMenuListQueryHandler(ISqlConnectionFactory sqlConnec
             SELECT 
                 M.Id AS {nameof(AppMenuModel.Id)}, 
                 M.Label AS {nameof(AppMenuModel.Label)}, 
-                M.Url AS {nameof(AppMenuModel.Url)}, 
+                M.RouterLink AS {nameof(AppMenuModel.RouterLink)}, 
                 M.ParentId AS {nameof(AppMenuModel.ParentId)}, 
                 P.Label AS {nameof(AppMenuModel.ParentName)} , 
                 M.Description AS {nameof(AppMenuModel.Description)},

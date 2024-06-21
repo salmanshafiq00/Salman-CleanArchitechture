@@ -17,7 +17,7 @@ internal sealed class AppMenuConfiguration : IEntityTypeConfiguration<AppMenu>
 
         builder.HasIndex(t => t.Label).IsUnique();
 
-        builder.Property(t => t.Url)
+        builder.Property(t => t.RouterLink)
             .HasMaxLength(500)
             .IsRequired();
 
