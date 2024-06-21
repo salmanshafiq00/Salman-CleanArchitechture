@@ -17,6 +17,7 @@ public class AppMenus : EndpointGroupBase
     {
         app.MapGroup(this)
             .MapPost(GetAppMenus)
+            .MapGet(GetSidebarMenus, "GetSidebarMenus")
             .MapGet(GetAppMenu, "GetMenu/{id}")
             .MapPost(CreateMenu, "CreateMenu")
             .MapPut(UpdateMenu, "UpdateMenu");
@@ -36,8 +37,8 @@ public class AppMenus : EndpointGroupBase
                 Key: CacheKeys.AppMenu_All_SelectList,
                 AllowCacheList: false)
             );
-            result.Value.OptionsDataSources.Add("parentSelectList", roleSelectList.Value);
-            result.Value.OptionsDataSources.Add("statusSelectList", UtilityExtensions.GetActiveInactiveSelectList());
+            result.Value.OptionDataSources.Add("parentSelectList", roleSelectList.Value);
+            result.Value.OptionDataSources.Add("statusSelectList", UtilityExtensions.GetActiveInactiveSelectList());
         }
 
         return TypedResults.Ok(result.Value);
@@ -50,7 +51,14 @@ public class AppMenus : EndpointGroupBase
         var result = await sender.Send(new GetAppMenuByIdQuery(id));
 
         var parentTreeSelectList = await sender.Send(new GetAppMenuTreeSelectList());
-        result.Value.OptionsDataSources.Add("parentTreeSelectList", parentTreeSelectList.Value);
+        result?.Value?.OptionsDataSources.Add("parentTreeSelectList", parentTreeSelectList.Value);
+
+        var menuTypeSelectList = await sender.Send(new GetSelectListQuery(
+        Sql: SelectListSqls.GetLookupDetailSelectListByDevCodeSql,
+        Parameters: new { DevCode = 1001 },
+        Key: CacheKeys.LookupDetail_All_SelectList,
+        AllowCacheList: false));
+        result?.Value?.OptionsDataSources.Add("menuTypeSelectList", menuTypeSelectList.Value);
 
         return result.Match(
              onSuccess: () => Results.Ok(result.Value),
@@ -79,5 +87,15 @@ public class AppMenus : EndpointGroupBase
              onFailure: result.ToProblemDetails);
     }
 
+    [ProducesResponseType(typeof(List<SidebarMenuModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    public async Task<IResult> GetSidebarMenus(ISender sender)
+    {
+        var result = await sender.Send(new GetSidebarMenuQuery());
+
+        return result.Match(
+             onSuccess: () => Results.Ok(result.Value),
+             onFailure: result.ToProblemDetails);
+    }
 
 }

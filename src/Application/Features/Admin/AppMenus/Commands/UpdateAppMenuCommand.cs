@@ -12,6 +12,7 @@ public record UpdateAppMenuCommand(
     int OrderNo,
     string Tooltip,
     string Description,
+    Guid MenuTypeId,
     Guid? ParentId = null) : ICacheInvalidatorCommand
 {
     public string CacheKey => CacheKeys.AppMenu;
@@ -36,6 +37,7 @@ internal sealed class UpdateAppMenuCommandHandler(
         entity.Visible = request.Visible;
         entity.Description = request.Description;
         entity.ParentId = request.ParentId;
+        entity.MenuTypeId = request.MenuTypeId;
 
         await dbContext.SaveChangesAsync(cancellationToken);
 

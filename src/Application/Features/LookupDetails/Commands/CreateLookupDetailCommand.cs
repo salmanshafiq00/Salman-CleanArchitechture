@@ -34,6 +34,5 @@ internal sealed class CreateLookupDetailQueryHandler(
         await dbContext.SaveChangesAsync(cancellationToken);
 
         return Result.Success(entity.Id);
-        //return Result.Success(CommonMessage.SAVED_SUCCESSFULLY);
     }
 }

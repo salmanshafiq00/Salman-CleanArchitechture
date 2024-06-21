@@ -37,8 +37,8 @@ public class Users : EndpointGroupBase
                 Key: CacheKeys.Role_All_SelectList,
                 AllowCacheList: false)
             );
-            result.Value.OptionsDataSources.Add("roleSelectList", roleSelectList.Value);
-            result.Value.OptionsDataSources.Add("statusSelectList", UtilityExtensions.GetActiveInactiveSelectList());
+            result.Value.OptionDataSources.Add("roleSelectList", roleSelectList.Value);
+            result.Value.OptionDataSources.Add("statusSelectList", UtilityExtensions.GetActiveInactiveSelectList());
         }
 
         return TypedResults.Ok(result.Value);

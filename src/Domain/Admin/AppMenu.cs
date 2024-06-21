@@ -10,6 +10,7 @@ public class AppMenu : BaseAuditableEntity
     public bool IsActive { get; set; }
     public int OrderNo { get; set; }
     public bool Visible { get; set; }
+    public Guid MenuTypeId { get; set; }
     public string Description { get; set; } = string.Empty;
 
 }

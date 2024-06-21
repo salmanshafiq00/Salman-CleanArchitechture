@@ -16,6 +16,15 @@ public static class SelectListSqls
         ORDER BY Name
         """;
 
+    public const string GetLookupDetailSelectListByDevCodeSql = """
+        SELECT ld.Id, ld.Name 
+        FROM dbo.Lookups l
+        INNER JOIN dbo.LookupDetails ld ON ld.LookupId = l.Id
+        WHERE 1 = 1
+        AND l.DevCode = @DevCode
+        ORDER BY ld.Name
+        """;
+
     public const string GetRoleSelectListSql = """
         SELECT Id, Name 
         FROM [identity].Roles r

@@ -36,8 +36,8 @@ public class Lookups : EndpointGroupBase
                 Key: CacheKeys.Lookup_All_SelectList,
                 AllowCacheList: false)
             );
-            result.Value.OptionsDataSources.Add("parentSelectList", parentSelectList.Value);
-            result.Value.OptionsDataSources.Add("statusSelectList", UtilityExtensions.GetActiveInactiveSelectList());
+            result.Value.OptionDataSources.Add("parentSelectList", parentSelectList.Value);
+            result.Value.OptionDataSources.Add("statusSelectList", UtilityExtensions.GetActiveInactiveSelectList());
         }
 
         return TypedResults.Ok(result.Value);
@@ -47,6 +47,15 @@ public class Lookups : EndpointGroupBase
     public async Task<IResult> GetLookup(ISender sender,[FromRoute] Guid id)
     {
         var result = await sender.Send(new GetLookupByIdQuery(id));
+
+        var parentSelectList = await sender.Send(new GetSelectListQuery(
+                Sql: SelectListSqls.GetLookupSelectListSql,
+                Parameters: new { },
+                Key: CacheKeys.Lookup_All_SelectList,
+                AllowCacheList: false)
+            );
+        result?.Value?.OptionDataSources.Add("parentSelectList", parentSelectList.Value);
+
         return TypedResults.Ok(result.Value);
 
     }

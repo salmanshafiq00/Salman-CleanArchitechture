@@ -12,6 +12,7 @@ public record CreateAppMenuCommand(
     int OrderNo,
     string Tooltip,
     string Description,
+    Guid MenuTypeId,
     Guid? ParentId = null) : ICacheInvalidatorCommand<Guid>
 {
     [JsonIgnore]
@@ -34,7 +35,8 @@ internal sealed class CreateAppMenuQueryHandler(
             OrderNo = request.OrderNo,
             Visible = request.Visible,
             Description = request.Description,
-            ParentId = request.ParentId
+            ParentId = request.ParentId,
+            MenuTypeId = request.MenuTypeId
         };
 
         dbContext.AppMenus.Add(entity);

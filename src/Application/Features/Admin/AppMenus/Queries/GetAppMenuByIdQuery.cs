@@ -25,6 +25,7 @@ internal sealed class GetAppMenuByIdQueryHandler(ISqlConnectionFactory sqlConnec
                 M.Label AS {nameof(AppMenuModel.Label)}, 
                 M.Url AS {nameof(AppMenuModel.Url)}, 
                 M.ParentId AS {nameof(AppMenuModel.ParentId)}, 
+                M.MenuTypeId AS {nameof(AppMenuModel.MenuTypeId)}, 
                 M.Description AS {nameof(AppMenuModel.Description)},
                 M.IsActive AS {nameof(AppMenuModel.IsActive)},
                 M.Visible AS {nameof(AppMenuModel.Visible)},

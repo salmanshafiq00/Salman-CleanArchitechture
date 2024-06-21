@@ -1,6 +1,4 @@
 ﻿using Application.Constants;
-using CleanArchitechture.Application.Common.Abstractions;
-using CleanArchitechture.Application.Common.Abstractions.Messaging;
 
 namespace CleanArchitechture.Application.Features.LookupDetails.Commands;
 
@@ -24,6 +22,5 @@ internal sealed class DeleteLookupDetailCommandHandler(
         await dbContext.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
-        //return Result.Success(CommonMessage.UPDATED_SUCCESSFULLY);
     }
 }

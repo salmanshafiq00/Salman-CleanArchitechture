@@ -1,4 +1,5 @@
 ﻿using CleanArchitechture.Domain.Admin;
+using CleanArchitechture.Domain.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,6 +9,8 @@ internal sealed class AppMenuConfiguration : IEntityTypeConfiguration<AppMenu>
 {
     public void Configure(EntityTypeBuilder<AppMenu> builder)
     {
+        builder.HasKey(x => x.Id);
+
         builder.Property(t => t.Label)
             .HasMaxLength(200)
             .IsRequired();
@@ -23,5 +26,11 @@ internal sealed class AppMenuConfiguration : IEntityTypeConfiguration<AppMenu>
 
         builder.Property(t => t.Description)
             .HasMaxLength(500);
+
+        builder.HasOne<LookupDetail>()
+            .WithMany()
+            .HasForeignKey(x => x.MenuTypeId)
+            .OnDelete(DeleteBehavior.Restrict)
+            .IsRequired();
     }
 }

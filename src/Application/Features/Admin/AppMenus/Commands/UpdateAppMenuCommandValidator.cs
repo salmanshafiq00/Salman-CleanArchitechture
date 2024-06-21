@@ -14,6 +14,9 @@ public class UpdateAppMenuCommandValidator : AbstractValidator<UpdateAppMenuComm
                 .WithMessage("'{PropertyName}' must be unique.")
                 .WithErrorCode("Unique");
 
+        RuleFor(v => v.MenuTypeId)
+           .NotEmpty();
+
         RuleFor(v => v.Url)
             .NotEmpty();
 

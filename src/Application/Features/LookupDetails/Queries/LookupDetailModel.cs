@@ -14,6 +14,7 @@ public record LookupDetailModel
     public string ParentName { get; set; } = string.Empty;
     public Guid LookupId { get; set; }
     public string LookupName { get; set; } = string.Empty;
+    public Dictionary<string, object> OptionDataSources { get; set; } = [];
 
     public class Mapper : Profile
     {

@@ -14,6 +14,7 @@ public record LookupModel
     public Guid? ParentId { get; set; }
     public string ParentName { get; set; } = string.Empty;
     public DateTime Created { get; set; }
+    public Dictionary<string, object> OptionDataSources { get; set; } = [];
 
     public static IReadOnlyCollection<DataFieldModel> DataFields = [
         new DataFieldModel{ Field = "id", Header = "Id", FieldType = TField.TString, DSName = string.Empty, DbField = "L.Id", IsSortable = false, IsGlobalFilterable = false, IsFilterable = false, Visible = false, SortOrder = 0 },

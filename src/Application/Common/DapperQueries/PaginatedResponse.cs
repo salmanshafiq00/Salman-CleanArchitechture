@@ -25,7 +25,7 @@ public class PaginatedResponse<TEntity>
     public HashSet<DataFilterModel> Filters { get; init; } = [];
 
     [JsonInclude]
-    public Dictionary<string, object> OptionsDataSources { get; set; } = [];
+    public Dictionary<string, object> OptionDataSources { get; set; } = [];
 
 
     public PaginatedResponse() { }

@@ -1,4 +1,7 @@
-﻿using CleanArchitechture.Application.Common.DapperQueries;
+﻿using CleanArchitechture.Application.Common.Caching;
+using CleanArchitechture.Application.Common.Constants.CommonSqlConstants;
+using CleanArchitechture.Application.Common.DapperQueries;
+using CleanArchitechture.Application.Features.Common.Queries;
 using CleanArchitechture.Application.Features.LookupDetails.Commands;
 using CleanArchitechture.Application.Features.LookupDetails.Queries;
 using CleanArchitechture.Web.Extensions;
@@ -11,7 +14,7 @@ public class LookupDetails : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-           .RequireAuthorization()
+           //.RequireAuthorization()
            .MapPost(GetLookupDetails, "GetLookupDetails")
            .MapGet(GetLookupDetail, "{id:Guid}")
            .MapPost(CreateLookupDetail)
@@ -30,6 +33,23 @@ public class LookupDetails : EndpointGroupBase
     public async Task<IResult> GetLookupDetail(ISender sender, Guid id)
     {
         var result = await sender.Send(new GetLookupDetailByIdQuery(id));
+
+        var lookupSelectList = await sender.Send(new GetSelectListQuery(
+                Sql: SelectListSqls.GetLookupSelectListSql,
+                Parameters: new { },
+                Key: CacheKeys.Lookup_All_SelectList,
+                AllowCacheList: false)
+            );
+        result.Value.OptionDataSources.Add("lookupSelectList", lookupSelectList.Value);
+
+        var parentSelectList = await sender.Send(new GetSelectListQuery(
+                Sql: SelectListSqls.GetLookupDetailSelectListSql,
+                Parameters: new { },
+                Key: CacheKeys.LookupDetail_All_SelectList,
+                AllowCacheList: false)
+            );
+        result.Value.OptionDataSources.Add("parentSelectList", parentSelectList.Value);
+
         return TypedResults.Ok(result.Value);
 
     }

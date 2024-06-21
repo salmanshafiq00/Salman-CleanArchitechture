@@ -3,7 +3,7 @@ using CleanArchitechture.Application.Features.Lookups.Queries;
 
 namespace CleanArchitechture.Application.Features.LookupDetails.Queries;
 
-[Authorize(Policy = Permissions.CommonSetup.LookupDetails.View)]
+//[Authorize(Policy = Permissions.CommonSetup.LookupDetails.View)]
 public record GetLookupDetailByIdQuery(Guid Id) : ICacheableQuery<LookupDetailModel>
 {
     [JsonIgnore]

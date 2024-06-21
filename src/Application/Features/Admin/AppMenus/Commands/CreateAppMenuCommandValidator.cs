@@ -9,9 +9,13 @@ public class CreateAppMenuCommandValidator : AbstractValidator<CreateAppMenuComm
         _commonQuery = commonQuery;
 
         RuleFor(v => v.Label)
-            .NotEmpty().MustAsync(BeUniqueLabel)
+            .NotEmpty()
+            .MustAsync(BeUniqueLabel)
                 .WithMessage("'{PropertyName}' must be unique.")
                 .WithErrorCode("Unique");
+
+        RuleFor(v => v.MenuTypeId)
+            .NotEmpty();
 
         RuleFor(v => v.Url)
             .NotEmpty();

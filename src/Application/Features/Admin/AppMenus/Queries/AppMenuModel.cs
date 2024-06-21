@@ -18,6 +18,8 @@ public record AppMenuModel
     public string Visibility { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public string Active { get; set; } = string.Empty;
+    public Guid MenuTypeId { get; set; }
+    public string MenuTypeName { get; set; } = string.Empty;
     public Dictionary<string, object> OptionsDataSources { get; set; } = [];
 
     public static IReadOnlyCollection<DataFieldModel> DataFields = [

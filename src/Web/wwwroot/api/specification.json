@@ -35,12 +35,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
+        }
       }
     },
     "/api/LookupDetails/{id}": {
@@ -72,12 +67,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
+        }
       },
       "delete": {
         "tags": [
@@ -110,12 +100,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
+        }
       }
     },
     "/api/LookupDetails": {
@@ -158,12 +143,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
+        }
       },
       "put": {
         "tags": [
@@ -199,12 +179,7 @@
           "404": {
             "description": ""
           }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
+        }
       }
     },
     "/api/Lookups/GetLookups": {
@@ -500,6 +475,45 @@
         ]
       }
     },
+    "/api/SelectLists/GetMenuTypeSelectList": {
+      "get": {
+        "tags": [
+          "SelectLists"
+        ],
+        "operationId": "GetMenuTypeSelectList",
+        "parameters": [
+          {
+            "name": "allowCache",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SelectListModel"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
     "/api/TreeNodeLists/GetAllPermissionNodeList": {
       "get": {
         "tags": [
@@ -603,6 +617,39 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PaginatedResponseOfAppMenuModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AppMenus/GetSidebarMenus": {
+      "get": {
+        "tags": [
+          "AppMenus"
+        ],
+        "operationId": "GetSidebarMenus",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SidebarMenuModel"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -1226,7 +1273,7 @@
               "$ref": "#/components/schemas/DataFilterModel"
             }
           },
-          "optionsDataSources": {
+          "optionDataSources": {
             "type": "object",
             "additionalProperties": {}
           }
@@ -1269,6 +1316,10 @@
           },
           "lookupName": {
             "type": "string"
+          },
+          "optionDataSources": {
+            "type": "object",
+            "additionalProperties": {}
           }
         }
       },
@@ -1569,7 +1620,7 @@
               "$ref": "#/components/schemas/DataFilterModel"
             }
           },
-          "optionsDataSources": {
+          "optionDataSources": {
             "type": "object",
             "additionalProperties": {}
           }
@@ -1609,6 +1660,10 @@
           "created": {
             "type": "string",
             "format": "date-time"
+          },
+          "optionDataSources": {
+            "type": "object",
+            "additionalProperties": {}
           }
         }
       },
@@ -1779,7 +1834,7 @@
               "$ref": "#/components/schemas/DataFilterModel"
             }
           },
-          "optionsDataSources": {
+          "optionDataSources": {
             "type": "object",
             "additionalProperties": {}
           }
@@ -1832,6 +1887,13 @@
           "active": {
             "type": "string"
           },
+          "menuTypeId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "menuTypeName": {
+            "type": "string"
+          },
           "optionsDataSources": {
             "type": "object",
             "additionalProperties": {}
@@ -1849,12 +1911,57 @@
           }
         ]
       },
+      "SidebarMenuModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "label": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "visible": {
+            "type": "boolean"
+          },
+          "tooltip": {
+            "type": "string"
+          },
+          "orderNo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "parentId": {
+            "type": "string",
+            "format": "guid",
+            "nullable": true
+          },
+          "parentLabel": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/SidebarMenuModel"
+            }
+          }
+        }
+      },
       "CreateAppMenuCommand": {
         "type": "object",
         "additionalProperties": false,
         "required": [
           "label",
-          "url"
+          "url",
+          "menuTypeId"
         ],
         "properties": {
           "label": {
@@ -1884,6 +1991,10 @@
             "maxLength": 500,
             "minLength": 0
           },
+          "menuTypeId": {
+            "type": "string",
+            "format": "guid"
+          },
           "parentId": {
             "type": "string",
             "format": "guid",
@@ -1896,7 +2007,8 @@
         "additionalProperties": false,
         "required": [
           "label",
-          "url"
+          "url",
+          "menuTypeId"
         ],
         "properties": {
           "id": {
@@ -1929,6 +2041,10 @@
             "type": "string",
             "maxLength": 500,
             "minLength": 0
+          },
+          "menuTypeId": {
+            "type": "string",
+            "format": "guid"
           },
           "parentId": {
             "type": "string",
@@ -1980,7 +2096,7 @@
               "$ref": "#/components/schemas/DataFilterModel"
             }
           },
-          "optionsDataSources": {
+          "optionDataSources": {
             "type": "object",
             "additionalProperties": {}
           }
@@ -2113,7 +2229,7 @@
               "$ref": "#/components/schemas/DataFilterModel"
             }
           },
-          "optionsDataSources": {
+          "optionDataSources": {
             "type": "object",
             "additionalProperties": {}
           }
