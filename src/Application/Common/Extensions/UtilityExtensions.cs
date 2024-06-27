@@ -26,6 +26,9 @@ public static class UtilityExtensions
         return Regex.Replace(value, "(\\B[A-Z])", " $1").Trim();
     }
 
+    public static bool IsNullOrEmpty(this Guid value) => value == Guid.Empty;
+    public static bool IsNullOrEmpty(this Guid? value) => value is null || value == Guid.Empty;
+
     public static IEnumerable<string> GetColumnNameFromClass(Type model)
     {
         PropertyInfo[] properties = model.GetProperties();

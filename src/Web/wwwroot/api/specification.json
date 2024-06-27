@@ -1659,7 +1659,8 @@
           },
           "created": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "nullable": true
           },
           "optionDataSources": {
             "type": "object",

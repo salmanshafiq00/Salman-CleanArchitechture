@@ -1,10 +1,11 @@
 ﻿using System.Text.Json.Serialization;
+using CleanArchitechture.Application.Common.Extensions;
 using static CleanArchitechture.Application.Common.DapperQueries.SqlConstants;
 
 namespace CleanArchitechture.Application.Features.Lookups.Queries;
 
 [Authorize(Policy = Permissions.CommonSetup.Lookups.View)]
-public record GetLookupByIdQuery(Guid Id) : ICacheableQuery<LookupModel?>
+public record GetLookupByIdQuery(Guid? Id) : ICacheableQuery<LookupModel>
 {
     [JsonIgnore]
     public string CacheKey => $"Lookup_{Id}";
@@ -15,10 +16,14 @@ public record GetLookupByIdQuery(Guid Id) : ICacheableQuery<LookupModel?>
 }
 
 internal sealed class GetLookupByIdQueryHandler(ISqlConnectionFactory sqlConnection)
-    : IQueryHandler<GetLookupByIdQuery, LookupModel?>
+    : IQueryHandler<GetLookupByIdQuery, LookupModel>
 {
-    public async Task<Result<LookupModel?>> Handle(GetLookupByIdQuery query, CancellationToken cancellationToken)
+    public async Task<Result<LookupModel>> Handle(GetLookupByIdQuery query, CancellationToken cancellationToken)
     {
+        if (query.Id.IsNullOrEmpty())
+        {
+            return new LookupModel();
+        }
         var connection = sqlConnection.GetOpenConnection();
 
         var sql = $"""
