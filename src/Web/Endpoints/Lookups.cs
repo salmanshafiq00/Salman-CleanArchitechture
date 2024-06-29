@@ -2,6 +2,7 @@
 using CleanArchitechture.Application.Common.Constants.CommonSqlConstants;
 using CleanArchitechture.Application.Common.DapperQueries;
 using CleanArchitechture.Application.Common.Extensions;
+using CleanArchitechture.Application.Common.Models;
 using CleanArchitechture.Application.Features.Common.Queries;
 using CleanArchitechture.Application.Features.Lookups.Commands;
 using CleanArchitechture.Application.Features.Lookups.Queries;
@@ -26,10 +27,10 @@ public class Lookups : EndpointGroupBase
     [ProducesResponseType(typeof(PaginatedResponse<LookupModel>), StatusCodes.Status200OK)]
     public async Task<IResult> GetLookups(ISender sender, [FromBody] GetLookupListQuery query)
     {
-       var result = await sender.Send(query);
+        var result = await sender.Send(query);
 
-        if (!query.IsInitialLoaded) 
-        { 
+        if (!query.IsInitialLoaded)
+        {
             var parentSelectList = await sender.Send(new GetSelectListQuery(
                 Sql: SelectListSqls.GetLookupSelectListSql,
                 Parameters: new { },
@@ -44,7 +45,7 @@ public class Lookups : EndpointGroupBase
     }
 
     [ProducesResponseType(typeof(LookupModel), StatusCodes.Status200OK)]
-    public async Task<IResult> GetLookup(ISender sender,[FromRoute] Guid id)
+    public async Task<IResult> GetLookup(ISender sender, [FromRoute] Guid id)
     {
         var result = await sender.Send(new GetLookupByIdQuery(id));
 
@@ -55,6 +56,8 @@ public class Lookups : EndpointGroupBase
                 AllowCacheList: false)
             );
         result?.Value?.OptionDataSources.Add("parentSelectList", parentSelectList.Value);
+        result?.Value?.OptionDataSources.Add("subjectSelectList", GetSubjectList());
+        result?.Value?.OptionDataSources.Add("subjectRadioSelectList", GetSubjectList());
 
         return TypedResults.Ok(result.Value);
 
@@ -67,7 +70,7 @@ public class Lookups : EndpointGroupBase
         var result = await sender.Send(command);
 
         return result.Match(
-             onSuccess: () => Results.CreatedAtRoute(nameof(GetLookup), new {id = result.Value}, result.Value),
+             onSuccess: () => Results.CreatedAtRoute(nameof(GetLookup), new { id = result.Value }, result.Value),
              onFailure: result.ToProblemDetails);
     }
 
@@ -86,12 +89,22 @@ public class Lookups : EndpointGroupBase
 
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IResult> DeleteLookup(ISender sender,[FromRoute] Guid id)
+    public async Task<IResult> DeleteLookup(ISender sender, [FromRoute] Guid id)
     {
         var result = await sender.Send(new DeleteLookupCommand(id));
 
         return result.Match(
              onSuccess: Results.NoContent,
              onFailure: result.ToProblemDetails);
+    }
+
+    private List<SelectListModel> GetSubjectList()
+    {
+        return [
+                new SelectListModel{ Name = "Accounting", Id = "A" },
+                new SelectListModel{ Name = "Marketing", Id = "M" },
+                new SelectListModel{ Name = "Production", Id = "P" },
+                new SelectListModel{ Name = "Research", Id = "R" }
+         ];
     }
 }

@@ -57,6 +57,7 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+//app.UseMiddleware<DateTimeAdjustmentMiddleware>();
 app.UseMiddleware<RequestContextLoggingMiddleware>();
 
 app.UseCors(Allow_Origin_Policy);

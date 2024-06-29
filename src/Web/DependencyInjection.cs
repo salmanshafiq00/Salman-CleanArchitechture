@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using CleanArchitechture.Application.Common.Abstractions.Identity;
 using CleanArchitechture.Web.Services;
+using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using NSwag;
@@ -17,6 +18,7 @@ public static class DependencyInjection
     public static IServiceCollection AddWebServices(this IServiceCollection services)
     {
         AddCustomProblemDetails(services);
+        AddDapperTypeHandler(services);
         AddDatabaseDeveloperPageExceptionFilter(services);
         AddJsonConfiguration(services);
         AddScopedServices(services);
@@ -50,6 +52,11 @@ public static class DependencyInjection
     private static void AddDatabaseDeveloperPageExceptionFilter(IServiceCollection services)
     {
         services.AddDatabaseDeveloperPageExceptionFilter();
+    }
+    private static void AddDapperTypeHandler(IServiceCollection services)
+    {
+        SqlMapper.AddTypeHandler(new DapperSqlDateOnlyTypeHandler());
+        SqlMapper.AddTypeHandler(new DapperSqlTimeOnlyTypeHandler());
     }
 
     private static void AddJsonConfiguration(IServiceCollection services)

@@ -8,6 +8,12 @@ public record CreateLookupCommand(
     string Code,
     string Description,
     bool Status,
+    DateOnly CreatedDate,
+    TimeOnly CreatedTime,
+    DateTime Created,
+    int CreatedYear,
+    List<string> Subjects,
+    string SubjectRadio,
     Guid? ParentId = null) : ICacheInvalidatorCommand<Guid>
 {
     [JsonIgnore]
@@ -20,13 +26,15 @@ internal sealed class CreateLookupQueryHandler(
 {
     public async Task<Result<Guid>> Handle(CreateLookupCommand request, CancellationToken cancellationToken)
     {
+        TimeOnly a = request.CreatedTime;
         var entity = new Lookup
         {
             Name = request.Name,
             Code = request.Code,
             Description = request.Description,
             Status = request.Status,
-            ParentId = request.ParentId
+            ParentId = request.ParentId,
+            Created = request.Created.ToLocalTime(),
         };
 
         dbContext.Lookups.Add(entity);

@@ -14,6 +14,11 @@ public record LookupModel
     public Guid? ParentId { get; set; }
     public string ParentName { get; set; } = string.Empty;
     public DateTime? Created { get; set; }
+    public DateOnly? CreatedDate { get; set; }
+    public TimeOnly? CreatedTime { get; set; }
+    public int? CreatedYear { get; set; }
+    public List<string> Subjects { get; set; } = [];
+    public string SubjectRadio { get; set; } = string.Empty;
     public Dictionary<string, object> OptionDataSources { get; set; } = [];
 
     public static IReadOnlyCollection<DataFieldModel> DataFields = [
