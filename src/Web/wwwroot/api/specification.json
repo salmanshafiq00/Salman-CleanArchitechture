@@ -1686,6 +1686,38 @@
           "subjectRadio": {
             "type": "string"
           },
+          "color": {
+            "type": "string"
+          },
+          "uploadFile": {
+            "type": "string",
+            "format": "binary"
+          },
+          "descEdit": {
+            "type": "string"
+          },
+          "menus": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "guid"
+            }
+          },
+          "singleMenu": {
+            "type": "string",
+            "format": "guid"
+          },
+          "treeSelectMenus": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "guid"
+            }
+          },
+          "treeSelectSingleMenu": {
+            "type": "string",
+            "format": "guid"
+          },
           "optionDataSources": {
             "type": "object",
             "additionalProperties": {}
@@ -1745,6 +1777,9 @@
             "type": "integer",
             "format": "int32"
           },
+          "color": {
+            "type": "string"
+          },
           "subjects": {
             "type": "array",
             "items": {
@@ -1753,6 +1788,11 @@
           },
           "subjectRadio": {
             "type": "string"
+          },
+          "uploadFile": {
+            "type": "string",
+            "format": "binary",
+            "nullable": true
           },
           "parentId": {
             "type": "string",

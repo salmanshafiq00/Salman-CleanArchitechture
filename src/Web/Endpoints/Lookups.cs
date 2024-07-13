@@ -1,8 +1,10 @@
-﻿using CleanArchitechture.Application.Common.Caching;
+﻿using Azure.Core;
+using CleanArchitechture.Application.Common.Caching;
 using CleanArchitechture.Application.Common.Constants.CommonSqlConstants;
 using CleanArchitechture.Application.Common.DapperQueries;
 using CleanArchitechture.Application.Common.Extensions;
 using CleanArchitechture.Application.Common.Models;
+using CleanArchitechture.Application.Features.Admin.AppMenus.Queries;
 using CleanArchitechture.Application.Features.Common.Queries;
 using CleanArchitechture.Application.Features.Lookups.Commands;
 using CleanArchitechture.Application.Features.Lookups.Queries;
@@ -58,6 +60,15 @@ public class Lookups : EndpointGroupBase
         result?.Value?.OptionDataSources.Add("parentSelectList", parentSelectList.Value);
         result?.Value?.OptionDataSources.Add("subjectSelectList", GetSubjectList());
         result?.Value?.OptionDataSources.Add("subjectRadioSelectList", GetSubjectList());
+        result?.Value?.OptionDataSources.Add("multiParentSelectList", parentSelectList.Value);
+        
+        var appMenuTreeList = await sender.Send(new GetAppMenuTreeSelectList()).ConfigureAwait(false);
+        result?.Value.OptionDataSources.Add("appMenuTreeList", appMenuTreeList.Value);
+        result?.Value.OptionDataSources.Add("singleMenuTreeList", appMenuTreeList.Value);
+
+        var parentTreeSelectList = await sender.Send(new GetAppMenuTreeSelectList());
+        result?.Value?.OptionDataSources.Add("treeSelectMenuseSelectList", parentTreeSelectList.Value);
+        result?.Value?.OptionDataSources.Add("treeSelectSingleMenuSelectList", parentTreeSelectList.Value);
 
         return TypedResults.Ok(result.Value);
 
@@ -73,6 +84,18 @@ public class Lookups : EndpointGroupBase
              onSuccess: () => Results.CreatedAtRoute(nameof(GetLookup), new { id = result.Value }, result.Value),
              onFailure: result.ToProblemDetails);
     }
+
+    //[ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
+    //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    //public async Task<IResult> CreateLookup(ISender sender, HttpRequest httpRequest)
+    //{
+    //    var form = await httpRequest.ReadFormAsync();
+    //    var result = await sender.Send(new CreateLookupCommand("", "", "", false, DateOnly.FromDateTime(DateTime.Now.Date), TimeOnly.FromDateTime(DateTime.Now), DateTime.Now, 23422, "", [], ""));
+
+    //    return result.Match(
+    //         onSuccess: () => Results.CreatedAtRoute(nameof(GetLookup), new { id = result.Value }, result.Value),
+    //         onFailure: result.ToProblemDetails);
+    //}
 
 
     [ProducesResponseType(StatusCodes.Status200OK)]

@@ -29,7 +29,13 @@ internal sealed class GetLookupByIdQueryHandler(ISqlConnectionFactory sqlConnect
                 CreatedTime = TimeOnly.FromTimeSpan(TimeSpan.FromHours(15)),
                 CreatedYear = DateTime.Now.Year,
                 Subjects = ["A"],
-                SubjectRadio = "A"
+                SubjectRadio = "A",
+                Color = "#00ff62",
+                DescEdit = "<h1>Write something.. </h1>",
+                Menus = [Guid.Parse("728dfb56-e871-489b-3fe3-08dc90ab7866"), Guid.Parse("6bed6167-95fc-482c-3fe4-08dc90ab7866"), Guid.Parse("2901931b-4b76-453d-3fe5-08dc90ab7866")],
+                SingleMenu = Guid.Parse("728dfb56-e871-489b-3fe3-08dc90ab7866"),
+                TreeSelectMenus = [Guid.Parse("728dfb56-e871-489b-3fe3-08dc90ab7866"), Guid.Parse("6bed6167-95fc-482c-3fe4-08dc90ab7866"), Guid.Parse("2901931b-4b76-453d-3fe5-08dc90ab7866")],
+                TreeSelectSingleMenu = Guid.Parse("728dfb56-e871-489b-3fe3-08dc90ab7866")
 
             };
         }

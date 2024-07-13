@@ -1,4 +1,5 @@
 ﻿using CleanArchitechture.Domain.Common;
+using Microsoft.AspNetCore.Http;
 using static CleanArchitechture.Application.Common.DapperQueries.Constants;
 
 namespace CleanArchitechture.Application.Features.Lookups.Queries;
@@ -19,7 +20,16 @@ public record LookupModel
     public int? CreatedYear { get; set; }
     public List<string> Subjects { get; set; } = [];
     public string SubjectRadio { get; set; } = string.Empty;
+    public string Color { get; set; } = string.Empty;
+    public IFormFile UploadFile { get; set; }
+    public string DescEdit { get; set; } = string.Empty;
+    public List<Guid> Menus { get; set; } = [];
+    public Guid SingleMenu { get; set; }
+    public List<Guid> TreeSelectMenus { get; set; } = [];
+    public Guid TreeSelectSingleMenu { get; set; }
+
     public Dictionary<string, object> OptionDataSources { get; set; } = [];
+
 
     public static IReadOnlyCollection<DataFieldModel> DataFields = [
         new DataFieldModel{ Field = "id", Header = "Id", FieldType = TField.TString, DSName = string.Empty, DbField = "L.Id", IsSortable = false, IsGlobalFilterable = false, IsFilterable = false, Visible = false, SortOrder = 0 },

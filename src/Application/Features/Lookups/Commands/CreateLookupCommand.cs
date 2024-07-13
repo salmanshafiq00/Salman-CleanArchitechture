@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using CleanArchitechture.Domain.Common;
+using Microsoft.AspNetCore.Http;
 
 namespace CleanArchitechture.Application.Features.Lookups.Commands;
 
@@ -12,8 +13,10 @@ public record CreateLookupCommand(
     TimeOnly CreatedTime,
     DateTime Created,
     int CreatedYear,
+    string Color,
     List<string> Subjects,
     string SubjectRadio,
+    IFormFile? UploadFile = null,
     Guid? ParentId = null) : ICacheInvalidatorCommand<Guid>
 {
     [JsonIgnore]
