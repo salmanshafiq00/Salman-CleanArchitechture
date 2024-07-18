@@ -17,7 +17,7 @@ public class CreateAppMenuCommandValidator : AbstractValidator<CreateAppMenuComm
         RuleFor(v => v.MenuTypeId)
             .NotEmpty();
 
-        RuleFor(v => v.Url)
+        RuleFor(v => v.RouterLink)
             .NotEmpty();
 
         RuleFor(v => v.Description)

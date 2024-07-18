@@ -4,6 +4,7 @@ using CleanArchitechture.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CleanArchitechture.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240717114606_AppPageAdded")]
+    partial class AppPageAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -201,6 +204,12 @@ namespace CleanArchitechture.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool?>("AllowFilter")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("AllowSort")
+                        .HasColumnType("bit");
+
                     b.Property<Guid>("AppPageId")
                         .HasColumnType("uniqueidentifier");
 
@@ -212,15 +221,11 @@ namespace CleanArchitechture.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("CellTemplate")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Color")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DSName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DbField")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -243,19 +248,10 @@ namespace CleanArchitechture.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsActive")
+                    b.Property<bool?>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsFilterable")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsGlobalFilterable")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsSortable")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsVisible")
+                    b.Property<bool?>("IsVisible")
                         .HasColumnType("bit");
 
                     b.Property<string>("LinkBaseUrl")
@@ -263,6 +259,10 @@ namespace CleanArchitechture.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LinkValueFieldName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Position")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

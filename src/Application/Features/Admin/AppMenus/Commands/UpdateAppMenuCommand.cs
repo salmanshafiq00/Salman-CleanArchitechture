@@ -5,7 +5,7 @@ namespace CleanArchitechture.Application.Features.Admin.AppMenus.Commands;
 public record UpdateAppMenuCommand(
     Guid Id,
     string Label,
-    string Url,
+    string RouterLink,
     string Icon,
     bool IsActive,
     bool Visible,
@@ -29,7 +29,7 @@ internal sealed class UpdateAppMenuCommandHandler(
         if (entity is null) return Result.Failure(Error.NotFound(nameof(entity), ErrorMessages.EntityNotFound));
 
         entity.Label = request.Label;
-        entity.RouterLink = request.Url;
+        entity.RouterLink = request.RouterLink;
         entity.Icon = request.Icon;
         entity.Tooltip = request.Tooltip;
         entity.IsActive = request.IsActive;

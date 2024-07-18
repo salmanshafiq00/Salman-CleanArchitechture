@@ -776,6 +776,122 @@
         }
       }
     },
+    "/api/AppPages": {
+      "post": {
+        "tags": [
+          "AppPages"
+        ],
+        "operationId": "GetAppPages",
+        "requestBody": {
+          "x-name": "query",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetAppPageListQuery"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponseOfAppPageModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AppPages/GetPage/{id}": {
+      "get": {
+        "tags": [
+          "AppPages"
+        ],
+        "operationId": "GetAppPage",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppPageModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AppPages/UpsertPage": {
+      "put": {
+        "tags": [
+          "AppPages"
+        ],
+        "operationId": "UpsertPage",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertAppPageCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Roles": {
       "post": {
         "tags": [
@@ -2050,14 +2166,14 @@
         "additionalProperties": false,
         "required": [
           "label",
-          "url",
+          "routerLink",
           "menuTypeId"
         ],
         "properties": {
           "label": {
             "type": "string"
           },
-          "url": {
+          "routerLink": {
             "type": "string"
           },
           "icon": {
@@ -2097,7 +2213,7 @@
         "additionalProperties": false,
         "required": [
           "label",
-          "url",
+          "routerLink",
           "menuTypeId"
         ],
         "properties": {
@@ -2108,7 +2224,7 @@
           "label": {
             "type": "string"
           },
-          "url": {
+          "routerLink": {
             "type": "string"
           },
           "icon": {
@@ -2145,6 +2261,112 @@
             "type": "string"
           }
         }
+      },
+      "PaginatedResponseOfAppPageModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AppPageModel"
+            }
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          },
+          "hasNextPage": {
+            "type": "boolean"
+          },
+          "dataFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DataFieldModel"
+            }
+          },
+          "filters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DataFilterModel"
+            }
+          },
+          "optionDataSources": {
+            "type": "object",
+            "additionalProperties": {}
+          }
+        }
+      },
+      "AppPageModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "subTitle": {
+            "type": "string"
+          },
+          "routerLink": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "permission": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "active": {
+            "type": "string"
+          },
+          "appPageLayout": {
+            "type": "string"
+          },
+          "optionsDataSources": {
+            "type": "object",
+            "additionalProperties": {}
+          }
+        }
+      },
+      "GetAppPageListQuery": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/DataGridModel"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false
+          }
+        ]
+      },
+      "UpsertAppPageCommand": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/AppPageModel"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false
+          }
+        ]
       },
       "PaginatedResponseOfRoleModel": {
         "type": "object",

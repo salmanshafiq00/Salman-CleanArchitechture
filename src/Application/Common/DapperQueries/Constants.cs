@@ -11,6 +11,7 @@ public static class Constants
         public const string TDate = "date";
         public const string TDateTime = "datetime";
         public const string TDateRange = "daterange";
+        public const string TNumber = "number";
     }
 
     public static class MatchMode

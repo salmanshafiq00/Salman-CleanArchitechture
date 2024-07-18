@@ -5,7 +5,7 @@ namespace CleanArchitechture.Application.Features.Admin.AppMenus.Commands;
 
 public record CreateAppMenuCommand(
     string Label,
-    string Url,
+    string RouterLink,
     string Icon,
     bool IsActive,
     bool Visible,
@@ -28,7 +28,7 @@ internal sealed class CreateAppMenuQueryHandler(
         var entity = new AppMenu
         {
             Label = request.Label,
-            RouterLink = request.Url,
+            RouterLink = request.RouterLink,
             Icon = request.Icon,
             Tooltip = request.Tooltip,
             IsActive = request.IsActive,
