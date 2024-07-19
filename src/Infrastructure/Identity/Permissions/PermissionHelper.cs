@@ -21,7 +21,7 @@ public static class PermissionHelper
         var treeNodes = new List<TreeNodeModel>();
         var rootNode = new TreeNodeModel
         {
-            Key = Guid.NewGuid(),
+            Key = "Permissions",
             Label = "Permissions",
             Children = []
         };
@@ -31,13 +31,13 @@ public static class PermissionHelper
         return treeNodes;
     }
 
-    private static void TraversePermissions(Type type, IList<TreeNodeModel> nodes, Guid parentKey)
+    private static void TraversePermissions(Type type, IList<TreeNodeModel> nodes, string parentKey)
     {
         foreach (var nestedType in type.GetNestedTypes(BindingFlags.Public | BindingFlags.Static))
         {
             var node = new TreeNodeModel
             {
-                Key = Guid.NewGuid(),
+                Key = nestedType.Name,
                 Label = nestedType.Name,
                 ParentId = parentKey,
                 Children = []
@@ -49,7 +49,7 @@ public static class PermissionHelper
             {
                 var childNode = new TreeNodeModel
                 {
-                    Key = Guid.NewGuid(),
+                    Key = field.GetValue(null).ToString(),
                     Label = field.GetValue(null).ToString(),
                     ParentId = node.Key,
                     IsActive = true // or some logic to determine if it's active

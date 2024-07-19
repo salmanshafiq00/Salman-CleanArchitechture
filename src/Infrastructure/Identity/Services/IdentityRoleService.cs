@@ -146,7 +146,7 @@ internal class IdentityRoleService(
             .AsNoTracking()
             .Where(x => x.RoleId.ToLower() == id.ToLower())
             .Select(x => x.AppMenuId)
-            .ToListAsync();
+            .ToListAsync(cancellation);
 
         return Result.Success(new RoleModel
         {
