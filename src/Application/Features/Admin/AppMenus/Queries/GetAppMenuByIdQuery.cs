@@ -1,4 +1,7 @@
 ﻿using System.Text.Json.Serialization;
+using CleanArchitechture.Application.Common.Extensions;
+using CleanArchitechture.Application.Features.Admin.Roles.Queries;
+using MediatR;
 
 namespace CleanArchitechture.Application.Features.Admin.AppMenus.Queries;
 //[Authorize(Policy = Permissions.Admin.AppMenus.View)]
@@ -17,6 +20,11 @@ internal sealed class GetAppMenuByIdQueryHandler(ISqlConnectionFactory sqlConnec
 {
     public async Task<Result<AppMenuModel?>> Handle(GetAppMenuByIdQuery query, CancellationToken cancellationToken)
     {
+        if (query.Id.IsNullOrEmpty())
+        {
+            return new AppMenuModel();
+        }
+
         var connection = sqlConnection.GetOpenConnection();
 
         var sql = $"""
