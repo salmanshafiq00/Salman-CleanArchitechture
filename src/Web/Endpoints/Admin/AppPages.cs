@@ -13,7 +13,7 @@ public class AppPages : EndpointGroupBase
         app.MapGroup(this)
             .MapPost(GetAppPages)
             .MapGet(GetAppPage, "GetPage/{id}")
-            .MapPut(UpsertPage, "UpsertPage");
+            .MapPost(UpsertPage, "UpsertPage");
 
     }
 

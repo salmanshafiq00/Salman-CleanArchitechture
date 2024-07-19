@@ -851,7 +851,7 @@
       }
     },
     "/api/AppPages/UpsertPage": {
-      "put": {
+      "post": {
         "tags": [
           "AppPages"
         ],
@@ -2340,9 +2340,87 @@
           "appPageLayout": {
             "type": "string"
           },
+          "appPageFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AppPageFieldModel"
+            }
+          },
           "optionsDataSources": {
             "type": "object",
             "additionalProperties": {}
+          }
+        }
+      },
+      "AppPageFieldModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "appPageId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "fieldName": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string"
+          },
+          "fieldType": {
+            "type": "string"
+          },
+          "dbField": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          },
+          "textAlign": {
+            "type": "string"
+          },
+          "isSortable": {
+            "type": "boolean"
+          },
+          "isFilterable": {
+            "type": "boolean"
+          },
+          "dsName": {
+            "type": "string"
+          },
+          "isGlobalFilterable": {
+            "type": "boolean"
+          },
+          "filterType": {
+            "type": "string"
+          },
+          "enableLink": {
+            "type": "boolean"
+          },
+          "linkBaseUrl": {
+            "type": "string"
+          },
+          "linkValueFieldName": {
+            "type": "string"
+          },
+          "bgColor": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          },
+          "isVisible": {
+            "type": "boolean"
+          },
+          "sortOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isActive": {
+            "type": "boolean"
           }
         }
       },

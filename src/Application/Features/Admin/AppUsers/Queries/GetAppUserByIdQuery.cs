@@ -3,13 +3,13 @@ using CleanArchitechture.Application.Common.Abstractions.Identity;
 
 namespace CleanArchitechture.Application.Features.Admin.AppUsers.Queries;
 
-public record GetAppUserByIdQuery(string id) 
+public record GetAppUserByIdQuery(string Id) 
     : ICacheableQuery<AppUserModel>
 {
     [JsonIgnore]
     public string CacheKey => CacheKeys.AppUser;
 
-    public bool? AllowCache => true;
+    public bool? AllowCache => false;
 
     public TimeSpan? Expiration => null;
 }
@@ -19,6 +19,10 @@ internal sealed class GetAppUserByIdQueryHandler(IIdentityService identityServic
 {
     public async Task<Result<AppUserModel>> Handle(GetAppUserByIdQuery request, CancellationToken cancellationToken)
     {
-        return await identityService.GetUserAsync(request.id, cancellationToken).ConfigureAwait(false);
+        if(string.IsNullOrEmpty(request.Id) || Guid.Parse(request.Id) == Guid.Empty)
+        {
+            return new AppUserModel();
+        }
+        return await identityService.GetUserAsync(request.Id, cancellationToken).ConfigureAwait(false);
     }
 }

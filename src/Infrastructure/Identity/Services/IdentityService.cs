@@ -125,7 +125,7 @@ public class IdentityService : IIdentityService
             .SingleOrDefaultAsync(u => u.Id == id, cancellation);
 
         if (user is null)
-            return Result.Failure<AppUserModel>(Error.Failure("User.Get", ErrorMessages.USER_NOT_FOUND));
+            return Result.Failure<AppUserModel>(Error.Failure("User.Found", ErrorMessages.USER_NOT_FOUND));
 
         var appUser = new AppUserModel
         {
@@ -139,7 +139,12 @@ public class IdentityService : IIdentityService
             PhoneNumber = user.PhoneNumber
         };
 
-        appUser.Roles = await _userManager.GetRolesAsync(user);
+        //appUser.Roles = await _userManager.GetRolesAsync(user);
+
+        appUser.Roles = await _identityContext.UserRoles
+            .Where(x => x.UserId == id)
+            .Select(x => x.RoleId)
+            .ToListAsync(cancellation);
 
 
         return Result.Success(appUser);

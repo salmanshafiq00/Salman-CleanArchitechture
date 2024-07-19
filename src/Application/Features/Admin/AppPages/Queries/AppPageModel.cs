@@ -15,10 +15,12 @@ public record AppPageModel
     public string Active { get; set; } = string.Empty;
     public string AppPageLayout { get; set; } = string.Empty;
 
+    public List<AppPageFieldModel> AppPageFields { get; set; } = [];
+
     public Dictionary<string, object> OptionsDataSources { get; set; } = [];
 
     public static IReadOnlyCollection<DataFieldModel> DataFields = [
-    new DataFieldModel{ Field = "id", Header = "Id", FieldType = TField.TString, DSName = string.Empty, DbField = "ap.Id", IsSortable = false, IsGlobalFilterable = false, IsFilterable = false, Visible = false, SortOrder = 0 },
+        new DataFieldModel{ Field = "id", Header = "Id", FieldType = TField.TString, DSName = string.Empty, DbField = "ap.Id", IsSortable = false, IsGlobalFilterable = false, IsFilterable = false, Visible = false, SortOrder = 0 },
         new DataFieldModel{ Field = "name", Header = "Name", FieldType = TField.TString, DSName = string.Empty, DbField = "ap.Name", IsSortable = true, IsGlobalFilterable = true, IsFilterable = true, Visible = true,  SortOrder = 1 },
         new DataFieldModel{ Field = "title", Header = "Title", FieldType = TField.TString, DSName = string.Empty, DbField = "ap.Title", IsSortable = false, IsGlobalFilterable = false,  IsFilterable = false, Visible = true, SortOrder = 2 }
     ];
@@ -35,7 +37,7 @@ public record AppPageModel
 
 public record AppPageLayout
 {
-    public List<AppPageFieldModel> AppPageFieldModels { get; set; } = [];
+    public List<AppPageFieldModel> AppPageFields { get; set; } = [];
 }
 
 public record AppPageFieldModel 
