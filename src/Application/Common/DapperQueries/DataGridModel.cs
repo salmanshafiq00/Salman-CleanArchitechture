@@ -30,12 +30,12 @@ public abstract record DataGridModel : IDataGrid
 
 public class DataFieldModel
 {
-    public string Field { get; set; } = string.Empty;
-    public string Header { get; set; } = string.Empty;
+    public string FieldName { get; set; } = string.Empty;
+    public string Caption { get; set; } = string.Empty;
     public string FieldType { get; set; } = string.Empty;
     [JsonIgnore]
     public string DbField { get; set; } = string.Empty;
-    public bool Visible { get; set; }
+    public bool IsVisible { get; set; }
     public int SortOrder { get; set; }
     public bool IsSortable { get; set; }
     public bool IsGlobalFilterable { get; set; }

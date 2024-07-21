@@ -12,8 +12,8 @@ public record RoleModel
     public Dictionary<string, object> OptionsDataSources { get; set; } = [];
 
     public static IReadOnlyCollection<DataFieldModel> DataFields = [
-        new DataFieldModel{ Field = "id", Header = "Id", DbField = "R.Id", FieldType = TField.TString, DSName = string.Empty, IsSortable = false, IsGlobalFilterable = false, IsFilterable = false, Visible = false, SortOrder = 0 },
-        new DataFieldModel{ Field = "name", Header = "Name", DbField = "R.Name", FieldType = TField.TString, DSName = string.Empty, IsSortable = true, IsGlobalFilterable = true, IsFilterable = true, Visible = true, SortOrder = 1 },
+        new DataFieldModel{ FieldName = "id", Caption = "Id", DbField = "R.Id", FieldType = TField.TString, DSName = string.Empty, IsSortable = false, IsGlobalFilterable = false, IsFilterable = false, IsVisible = false, SortOrder = 0 },
+        new DataFieldModel{ FieldName = "name", Caption = "Name", DbField = "R.Name", FieldType = TField.TString, DSName = string.Empty, IsSortable = true, IsGlobalFilterable = true, IsFilterable = true, IsVisible = true, SortOrder = 1 },
     ];
 
 

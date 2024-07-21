@@ -318,7 +318,7 @@ public class PaginatedResponse<TEntity>
         string field)
     {
         return dataFields.FirstOrDefault(x =>
-            string.Equals(x.Field, field, StringComparison.OrdinalIgnoreCase));
+            string.Equals(x.FieldName, field, StringComparison.OrdinalIgnoreCase));
     }
 
     private static void SetFiltersToGridModel(
@@ -333,7 +333,7 @@ public class PaginatedResponse<TEntity>
         {
             filters.Add(new DataFilterModel
             {
-                Field = field.Field,
+                Field = field.FieldName,
                 FieldType = field.FieldType,
                 DSName = field.DSName,
                 DataSource = []

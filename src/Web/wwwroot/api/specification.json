@@ -1444,16 +1444,16 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "field": {
+          "fieldName": {
             "type": "string"
           },
-          "header": {
+          "caption": {
             "type": "string"
           },
           "fieldType": {
             "type": "string"
           },
-          "visible": {
+          "isVisible": {
             "type": "boolean"
           },
           "sortOrder": {
