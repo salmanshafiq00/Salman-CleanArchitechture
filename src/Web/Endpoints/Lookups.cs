@@ -28,7 +28,7 @@ public class Lookups : EndpointGroupBase
         if (!query.IsInitialLoaded)
         {
             var parentSelectList = await sender.Send(new GetSelectListQuery(
-                Sql: SelectListSqls.GetLookupSelectListSql,
+                Sql: SelectListSqls.GetLookupParentSelectListSql,
                 Parameters: new { },
                 Key: CacheKeys.Lookup_All_SelectList,
                 AllowCacheList: false)

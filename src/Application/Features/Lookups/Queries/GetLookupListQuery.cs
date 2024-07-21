@@ -21,22 +21,19 @@ internal sealed class GetLookupListQueryHandler(ISqlConnectionFactory sqlConnect
 
         var sql = $"""
             SELECT 
-                L.Id AS {nameof(LookupModel.Id)}, 
-                L.Name AS {nameof(LookupModel.Name)}, 
-                L.Code AS {nameof(LookupModel.Code)}, 
-                L.ParentId AS {nameof(LookupModel.ParentId)}, 
-                P.Name AS {nameof(LookupModel.ParentName)} , 
-                L.Description AS {nameof(LookupModel.Description)},
-                IIF(L.Status = 1, 'Active', 'Inactive') AS {nameof(LookupModel.StatusName)},
-                {S.CONV}(DATE, L.Created) AS {nameof(LookupModel.Created)}
-            FROM dbo.Lookups AS L
-            LEFT JOIN dbo.Lookups AS P ON P.Id = L.ParentId
+                l.Id AS {nameof(LookupModel.Id)}, 
+                l.Name AS {nameof(LookupModel.Name)}, 
+                l.Code AS {nameof(LookupModel.Code)}, 
+                l.ParentId AS {nameof(LookupModel.ParentId)}, 
+                p.Name AS {nameof(LookupModel.ParentName)} , 
+                l.Description AS {nameof(LookupModel.Description)},
+                IIF(l.Status = 1, 'Active', 'Inactive') AS {nameof(LookupModel.StatusName)},
+                {S.CONV}(DATE, l.Created) AS {nameof(LookupModel.Created)}
+            FROM dbo.Lookups AS l
+            LEFT JOIN dbo.Lookups AS p ON p.Id = l.ParentId
             """;
-
+        var orderBy = "ORDER BY l.Name";
         return await PaginatedResponse<LookupModel>
-            //.CreateAsync(connection, sql, sqlWithOrders, request.Offset, request.PageSize);
-            .CreateAsync(connection, sql, request, dataFields: LookupModel.DataFields);
-            //.CreateAsync(connection, sql, request, dataFields: new List<DataFieldModel>(LookupModel.DataFields));
-            
+            .CreateAsync(connection, sql, request,orderBy: orderBy, dataFields: LookupModel.DataFields);            
     }
 }

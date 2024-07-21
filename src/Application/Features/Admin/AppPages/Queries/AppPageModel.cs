@@ -8,11 +8,7 @@ public record AppPageModel
     public Guid Id { get; set; }
     public string Title { get; set; } = string.Empty;
     public string SubTitle { get; set; } = string.Empty;
-    public string RouterLink { get; set; } = string.Empty;
-    public string Name { get; set; } = string.Empty;
-    public string Permission { get; set; } = string.Empty;
-    public bool IsActive { get; set; }
-    public string Active { get; set; } = string.Empty;
+    public string ComponentName { get; set; } = string.Empty;
     public string AppPageLayout { get; set; } = string.Empty;
 
     public List<AppPageFieldModel> AppPageFields { get; set; } = [];
@@ -42,8 +38,7 @@ public record AppPageLayout
 
 public record AppPageFieldModel 
 {
-    public Guid Id { get; set; }
-    public Guid AppPageId { get; set; }
+    public string Id { get; set; } = string.Empty;
     public string FieldName { get; set; } = string.Empty;
     public string Caption { get; set; } = string.Empty;
     public string FieldType { get; set; } = string.Empty;

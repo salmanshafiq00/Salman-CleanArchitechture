@@ -2323,19 +2323,7 @@
           "subTitle": {
             "type": "string"
           },
-          "routerLink": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "permission": {
-            "type": "string"
-          },
-          "isActive": {
-            "type": "boolean"
-          },
-          "active": {
+          "componentName": {
             "type": "string"
           },
           "appPageLayout": {
@@ -2358,12 +2346,7 @@
         "additionalProperties": false,
         "properties": {
           "id": {
-            "type": "string",
-            "format": "guid"
-          },
-          "appPageId": {
-            "type": "string",
-            "format": "guid"
+            "type": "string"
           },
           "fieldName": {
             "type": "string"

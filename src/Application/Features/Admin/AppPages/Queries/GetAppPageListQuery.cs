@@ -1,7 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using static CleanArchitechture.Application.Common.DapperQueries.SqlConstants;
-
-namespace CleanArchitechture.Application.Features.Admin.AppPages.Queries;
+﻿namespace CleanArchitechture.Application.Features.Admin.AppPages.Queries;
 
 //[Authorize(Policy = Permissions.Admin.AppPages.View)]
 public record GetAppPageListQuery
@@ -21,15 +18,15 @@ internal sealed class GetAppPageListQueryHandler(ISqlConnectionFactory sqlConnec
         var sql = $"""
             SELECT 
                 ap.Id AS {nameof(AppPageModel.Id)}, 
-                ap.Name AS {nameof(AppPageModel.Name)}, 
-                ap.RouterLink AS {nameof(AppPageModel.RouterLink)}, 
-                ap.Title AS {nameof(AppPageModel.Title)}, 
-                IIF(ap.IsActive = 1, 'Active', 'Inactive') AS {nameof(AppPageModel.Active)}
+                ap.ComponentName AS {nameof(AppPageModel.ComponentName)},
+                ap.Title AS {nameof(AppPageModel.Title)}
             FROM dbo.AppPages AS ap
+            WHERE 1 = 1           
             """;
-
+        var orderBy = "ORDER BY ap.ComponentName";
+        //request.DefaultOrderFieldName = "ap.ComponentName";
         return await PaginatedResponse<AppPageModel>
-            .CreateAsync(connection, sql, request, dataFields: AppPageModel.DataFields);
+            .CreateAsync(connection, sql, request, orderBy: orderBy, dataFields: AppPageModel.DataFields);
             
     }
 }

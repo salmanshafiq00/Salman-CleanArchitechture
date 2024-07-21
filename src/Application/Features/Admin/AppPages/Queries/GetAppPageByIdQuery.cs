@@ -1,7 +1,5 @@
-﻿using System.Text.Json.Serialization;
-using CleanArchitechture.Application.Common.Extensions;
+﻿namespace CleanArchitechture.Application.Features.Admin.AppPages.Queries;
 
-namespace CleanArchitechture.Application.Features.Admin.AppPages.Queries;
 //[Authorize(Policy = Permissions.Admin.AppPages.View)]
 public record GetAppPageByIdQuery(Guid Id) : ICacheableQuery<AppPageModel?>
 {
@@ -9,7 +7,7 @@ public record GetAppPageByIdQuery(Guid Id) : ICacheableQuery<AppPageModel?>
     public string CacheKey => $"AppPage_{Id}";
     [JsonIgnore]
     public TimeSpan? Expiration => null;
-    public bool? AllowCache => false;
+    public bool? AllowCache => true;
 
 }
 
@@ -30,10 +28,7 @@ internal sealed class GetAppPageByIdQueryHandler(ISqlConnectionFactory sqlConnec
                 ap.Id AS {nameof(AppPageModel.Id)}, 
                 ap.Title AS {nameof(AppPageModel.Title)}, 
                 ap.SubTitle AS {nameof(AppPageModel.SubTitle)}, 
-                ap.RouterLink AS {nameof(AppPageModel.RouterLink)}, 
-                ap.Name AS {nameof(AppPageModel.Name)}, 
-                ap.Permission AS {nameof(AppPageModel.Permission)}, 
-                ap.IsActive AS {nameof(AppPageModel.IsActive)}, 
+                ap.Name AS {nameof(AppPageModel.ComponentName)}, 
                 ap.AppPageLayout AS {nameof(AppPageModel.AppPageLayout)}
             FROM dbo.AppPages AS ap
             WHERE ap.Id = @Id

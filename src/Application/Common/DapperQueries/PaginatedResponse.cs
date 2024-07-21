@@ -51,6 +51,7 @@ public class PaginatedResponse<TEntity>
          DataGridModel gridModel,
          IReadOnlyCollection<DataFieldModel> dataFields,
          object? parameters = default,
+         string? orderBy = null,
          string? groupBy = null,
          string? having = null)
     {
@@ -81,7 +82,7 @@ public class PaginatedResponse<TEntity>
 
         #region Sorting (ORDER BY)
 
-        string defaultOrderBy = $"{S.ORDERBY} {gridModel.DefaultOrderFieldName ?? "(SELECT NULL)"}";
+        string defaultOrderBy = orderBy ?? $"{S.ORDERBY} (SELECT NULL)";
 
         string sqlOrderBy = GetOrderBySql(gridModel);
 
@@ -274,8 +275,6 @@ public class PaginatedResponse<TEntity>
                 };
             }
 
-
-
             if (!string.IsNullOrEmpty(condition))
             {
                 filterBuilder.Append(sqlOperator);
@@ -284,14 +283,13 @@ public class PaginatedResponse<TEntity>
             }
         }
 
-        sql = $"""
-            {sql} 
-            {filterBuilder.ToString()}
-            """;
+        sql = filterBuilder.Length > 0 
+            ? $"""
+                {sql} 
+                {filterBuilder.ToString()}
+             """ 
+            : sql;
     }
-
-
-
     #endregion
 
     #region Sorting Functions (ORDER BY)
@@ -306,6 +304,11 @@ public class PaginatedResponse<TEntity>
         return gridModel.SortOrder == -1
             ? $"ORDER BY {gridModel.SortField} DESC"
             : $"ORDER BY {gridModel.SortField} ASC";
+    }
+
+    private static bool HasOrderByClause(string sql)
+    {
+        return sql.Contains($"{S.ORDERBY}", StringComparison.OrdinalIgnoreCase);
     }
 
 
