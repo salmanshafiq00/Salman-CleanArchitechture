@@ -32,7 +32,7 @@ internal sealed class GetLookupListQueryHandler(ISqlConnectionFactory sqlConnect
             FROM dbo.Lookups AS l
             LEFT JOIN dbo.Lookups AS p ON p.Id = l.ParentId
             """;
-        var orderBy = "ORDER BY l.Name";
+        var orderBy = "ORDER BY Name";
         return await PaginatedResponse<LookupModel>
             .CreateAsync(connection, sql, request,orderBy: orderBy, dataFields: LookupModel.DataFields);            
     }
