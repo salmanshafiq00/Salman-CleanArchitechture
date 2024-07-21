@@ -16,9 +16,9 @@ public record AppPageModel
     public Dictionary<string, object> OptionsDataSources { get; set; } = [];
 
     public static IReadOnlyCollection<DataFieldModel> DataFields = [
-        new DataFieldModel{ FieldName = "id", Caption = "Id", FieldType = TField.TString, DSName = string.Empty, DbField = "ap.Id", IsSortable = false, IsGlobalFilterable = false, IsFilterable = false, IsVisible = false, SortOrder = 0 },
-        new DataFieldModel{ FieldName = "name", Caption = "Name", FieldType = TField.TString, DSName = string.Empty, DbField = "ap.Name", IsSortable = true, IsGlobalFilterable = true, IsFilterable = true, IsVisible = true,  SortOrder = 1 },
-        new DataFieldModel{ FieldName = "title", Caption = "Title", FieldType = TField.TString, DSName = string.Empty, DbField = "ap.Title", IsSortable = false, IsGlobalFilterable = false,  IsFilterable = false, IsVisible = true, SortOrder = 2 }
+        new DataFieldModel{ FieldName = "id", Caption = "Id", FieldType = TField.TString, DSName = string.Empty, DbField = "ap.Id", IsSortable = false, IsGlobalFilterable = true, IsFilterable = false, IsVisible = true, SortOrder = 0 },
+        new DataFieldModel{ FieldName = "componentName", Caption = "Component Name", FieldType = TField.TString, DSName = string.Empty, DbField = "ap.ComponentName", IsSortable = true, IsGlobalFilterable = true, IsFilterable = true, IsVisible = true,  SortOrder = 2 },
+        new DataFieldModel{ FieldName = "title", Caption = "Title", FieldType = TField.TString, DSName = string.Empty, DbField = "ap.Title", IsSortable = true, IsGlobalFilterable = true,  IsFilterable = false, IsVisible = true, SortOrder = 1 }
     ];
 
 

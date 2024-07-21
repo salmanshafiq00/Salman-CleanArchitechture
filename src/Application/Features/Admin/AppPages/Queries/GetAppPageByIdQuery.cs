@@ -28,7 +28,7 @@ internal sealed class GetAppPageByIdQueryHandler(ISqlConnectionFactory sqlConnec
                 ap.Id AS {nameof(AppPageModel.Id)}, 
                 ap.Title AS {nameof(AppPageModel.Title)}, 
                 ap.SubTitle AS {nameof(AppPageModel.SubTitle)}, 
-                ap.Name AS {nameof(AppPageModel.ComponentName)}, 
+                ap.ComponentName AS {nameof(AppPageModel.ComponentName)}, 
                 ap.AppPageLayout AS {nameof(AppPageModel.AppPageLayout)}
             FROM dbo.AppPages AS ap
             WHERE ap.Id = @Id

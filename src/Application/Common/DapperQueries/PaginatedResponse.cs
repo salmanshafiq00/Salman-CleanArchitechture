@@ -132,7 +132,7 @@ public class PaginatedResponse<TEntity>
             count,
             (gridModel.Offset / gridModel.PageSize) + 1,
             gridModel.PageSize,
-            dataFields,
+            [.. dataFields.OrderBy(x => x.SortOrder)],
             [.. gridModel.Filters]);
     }
 
@@ -179,7 +179,7 @@ public class PaginatedResponse<TEntity>
         {
             if (isFirst)
             {
-                globalFilter.Append("(");
+                globalFilter.Append('(');
                 isFirst = false;
             }
             else
@@ -197,11 +197,11 @@ public class PaginatedResponse<TEntity>
             }
         }
 
-        if (!isFirst) globalFilter.Append(")");
+        if (!isFirst) globalFilter.Append(')');
 
         sql = $"""
             {sql} 
-            {S.AND} {globalFilter.ToString()}
+            {S.AND} {globalFilter}
             """;
     }
 
