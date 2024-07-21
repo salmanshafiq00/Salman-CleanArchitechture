@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using Dapper;
 
 namespace CleanArchitechture.Application.Common.DapperQueries;
 

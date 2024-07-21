@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using CleanArchitechture.Application.Common.Abstractions.Caching;
 using CleanArchitechture.Domain.Common;
 using Microsoft.AspNetCore.Http;
 

@@ -1,9 +1,5 @@
-﻿using System.Text.Json.Serialization;
-using CleanArchitechture.Application.Common.Extensions;
-using CleanArchitechture.Application.Features.Admin.Roles.Queries;
-using MediatR;
+﻿namespace CleanArchitechture.Application.Features.Admin.AppMenus.Queries;
 
-namespace CleanArchitechture.Application.Features.Admin.AppMenus.Queries;
 //[Authorize(Policy = Permissions.Admin.AppMenus.View)]
 public record GetAppMenuByIdQuery(Guid Id) : ICacheableQuery<AppMenuModel?>
 {

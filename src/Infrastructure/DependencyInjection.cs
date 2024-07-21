@@ -1,6 +1,6 @@
 ﻿using CleanArchitechture.Application.Common.Abstractions;
+using CleanArchitechture.Application.Common.Abstractions.Caching;
 using CleanArchitechture.Application.Common.Abstractions.Identity;
-using CleanArchitechture.Application.Common.Caching;
 using CleanArchitechture.Application.Common.DapperQueries;
 using CleanArchitechture.Domain.Constants;
 using CleanArchitechture.Infrastructure.Caching;

@@ -1,4 +1,5 @@
 ﻿
+using CleanArchitechture.Application.Common.Abstractions.Caching;
 using CleanArchitechture.Domain.Common;
 
 namespace CleanArchitechture.Application.Features.LookupDetails.Commands;

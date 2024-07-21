@@ -1,4 +1,4 @@
-﻿using CleanArchitechture.Application.Common.Caching;
+﻿using CleanArchitechture.Application.Common.Abstractions.Caching;
 using CleanArchitechture.Application.Common.Constants.CommonSqlConstants;
 using CleanArchitechture.Application.Common.DapperQueries;
 using CleanArchitechture.Application.Common.Extensions;

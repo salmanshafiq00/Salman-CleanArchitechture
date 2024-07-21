@@ -1,4 +1,5 @@
 ﻿using Application.Constants;
+using CleanArchitechture.Application.Common.Abstractions.Caching;
 
 namespace CleanArchitechture.Application.Features.Lookups.Commands;
 

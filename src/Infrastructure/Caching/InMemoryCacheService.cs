@@ -1,4 +1,4 @@
-﻿using CleanArchitechture.Application.Common.Caching;
+﻿using CleanArchitechture.Application.Common.Abstractions.Caching;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace CleanArchitechture.Infrastructure.Caching;

@@ -1,6 +1,5 @@
 ﻿using System.Data;
 using System.Text;
-using System.Text.Json.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using static CleanArchitechture.Application.Common.DapperQueries.Constants;
 using static CleanArchitechture.Application.Common.DapperQueries.SqlConstants;

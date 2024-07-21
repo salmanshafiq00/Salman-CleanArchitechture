@@ -1,5 +1,4 @@
-﻿
-namespace CleanArchitechture.Application.Common.Caching;
+﻿namespace CleanArchitechture.Application.Common.Abstractions.Caching;
 
 public interface IDistributedCacheService
 {

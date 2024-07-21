@@ -1,4 +1,5 @@
 ﻿using Application.Constants;
+using CleanArchitechture.Application.Common.Abstractions.Caching;
 using CleanArchitechture.Application.Common.Events;
 using CleanArchitechture.Domain.Common;
 

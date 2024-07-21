@@ -1,4 +1,6 @@
-﻿namespace CleanArchitechture.Application.Common.Behaviours;
+﻿using CleanArchitechture.Application.Common.Abstractions.Caching;
+
+namespace CleanArchitechture.Application.Common.Behaviours;
 
 internal sealed class CacheInvalidationBehaviour<TRequest, TResponse>(
     ILogger<CacheInvalidationBehaviour<TRequest, TResponse>> logger,

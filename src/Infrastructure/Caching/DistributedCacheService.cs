@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Text.Json;
-using CleanArchitechture.Application.Common.Caching;
+using CleanArchitechture.Application.Common.Abstractions.Caching;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;
