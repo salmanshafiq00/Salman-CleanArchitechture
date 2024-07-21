@@ -1453,12 +1453,12 @@
           "fieldType": {
             "type": "string"
           },
-          "isVisible": {
-            "type": "boolean"
-          },
           "sortOrder": {
             "type": "integer",
             "format": "int32"
+          },
+          "isVisible": {
+            "type": "boolean"
           },
           "isSortable": {
             "type": "boolean"
@@ -1494,6 +1494,9 @@
             "type": "string"
           },
           "dsName": {
+            "type": "string"
+          },
+          "dbField": {
             "type": "string"
           },
           "dataSource": {

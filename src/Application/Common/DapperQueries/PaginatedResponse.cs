@@ -339,7 +339,7 @@ public class PaginatedResponse<TEntity>
                 Field = field.FieldName,
                 FieldType = field.FieldType,
                 DSName = field.DSName,
-                DataSource = []
+                DataSource = [] 
             });
         }
         if (filters.Count > 0)

@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using static CleanArchitechture.Application.Common.DapperQueries.SqlConstants;
+﻿using static CleanArchitechture.Application.Common.DapperQueries.SqlConstants;
 using static CleanArchitechture.Application.Common.Security.Permissions;
 
 namespace CleanArchitechture.Application.Features.Lookups.Queries;

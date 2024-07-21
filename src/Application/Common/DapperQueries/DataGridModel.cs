@@ -35,8 +35,8 @@ public class DataFieldModel
     public string FieldType { get; set; } = string.Empty;
     [JsonIgnore]
     public string DbField { get; set; } = string.Empty;
-    public bool IsVisible { get; set; }
     public int SortOrder { get; set; }
+    public bool IsVisible { get; set; }
     public bool IsSortable { get; set; }
     public bool IsGlobalFilterable { get; set; }
     public bool IsFilterable { get; set; }
@@ -51,6 +51,7 @@ public class DataFilterModel
     public string MatchMode { get; set; } = string.Empty;
     public string Operator { get; set; } = string.Empty;
     public string DSName {  get; set; } = string.Empty;
+    public string DbField { get; set; } = string.Empty;
     public List<SelectListModel> DataSource { get; set; } = [];
 }
 
