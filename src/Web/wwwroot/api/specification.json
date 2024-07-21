@@ -1428,7 +1428,8 @@
           },
           "lookupId": {
             "type": "string",
-            "format": "guid"
+            "format": "guid",
+            "nullable": true
           },
           "lookupName": {
             "type": "string"

@@ -12,7 +12,7 @@ public record LookupDetailModel
     public string StatusName { get; set; } = string.Empty;
     public Guid? ParentId { get; set; }
     public string ParentName { get; set; } = string.Empty;
-    public Guid LookupId { get; set; }
+    public Guid? LookupId { get; set; }
     public string LookupName { get; set; } = string.Empty;
     public Dictionary<string, object> OptionDataSources { get; set; } = [];
 

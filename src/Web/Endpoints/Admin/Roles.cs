@@ -1,10 +1,7 @@
-﻿using CleanArchitechture.Application.Common.DapperQueries;
-using CleanArchitechture.Application.Common.Models;
+﻿using CleanArchitechture.Application.Common.Models;
 using CleanArchitechture.Application.Features.Admin.AppMenus.Queries;
 using CleanArchitechture.Application.Features.Admin.Roles.Commands;
 using CleanArchitechture.Application.Features.Admin.Roles.Queries;
-using CleanArchitechture.Web.Extensions;
-using Microsoft.AspNetCore.Mvc;
 
 namespace CleanArchitechture.Web.Endpoints.Admin;
 

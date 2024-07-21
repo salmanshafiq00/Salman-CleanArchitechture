@@ -5,7 +5,7 @@ namespace CleanArchitechture.Application.Common.Behaviours;
 
 internal sealed class RequestLoggingBehaviour<TRequest, TResponse>
     : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : class
+    where TRequest : IBaseRequest
     where TResponse : Result
 {
     private readonly ILogger _logger;

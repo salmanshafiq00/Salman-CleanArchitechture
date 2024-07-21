@@ -1,6 +1,4 @@
-﻿using CleanArchitechture.Infrastructure.Identity;
-
-namespace CleanArchitechture.Web.Endpoints;
+﻿namespace CleanArchitechture.Web.Endpoints;
 
 public class Users : EndpointGroupBase
 {

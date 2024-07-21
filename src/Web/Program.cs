@@ -1,6 +1,7 @@
 using CleanArchitechture.Application.Common.Abstractions;
 using CleanArchitechture.Infrastructure.Persistence;
 using CleanArchitechture.Web.Extensions;
+using CleanArchitechture.Web.Middlewares;
 using Hangfire;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;

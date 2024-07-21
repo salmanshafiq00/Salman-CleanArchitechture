@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text;
 
-namespace CleanArchitechture.Web.Infrastructure;
+namespace CleanArchitechture.Web.Middlewares;
 
 public class DateTimeAdjustmentMiddleware
 {

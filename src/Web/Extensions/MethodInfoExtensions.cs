@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace CleanArchitechture.Web.Infrastructure;
+namespace CleanArchitechture.Web.Extensions;
 
 public static class MethodInfoExtensions
 {

@@ -3,7 +3,7 @@
 internal sealed class ValidationBehaviour<TRequest, TResponse>(
     IEnumerable<IValidator<TRequest>> validators)
     : IPipelineBehavior<TRequest, TResponse>
-     where TRequest : notnull
+     where TRequest : IBaseCommand
      where TResponse : Result
 {
 

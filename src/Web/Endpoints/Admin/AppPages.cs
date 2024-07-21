@@ -1,8 +1,5 @@
-﻿using CleanArchitechture.Application.Common.DapperQueries;
-using CleanArchitechture.Application.Features.Admin.AppPages.Commands;
+﻿using CleanArchitechture.Application.Features.Admin.AppPages.Commands;
 using CleanArchitechture.Application.Features.Admin.AppPages.Queries;
-using CleanArchitechture.Web.Extensions;
-using Microsoft.AspNetCore.Mvc;
 
 namespace CleanArchitechture.Web.Endpoints.Admin;
 

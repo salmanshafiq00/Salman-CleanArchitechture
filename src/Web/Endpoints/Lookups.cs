@@ -1,15 +1,9 @@
-﻿using Azure.Core;
-using CleanArchitechture.Application.Common.Abstractions.Caching;
-using CleanArchitechture.Application.Common.Constants.CommonSqlConstants;
-using CleanArchitechture.Application.Common.DapperQueries;
-using CleanArchitechture.Application.Common.Extensions;
+﻿using CleanArchitechture.Application.Common.Extensions;
 using CleanArchitechture.Application.Common.Models;
 using CleanArchitechture.Application.Features.Admin.AppMenus.Queries;
 using CleanArchitechture.Application.Features.Common.Queries;
 using CleanArchitechture.Application.Features.Lookups.Commands;
 using CleanArchitechture.Application.Features.Lookups.Queries;
-using CleanArchitechture.Web.Extensions;
-using Microsoft.AspNetCore.Mvc;
 
 namespace CleanArchitechture.Web.Endpoints;
 

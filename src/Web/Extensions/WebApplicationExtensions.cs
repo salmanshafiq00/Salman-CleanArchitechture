@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
+using CleanArchitechture.Web.Extensions;
 
-namespace CleanArchitechture.Web.Infrastructure;
+namespace CleanArchitechture.Web.Extensions;
 
 public static class WebApplicationExtensions
 {

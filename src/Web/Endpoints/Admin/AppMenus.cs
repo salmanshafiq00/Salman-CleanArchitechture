@@ -1,13 +1,7 @@
-﻿using CleanArchitechture.Application.Common.Abstractions.Caching;
-using CleanArchitechture.Application.Common.Constants.CommonSqlConstants;
-using CleanArchitechture.Application.Common.DapperQueries;
-using CleanArchitechture.Application.Common.Extensions;
+﻿using CleanArchitechture.Application.Common.Extensions;
 using CleanArchitechture.Application.Features.Admin.AppMenus.Commands;
 using CleanArchitechture.Application.Features.Admin.AppMenus.Queries;
 using CleanArchitechture.Application.Features.Common.Queries;
-using CleanArchitechture.Web.Extensions;
-using Microsoft.AspNetCore.Mvc;
-using NSwag.Annotations;
 
 namespace CleanArchitechture.Web.Endpoints.Admin;
 

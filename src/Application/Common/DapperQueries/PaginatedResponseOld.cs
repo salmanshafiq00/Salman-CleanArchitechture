@@ -5,7 +5,7 @@ namespace CleanArchitechture.Application.Common.DapperQueries;
 public class PaginatedResponseOld<TEntity>
     where TEntity : class
 {
-    [System.Text.Json.Serialization.JsonInclude]
+    [JsonInclude]
     public IReadOnlyCollection<TEntity> Items { get; init; }
     public int PageNumber { get; init; }
     public int TotalPages { get; init; }
