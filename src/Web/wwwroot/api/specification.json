@@ -1453,6 +1453,9 @@
           "fieldType": {
             "type": "string"
           },
+          "dbField": {
+            "type": "string"
+          },
           "sortOrder": {
             "type": "integer",
             "format": "int32"
@@ -1478,7 +1481,7 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "field": {
+          "fieldName": {
             "type": "string"
           },
           "fieldType": {
@@ -1578,11 +1581,35 @@
           "globalFilterValue": {
             "type": "string"
           },
+          "globalFilterFields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GlobalFilterFieldModel"
+            }
+          },
           "filters": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/DataFilterModel"
             }
+          }
+        }
+      },
+      "GlobalFilterFieldModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "fieldName": {
+            "type": "string"
+          },
+          "dbField": {
+            "type": "string"
+          },
+          "fieldType": {
+            "type": "string"
+          },
+          "matchMode": {
+            "type": "string"
           }
         }
       },

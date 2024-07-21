@@ -33,6 +33,6 @@ internal sealed class GetLookupListQueryHandler(ISqlConnectionFactory sqlConnect
             """;
         var orderBy = "ORDER BY Name";
         return await PaginatedResponse<LookupModel>
-            .CreateAsync(connection, sql, request,orderBy: orderBy, dataFields: LookupModel.DataFields);            
+            .CreateAsync(connection, sql, request,orderBy: orderBy);            
     }
 }

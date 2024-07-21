@@ -34,14 +34,12 @@ public class PaginatedResponse<TEntity>
         int count,
         int pageNumber,
         int pageSize,
-        IReadOnlyCollection<DataFieldModel> dataFields,
-        HashSet<DataFilterModel> filters)
+        HashSet<DataFilterModel>? filters = null)
     {
         PageNumber = pageNumber;
         TotalPages = (int)Math.Ceiling(count / (double)pageSize);
         TotalCount = count;
         Items = items;
-        DataFields = dataFields;
         Filters = filters;
     }
 
@@ -49,7 +47,6 @@ public class PaginatedResponse<TEntity>
          IDbConnection connection,
          string sql,
          DataGridModel gridModel,
-         IReadOnlyCollection<DataFieldModel> dataFields,
          object? parameters = default,
          string? orderBy = null,
          string? groupBy = null,
@@ -62,9 +59,9 @@ public class PaginatedResponse<TEntity>
 
         SetWhereCluaseIfNotExist(ref sql);
 
-        SetGlobalFilterSql(gridModel, ref sql, dataFields);
+        SetGlobalFilterSql(gridModel, ref sql);
 
-        SetFilterSql(ref sql, gridModel, dataFields);
+        SetFilterSql(ref sql, gridModel);
 
         #endregion
 
@@ -125,15 +122,15 @@ public class PaginatedResponse<TEntity>
         var count = await connection
             .ExecuteScalarAsync<int>($"{S.SELECT} {S.COUNT}(*) {S.FROM} ({sql}) as CountQuery", param);
 
-        SetFiltersToGridModel(gridModel, dataFields);
+        //SetFiltersToGridModel(gridModel, dataFields);
 
         return new PaginatedResponse<TEntity>(
             items.AsList(),
             count,
             (gridModel.Offset / gridModel.PageSize) + 1,
-            gridModel.PageSize,
-            [.. dataFields.OrderBy(x => x.SortOrder)],
-            [.. gridModel.Filters]);
+            gridModel.PageSize
+            //[.. gridModel.Filters]
+            );
     }
 
 
@@ -162,8 +159,7 @@ public class PaginatedResponse<TEntity>
 
     private static void SetGlobalFilterSql(
         DataGridModel gridModel,
-        ref string sql,
-        IReadOnlyCollection<DataFieldModel> dataFields)
+        ref string sql)
     {
 
         if (string.IsNullOrEmpty(gridModel.GlobalFilterValue)
@@ -175,7 +171,7 @@ public class PaginatedResponse<TEntity>
         StringBuilder globalFilter = new();
 
         bool isFirst = true;
-        foreach (var dataField in dataFields.Where(x => x.IsGlobalFilterable))
+        foreach (var field in gridModel.GlobalFilterFields)
         {
             if (isFirst)
             {
@@ -187,13 +183,13 @@ public class PaginatedResponse<TEntity>
                 globalFilter.Append(" OR ");
             }
 
-            if (dataField.FieldType == TField.TDate)
+            if (field.FieldType == TField.TDate)
             {
-                globalFilter.Append($"{S.CONV}(NVARCHAR(10), {dataField.DbField}, 103) {S.LIKE} @GlobalFilterValue");
+                globalFilter.Append($"{S.CONV}(NVARCHAR(10), {field.DbField}, 103) {S.LIKE} @GlobalFilterValue");
             }
             else
             {
-                globalFilter.Append($"{S.LOWER}({dataField.DbField}) {S.LIKE} @GlobalFilterValue");
+                globalFilter.Append($"{S.LOWER}({field.DbField}) {S.LIKE} @GlobalFilterValue");
             }
         }
 
@@ -207,8 +203,7 @@ public class PaginatedResponse<TEntity>
 
     private static void SetFilterSql(
         ref string sql,
-        DataGridModel gridModel,
-        IReadOnlyCollection<DataFieldModel> dataFields)
+        DataGridModel gridModel)
     {
         if (gridModel.Filters.Count == 0
             || !gridModel.Filters.Any(x => string.IsNullOrEmpty(x.Value)))
@@ -222,55 +217,55 @@ public class PaginatedResponse<TEntity>
         {
             string sqlOperator = string.IsNullOrEmpty(filter.Operator) ? $" {S.AND}" : filter.Operator.ToUpper();
 
-            var dataField = GetDataField(dataFields, filter.Field);
+            //var dataField = GetDataField(dataFields, filter.FieldName);
 
-            if (dataField is null) continue;
+            //if (dataField is null) continue;
 
             string condition = string.Empty;
 
-            if (dataField?.FieldType == TField.TString)
+            if (filter?.FieldType == TField.TString)
             {
                 condition = filter.MatchMode switch
                 {
-                    MatchMode.STARTS_WITH => $"{S.LOWER}({dataField.DbField}) {S.LIKE} {S.LOWER}('{filter.Value}%')",
-                    MatchMode.ENDS_WITH => $"{S.LOWER}({dataField.DbField}) {S.LIKE} {S.LOWER}('%{filter.Value}')",
-                    MatchMode.CONTAINS => $"{S.LOWER}({dataField.DbField}) {S.LIKE} {S.LOWER}('%{filter.Value}%')",
-                    MatchMode.NOT_CONTAINS => $"{S.LOWER}({dataField.DbField}) {S.LIKE} {S.LOWER}('%{filter.Value}%')",
-                    MatchMode.EQUALS => $"{S.LOWER}({dataField.DbField}) = {S.LOWER}('{filter.Value}')",
-                    MatchMode.NOT_EQUALS => $"{S.LOWER}({dataField.DbField}) != {S.LOWER}('{filter.Value}')",
+                    MatchMode.STARTS_WITH => $"{S.LOWER}({filter.DbField}) {S.LIKE} {S.LOWER}('{filter.Value}%')",
+                    MatchMode.ENDS_WITH => $"{S.LOWER}({filter.DbField}) {S.LIKE} {S.LOWER}('%{filter.Value}')",
+                    MatchMode.CONTAINS => $"{S.LOWER}({filter.DbField}) {S.LIKE} {S.LOWER}('%{filter.Value}%')",
+                    MatchMode.NOT_CONTAINS => $"{S.LOWER}({filter.DbField}) {S.LIKE} {S.LOWER}('%{filter.Value}%')",
+                    MatchMode.EQUALS => $"{S.LOWER}({filter.DbField}) = {S.LOWER}('{filter.Value}')",
+                    MatchMode.NOT_EQUALS => $"{S.LOWER}({filter.DbField}) != {S.LOWER}('{filter.Value}')",
                     _ => throw new InvalidOperationException($"Unknown MatchMode: {filter.MatchMode}")
                 };
             }
-            else if (dataField?.FieldType == TField.TSelect)
+            else if (filter?.FieldType == TField.TSelect)
             {
                 condition = filter.MatchMode switch
                 {
-                    MatchMode.EQUALS => $"{dataField.DbField} = {filter.Value.ToUpper()}",
-                    MatchMode.NOT_EQUALS => $"{dataField.DbField} != {filter.Value.ToUpper()}",
-                    _ => throw new InvalidOperationException($"Unknown MatchMode: {filter.MatchMode}")
-                };
-
-            }
-            else if (dataField?.FieldType == TField.TMultiSelect)
-            {
-                condition = filter.MatchMode switch
-                {
-                    MatchMode.IN => $"{dataField.DbField} {S.IN} ({filter.Value.ToUpper()})",
-                    MatchMode.NOTIN => $"{dataField.DbField} {S.NOT} {S.IN} ({filter.Value.ToUpper()})",
+                    MatchMode.EQUALS => $"{filter.DbField} = {filter.Value.ToUpper()}",
+                    MatchMode.NOT_EQUALS => $"{filter.DbField} != {filter.Value.ToUpper()}",
                     _ => throw new InvalidOperationException($"Unknown MatchMode: {filter.MatchMode}")
                 };
 
             }
-            else if (dataField?.FieldType == TField.TDate)
+            else if (filter?.FieldType == TField.TMultiSelect)
             {
                 condition = filter.MatchMode switch
                 {
-                    MatchMode.DATE_IS => $"{S.CONV}(DATE, {dataField.DbField}) = '{filter.Value}'",
-                    MatchMode.DATE_IS_NOT => $"{S.CONV}(DATE, {dataField.DbField}) <> '{filter.Value}'",
-                    MatchMode.DATE_BEFORE => $"{S.CONV}(DATE, {dataField.DbField}) < '{filter.Value}'",
-                    MatchMode.DATE_AFTER => $"{S.CONV}(DATE, {dataField.DbField}) > '{filter.Value}'",
-                    MatchMode.DATE_IS_OR_BEFORE => $"{S.CONV}(DATE, {dataField.DbField}) <= '{filter.Value}'",
-                    MatchMode.DATE_IS_OR_AFTER => $"{S.CONV}(DATE, {dataField.DbField}) >= '{filter.Value}'",
+                    MatchMode.IN => $"{filter.DbField} {S.IN} ({filter.Value.ToUpper()})",
+                    MatchMode.NOTIN => $"{filter.DbField} {S.NOT} {S.IN} ({filter.Value.ToUpper()})",
+                    _ => throw new InvalidOperationException($"Unknown MatchMode: {filter.MatchMode}")
+                };
+
+            }
+            else if (filter?.FieldType == TField.TDate)
+            {
+                condition = filter.MatchMode switch
+                {
+                    MatchMode.DATE_IS => $"{S.CONV}(DATE, {filter.DbField}) = '{filter.Value}'",
+                    MatchMode.DATE_IS_NOT => $"{S.CONV}(DATE, {filter.DbField}) <> '{filter.Value}'",
+                    MatchMode.DATE_BEFORE => $"{S.CONV}(DATE, {filter.DbField}) < '{filter.Value}'",
+                    MatchMode.DATE_AFTER => $"{S.CONV}(DATE, {filter.DbField}) > '{filter.Value}'",
+                    MatchMode.DATE_IS_OR_BEFORE => $"{S.CONV}(DATE, {filter.DbField}) <= '{filter.Value}'",
+                    MatchMode.DATE_IS_OR_AFTER => $"{S.CONV}(DATE, {filter.DbField}) >= '{filter.Value}'",
                     _ => throw new InvalidOperationException($"Unknown MatchMode: {filter.MatchMode}")
                 };
             }
@@ -336,7 +331,7 @@ public class PaginatedResponse<TEntity>
         {
             filters.Add(new DataFilterModel
             {
-                Field = field.FieldName,
+                FieldName = field.FieldName,
                 FieldType = field.FieldType,
                 DSName = field.DSName,
                 DataSource = [] 

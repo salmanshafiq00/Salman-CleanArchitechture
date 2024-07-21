@@ -55,7 +55,7 @@ internal sealed class GetAppUserListQueryHandler(ISqlConnectionFactory sqlConnec
             """;
 
         return await PaginatedResponse<AppUserModel>
-            .CreateAsync(connection, sql, request, dataFields: AppUserModel.DataFields, groupBy: groupBy);
+            .CreateAsync(connection, sql, request, groupBy: groupBy);
 
     }
 }

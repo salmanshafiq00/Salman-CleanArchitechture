@@ -33,7 +33,7 @@ internal sealed class GetAppMenuListQueryHandler(ISqlConnectionFactory sqlConnec
             """;
 
         return await PaginatedResponse<AppMenuModel>
-            .CreateAsync(connection, sql, request, dataFields: AppMenuModel.DataFields);
+            .CreateAsync(connection, sql, request);
             
     }
 }

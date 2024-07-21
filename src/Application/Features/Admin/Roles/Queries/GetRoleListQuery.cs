@@ -24,7 +24,7 @@ internal sealed class GetRoleListQueryHandler(ISqlConnectionFactory sqlConnectio
             """;
 
         return await PaginatedResponse<RoleModel>
-            .CreateAsync(connection, sql, request, dataFields: RoleModel.DataFields);
+            .CreateAsync(connection, sql, request);
 
     }
 }

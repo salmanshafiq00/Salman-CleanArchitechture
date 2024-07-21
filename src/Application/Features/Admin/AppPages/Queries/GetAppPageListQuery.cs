@@ -24,9 +24,9 @@ internal sealed class GetAppPageListQueryHandler(ISqlConnectionFactory sqlConnec
             WHERE 1 = 1           
             """;
         var orderBy = "ORDER BY ap.ComponentName";
-        //request.DefaultOrderFieldName = "ap.ComponentName";
+
         return await PaginatedResponse<AppPageModel>
-            .CreateAsync(connection, sql, request, orderBy: orderBy, dataFields: AppPageModel.DataFields);
+            .CreateAsync(connection, sql, request, orderBy: orderBy);
             
     }
 }

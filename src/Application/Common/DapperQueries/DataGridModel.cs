@@ -23,6 +23,7 @@ public abstract record DataGridModel : IDataGrid
 
     //Global Filter
     public string GlobalFilterValue { get; set; } = string.Empty;
+    public List<GlobalFilterFieldModel> GlobalFilterFields { get; set; } = [];
 
     // Filter
     public List<DataFilterModel> Filters { get; set; } = [];
@@ -33,7 +34,6 @@ public class DataFieldModel
     public string FieldName { get; set; } = string.Empty;
     public string Caption { get; set; } = string.Empty;
     public string FieldType { get; set; } = string.Empty;
-    [JsonIgnore]
     public string DbField { get; set; } = string.Empty;
     public int SortOrder { get; set; }
     public bool IsVisible { get; set; }
@@ -45,7 +45,7 @@ public class DataFieldModel
 
 public class DataFilterModel
 {
-    public string Field { get; set; } = string.Empty;
+    public string FieldName { get; set; } = string.Empty;
     public string FieldType { get; set; } = string.Empty;
     public string Value { get; set; } = string.Empty;
     public string MatchMode { get; set; } = string.Empty;
@@ -53,5 +53,13 @@ public class DataFilterModel
     public string DSName {  get; set; } = string.Empty;
     public string DbField { get; set; } = string.Empty;
     public List<SelectListModel> DataSource { get; set; } = [];
+}
+
+public class GlobalFilterFieldModel
+{
+    public string FieldName { get; set; } = string.Empty;
+    public string DbField { get; set; } = string.Empty;
+    public string FieldType { get; set; } = string.Empty;
+    public string MatchMode { get; set; } = string.Empty;
 }
 

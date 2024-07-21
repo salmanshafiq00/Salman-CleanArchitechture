@@ -41,6 +41,6 @@ internal sealed class GetLookupDetailListQueryHandler(ISqlConnectionFactory sqlC
 
         return await PaginatedResponse<LookupDetailModel>
             //.CreateAsync(connection, sql, sqlWithOrders, request.PageNumber, request.PageSize);
-            .CreateAsync(connection, sql, request, dataFields: LookupModel.DataFields);
+            .CreateAsync(connection, sql, request);
     }
 }
