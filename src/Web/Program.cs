@@ -43,7 +43,8 @@ ServiceLocator.ServiceProvider = app.Services;
 
 if (app.Environment.IsDevelopment())
 {
-    await app.InitialiseDatabaseAsync();
+    await app.IdentityInitialiseDatabaseAsync();
+    await app.AppInitialiseDatabaseAsync();
 
     app.UseSwaggerUi(settings =>
     {

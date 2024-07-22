@@ -49,7 +49,7 @@ public class AppMenus : EndpointGroupBase
 
         var menuTypeSelectList = await sender.Send(new GetSelectListQuery(
         Sql: SelectListSqls.GetLookupDetailSelectListByDevCodeSql,
-        Parameters: new { DevCode = 1001 },
+        Parameters: new { DevCode = 101 },
         Key: CacheKeys.LookupDetail_All_SelectList,
         AllowCacheList: false));
         result?.Value?.OptionsDataSources.Add("menuTypeSelectList", menuTypeSelectList.Value);

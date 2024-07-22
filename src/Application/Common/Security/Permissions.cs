@@ -3,29 +3,44 @@
 public static class Permissions
 {
     // These will generate all constant property value of particular module like Faculties
-    public static List<string> GeneratePermissionsForModule(string module)
+    public static List<string> GetPermissionsByfeature(string feature)
     {
         return new List<string>
             {
-                 $"Permissions.{module}.Create",
-                 $"Permissions.{module}.View",
-                 $"Permissions.{module}.Edit",
-                 $"Permissions.{module}.Delete"
+                 $"Permissions.{feature}.Create",
+                 $"Permissions.{feature}.View",
+                 $"Permissions.{feature}.Edit",
+                 $"Permissions.{feature}.Delete"
             };
+    }
+
+    public static List<string> GetPermissionsByfeatures(List<string> features)
+    {
+        List<string> permissions = [];
+        foreach (string feature in features)
+        {
+            permissions.AddRange(new List<string>
+            {
+                 $"Permissions.{feature}.Create",
+                 $"Permissions.{feature}.View",
+                 $"Permissions.{feature}.Edit",
+                 $"Permissions.{feature}.Delete"
+            });
+        }
+        return permissions;
     }
 
     /// <summary>
     /// These will generate list of modules name (string) like ApplicationUsers, IdentityRoles
     /// </summary>
     /// <returns>List<string></returns>
-    public static List<string> GetAllNestedModule()
+    public static List<string> GetAllNestedModule(Type type)
     {
-        Type permissionType = typeof(Permissions);
-        Type[] nestedTypes = permissionType.GetNestedTypes();
+        Type[] nestedTypes = type.GetNestedTypes();
         List<string> result = [];
-        foreach (var type in nestedTypes)
+        foreach (var nestedType in nestedTypes)
         {
-            result.Add(type.Name);
+            result.Add(nestedType.Name);
         }
         return result;
     }
@@ -34,10 +49,9 @@ public static class Permissions
     /// These will generate list of modules type (Type) like ApplicationUsers, IdentityRoles
     /// </summary>
     /// <returns>Type[]</returns>
-    public static Type[] GetAllNestedModuleType()
+    public static Type[] GetAllNestedModuleType(Type type)
     {
-        Type permissionType = typeof(Permissions);
-        Type[] nestedTypes = permissionType.GetNestedTypes();
+        Type[] nestedTypes = type.GetNestedTypes();
         return nestedTypes;
     }
 

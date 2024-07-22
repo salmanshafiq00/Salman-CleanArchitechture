@@ -1,5 +1,8 @@
-﻿using CleanArchitechture.Domain.Constants;
+﻿using System.Security.Claims;
+using CleanArchitechture.Application.Common.Security;
+using CleanArchitechture.Domain.Constants;
 using CleanArchitechture.Infrastructure.Identity;
+using CleanArchitechture.Infrastructure.Identity.Permissions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -8,17 +11,17 @@ using Microsoft.Extensions.Logging;
 
 namespace CleanArchitechture.Infrastructure.Persistence;
 
-public static class InitialiserExtensions
+public static class IdentityInitialiserExtensions
 {
-    public static async Task InitialiseDatabaseAsync(this WebApplication app)
+    public static async Task IdentityInitialiseDatabaseAsync(this WebApplication app)
     {
         using var scope = app.Services.CreateScope();
 
-        var initialiser = scope.ServiceProvider.GetRequiredService<IdentityDbContextInitialiser>();
+        var identityInitialiser = scope.ServiceProvider.GetRequiredService<IdentityDbContextInitialiser>();
 
-        await initialiser.InitialiseAsync();
+        await identityInitialiser.InitialiseAsync();
 
-        await initialiser.SeedAsync();
+        await identityInitialiser.SeedAsync();
     }
 }
 
@@ -45,7 +48,7 @@ internal sealed class IdentityDbContextInitialiser(
     {
         try
         {
-            await TrySeedAsync();
+            await SeedDefaultIdentityAsync();
         }
         catch (Exception ex)
         {
@@ -54,7 +57,7 @@ internal sealed class IdentityDbContextInitialiser(
         }
     }
 
-    public async Task TrySeedAsync()
+    private async Task SeedDefaultIdentityAsync()
     {
         // Default roles
         var administratorRole = new IdentityRole(Roles.Administrator);
@@ -62,6 +65,18 @@ internal sealed class IdentityDbContextInitialiser(
         if (roleManager.Roles.All(r => r.Name != administratorRole.Name))
         {
             await roleManager.CreateAsync(administratorRole);
+        }
+
+        // Get Permission
+        var features = Permissions.GetAllNestedModule(typeof(Permissions.Admin));
+        features.AddRange(Permissions.GetAllNestedModule(typeof(Permissions.CommonSetup)));
+
+        var permissions = Permissions.GetPermissionsByfeatures(features);
+
+        // Default Permissions
+        foreach (var permission in permissions)
+        {
+            await roleManager.AddClaimAsync(administratorRole, new Claim(CustomClaimTypes.Permission, permission));
         }
 
         // Default users

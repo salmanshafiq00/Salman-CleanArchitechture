@@ -10,6 +10,9 @@ internal sealed class RoleMenuConfiguration : IEntityTypeConfiguration<RoleMenu>
     {
         builder.HasKey(x => x.Id);
 
+        builder.Property(x => x.Id)
+            .HasMaxLength(100);
+
         builder.HasIndex(t => new {t.RoleId, t.AppMenuId})
             .IsUnique();
 

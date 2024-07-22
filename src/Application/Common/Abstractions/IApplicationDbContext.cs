@@ -12,7 +12,6 @@ public interface IApplicationDbContext
     DbSet<AppMenu> AppMenus { get; }
     DbSet<RoleMenu> RoleMenus { get; }
     DbSet<AppPage> AppPages { get; }
-    DbSet<AppPageAction> AppPageActions { get; }
     #endregion
 
     #region Common Setup

@@ -73,6 +73,7 @@ public static class DependencyInjection
             => provider.GetRequiredService<ApplicationDbContext>());
 
         services.AddScoped<IdentityDbContextInitialiser>();
+        services.AddScoped<ApplicationDbContextInitialiser>();
 
         services.AddDbContext<IdentityContext>(options => options.UseSqlServer(identityConString));
     }

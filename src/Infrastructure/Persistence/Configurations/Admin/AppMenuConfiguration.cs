@@ -15,17 +15,17 @@ internal sealed class AppMenuConfiguration : IEntityTypeConfiguration<AppMenu>
             .HasMaxLength(200)
             .IsRequired();
 
-        builder.HasIndex(t => t.Label).IsUnique();
+        builder.HasIndex(t => t.Label).IsUnique(false);
 
         builder.Property(t => t.RouterLink)
-            .HasMaxLength(500)
+            .HasMaxLength(200)
             .IsRequired();
 
         builder.Property(t => t.Tooltip)
             .HasMaxLength(100);
 
         builder.Property(t => t.Description)
-            .HasMaxLength(500);
+            .HasMaxLength(200);
 
         builder.HasOne<LookupDetail>()
             .WithMany()
