@@ -1,4 +1,5 @@
 using CleanArchitechture.Application.Common.Abstractions;
+using CleanArchitechture.Infrastructure.Identity;
 using CleanArchitechture.Infrastructure.Persistence;
 using CleanArchitechture.Web.Extensions;
 using CleanArchitechture.Web.Middlewares;

@@ -1,15 +1,14 @@
 ﻿using System.Security.Claims;
 using CleanArchitechture.Application.Common.Security;
 using CleanArchitechture.Domain.Constants;
-using CleanArchitechture.Infrastructure.Identity;
 using CleanArchitechture.Infrastructure.Identity.Permissions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-
-namespace CleanArchitechture.Infrastructure.Persistence;
+using PermissionConstant = CleanArchitechture.Application.Common.Security.Permissions;
+namespace CleanArchitechture.Infrastructure.Identity;
 
 public static class IdentityInitialiserExtensions
 {
@@ -26,11 +25,11 @@ public static class IdentityInitialiserExtensions
 }
 
 internal sealed class IdentityDbContextInitialiser(
-        ILogger<IdentityDbContextInitialiser> logger, 
-        IdentityContext context, 
-        UserManager<ApplicationUser> userManager, 
+        ILogger<IdentityDbContextInitialiser> logger,
+        IdentityContext context,
+        UserManager<ApplicationUser> userManager,
         RoleManager<IdentityRole> roleManager)
-{ 
+{
     public async Task InitialiseAsync()
     {
         try
@@ -68,10 +67,10 @@ internal sealed class IdentityDbContextInitialiser(
         }
 
         // Get Permission
-        var features = Permissions.GetAllNestedModule(typeof(Permissions.Admin));
-        features.AddRange(Permissions.GetAllNestedModule(typeof(Permissions.CommonSetup)));
+        var features = PermissionConstant.GetAllNestedModule(typeof(PermissionConstant.Admin));
+        features.AddRange(PermissionConstant.GetAllNestedModule(typeof(PermissionConstant.CommonSetup)));
 
-        var permissions = Permissions.GetPermissionsByfeatures(features);
+        var permissions = PermissionConstant.GetPermissionsByfeatures(features);
 
         // Default Permissions
         foreach (var permission in permissions)

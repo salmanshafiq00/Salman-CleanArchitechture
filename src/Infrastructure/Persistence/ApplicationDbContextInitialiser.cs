@@ -69,20 +69,27 @@ internal sealed class ApplicationDbContextInitialiser(
 
         await appDbContext.LookupDetails.AddRangeAsync(lookupDetails);
 
-
         var moduleId = lookupDetails.FirstOrDefault(x => x.DevCode == 10101)?.Id;
         var menuId = lookupDetails.FirstOrDefault(x => x.DevCode == 10103)?.Id;
 
+        List<AppMenu> appModules = [
+            new () {Label = "Admin", RouterLink = "/admin", ParentId = null,  IsActive = true, OrderNo = 1, Visible = true, MenuTypeId = moduleId.Value},
+            new () {Label = "Common Setup", RouterLink = "/setup", ParentId = null,  IsActive = true, OrderNo = 2, Visible = true, MenuTypeId = moduleId.Value},
+        ];
+
+        await appDbContext.AddRangeAsync(appModules);
+
+        var adminModuleId = appModules.FirstOrDefault(x => x.Label == "Admin")?.Id;
+        var commonSetupModuleId = appModules.FirstOrDefault(x => x.Label == "Common Setup")?.Id;
+
         List<AppMenu> appmunes = [
-            new () {Label = "Dashboard", RouterLink = "/", ParentId = null,  IsActive = true, OrderNo = 0, Visible = true, MenuTypeId = moduleId.Value},    
-            new () {Label = "Admin", RouterLink = "/admin", ParentId = null,  IsActive = true, OrderNo = 1, Visible = true, MenuTypeId = moduleId.Value},   
-            new () {Label = "Users", RouterLink = "/admin/users", ParentId = null,  IsActive = true, OrderNo = 1, Visible = true, MenuTypeId = menuId.Value},    
-            new () {Label = "Roles", RouterLink = "/admin/roles", ParentId = null,  IsActive = true, OrderNo = 2, Visible = true, MenuTypeId = menuId.Value},    
-            new () {Label = "App Menu", RouterLink = "/admin/app-menus", ParentId = null,  IsActive = true, OrderNo = 3, Visible = true, MenuTypeId = menuId.Value},    
-            new () {Label = "App Page", RouterLink = "/admin/app-pages", ParentId = null,  IsActive = true, OrderNo = 4, Visible = true, MenuTypeId = menuId.Value},    
-            new () {Label = "Common Setup", RouterLink = "/setup", ParentId = null,  IsActive = true, OrderNo = 2, Visible = true, MenuTypeId = moduleId.Value},    
-            new () {Label = "Lookup", RouterLink = "/setup/lookups", ParentId = null,  IsActive = true, OrderNo = 1, Visible = true, MenuTypeId = menuId.Value},    
-            new () {Label = "Lookp Detail", RouterLink = "/setup/lookup-details", ParentId = null,  IsActive = true, OrderNo = 2, Visible = true, MenuTypeId = menuId.Value}    
+            new () {Label = "Dashboard", RouterLink = "/", ParentId = null,  IsActive = true, OrderNo = 0, Visible = true, MenuTypeId = menuId.Value},
+            new () {Label = "Users", RouterLink = "/admin/users", ParentId = adminModuleId,  IsActive = true, OrderNo = 1, Visible = true, MenuTypeId = menuId.Value},    
+            new () {Label = "Roles", RouterLink = "/admin/roles", ParentId = adminModuleId,  IsActive = true, OrderNo = 2, Visible = true, MenuTypeId = menuId.Value},    
+            new () {Label = "App Menu", RouterLink = "/admin/app-menus", ParentId = adminModuleId,  IsActive = true, OrderNo = 3, Visible = true, MenuTypeId = menuId.Value},    
+            new () {Label = "App Page", RouterLink = "/admin/app-pages", ParentId = adminModuleId,  IsActive = true, OrderNo = 4, Visible = true, MenuTypeId = menuId.Value},    
+            new () {Label = "Lookup", RouterLink = "/setup/lookups", ParentId = commonSetupModuleId,  IsActive = true, OrderNo = 1, Visible = true, MenuTypeId = menuId.Value},    
+            new () {Label = "Lookp Detail", RouterLink = "/setup/lookup-details", ParentId = commonSetupModuleId,  IsActive = true, OrderNo = 2, Visible = true, MenuTypeId = menuId.Value}    
         ];
 
         appDbContext.AddRange(appmunes);
