@@ -1,5 +1,4 @@
 ﻿using CleanArchitechture.Domain.Admin;
-using static CleanArchitechture.Application.Common.DapperQueries.Constants;
 
 namespace CleanArchitechture.Application.Features.Admin.AppPages.Queries;
 
@@ -15,13 +14,6 @@ public record AppPageModel
 
     public Dictionary<string, object> OptionsDataSources { get; set; } = [];
 
-    public static IReadOnlyCollection<DataFieldModel> DataFields = [
-        new DataFieldModel{ FieldName = "id", Caption = "Id", FieldType = TField.TString, DSName = string.Empty, DbField = "ap.Id", IsSortable = false, IsGlobalFilterable = true, IsFilterable = false, IsVisible = true, SortOrder = 0 },
-        new DataFieldModel{ FieldName = "componentName", Caption = "Component Name", FieldType = TField.TString, DSName = string.Empty, DbField = "ap.ComponentName", IsSortable = true, IsGlobalFilterable = true, IsFilterable = true, IsVisible = true,  SortOrder = 2 },
-        new DataFieldModel{ FieldName = "title", Caption = "Title", FieldType = TField.TString, DSName = string.Empty, DbField = "ap.Title", IsSortable = true, IsGlobalFilterable = true,  IsFilterable = false, IsVisible = true, SortOrder = 1 }
-    ];
-
-
     private class Mapper : Profile
     {
         public Mapper()
@@ -31,12 +23,7 @@ public record AppPageModel
     }
 }
 
-public record AppPageLayout
-{
-    public List<AppPageFieldModel> AppPageFields { get; set; } = [];
-}
-
-public record AppPageFieldModel 
+public record AppPageFieldModel
 {
     public string Id { get; set; } = string.Empty;
     public string FieldName { get; set; } = string.Empty;
@@ -58,14 +45,9 @@ public record AppPageFieldModel
     public bool IsVisible { get; set; } = true;
     public int SortOrder { get; set; }
     public bool IsActive { get; set; } = true;
-    private class Mapper: Profile 
-    {
-        public Mapper()
-        {
-            CreateMap<AppPageFieldModel, AppPageField>().ReverseMap();
-        }
-    }
 }
+
+
 
 public record AppPageActionModel 
 {
@@ -84,11 +66,4 @@ public record AppPageActionModel
     public Guid? ParentId { get; set; }
     public int SortOrder { get; set; }
     public bool IsActive { get; set; }
-    private class Mapper : Profile 
-    {
-        public Mapper()
-        {
-            CreateMap<AppPageAction, AppPageActionModel>().ReverseMap();    
-        }
-    }
 }

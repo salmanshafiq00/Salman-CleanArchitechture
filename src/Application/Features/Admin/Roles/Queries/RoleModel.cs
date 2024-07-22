@@ -1,6 +1,4 @@
-﻿using static CleanArchitechture.Application.Common.DapperQueries.Constants;
-
-namespace CleanArchitechture.Application.Features.Admin.Roles.Queries;
+﻿namespace CleanArchitechture.Application.Features.Admin.Roles.Queries;
 
 public record RoleModel
 {

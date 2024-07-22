@@ -1377,18 +1377,6 @@
           "hasNextPage": {
             "type": "boolean"
           },
-          "dataFields": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DataFieldModel"
-            }
-          },
-          "filters": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DataFilterModel"
-            }
-          },
           "optionDataSources": {
             "type": "object",
             "additionalProperties": {}
@@ -1437,92 +1425,6 @@
           "optionDataSources": {
             "type": "object",
             "additionalProperties": {}
-          }
-        }
-      },
-      "DataFieldModel": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "fieldName": {
-            "type": "string"
-          },
-          "caption": {
-            "type": "string"
-          },
-          "fieldType": {
-            "type": "string"
-          },
-          "dbField": {
-            "type": "string"
-          },
-          "sortOrder": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "isVisible": {
-            "type": "boolean"
-          },
-          "isSortable": {
-            "type": "boolean"
-          },
-          "isGlobalFilterable": {
-            "type": "boolean"
-          },
-          "isFilterable": {
-            "type": "boolean"
-          },
-          "dsName": {
-            "type": "string"
-          }
-        }
-      },
-      "DataFilterModel": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "fieldName": {
-            "type": "string"
-          },
-          "fieldType": {
-            "type": "string"
-          },
-          "value": {
-            "type": "string"
-          },
-          "matchMode": {
-            "type": "string"
-          },
-          "operator": {
-            "type": "string"
-          },
-          "dsName": {
-            "type": "string"
-          },
-          "dbField": {
-            "type": "string"
-          },
-          "dataSource": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SelectListModel"
-            }
-          }
-        }
-      },
-      "SelectListModel": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {},
-          "name": {
-            "type": "string"
-          },
-          "isDefault": {
-            "type": "boolean"
-          },
-          "severity": {
-            "type": "string"
           }
         }
       },
@@ -1609,6 +1511,33 @@
             "type": "string"
           },
           "matchMode": {
+            "type": "string"
+          }
+        }
+      },
+      "DataFilterModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "fieldName": {
+            "type": "string"
+          },
+          "fieldType": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "matchMode": {
+            "type": "string"
+          },
+          "operator": {
+            "type": "string"
+          },
+          "dsName": {
+            "type": "string"
+          },
+          "dbField": {
             "type": "string"
           }
         }
@@ -1754,18 +1683,6 @@
           },
           "hasNextPage": {
             "type": "boolean"
-          },
-          "dataFields": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DataFieldModel"
-            }
-          },
-          "filters": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DataFilterModel"
-            }
           },
           "optionDataSources": {
             "type": "object",
@@ -1988,6 +1905,22 @@
           }
         }
       },
+      "SelectListModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {},
+          "name": {
+            "type": "string"
+          },
+          "isDefault": {
+            "type": "boolean"
+          },
+          "severity": {
+            "type": "string"
+          }
+        }
+      },
       "TreeNodeModel": {
         "type": "object",
         "additionalProperties": false,
@@ -2058,18 +1991,6 @@
           },
           "hasNextPage": {
             "type": "boolean"
-          },
-          "dataFields": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DataFieldModel"
-            }
-          },
-          "filters": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DataFilterModel"
-            }
           },
           "optionDataSources": {
             "type": "object",
@@ -2321,18 +2242,6 @@
           "hasNextPage": {
             "type": "boolean"
           },
-          "dataFields": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DataFieldModel"
-            }
-          },
-          "filters": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DataFilterModel"
-            }
-          },
           "optionDataSources": {
             "type": "object",
             "additionalProperties": {}
@@ -2488,18 +2397,6 @@
           "hasNextPage": {
             "type": "boolean"
           },
-          "dataFields": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DataFieldModel"
-            }
-          },
-          "filters": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DataFilterModel"
-            }
-          },
           "optionDataSources": {
             "type": "object",
             "additionalProperties": {}
@@ -2620,18 +2517,6 @@
           },
           "hasNextPage": {
             "type": "boolean"
-          },
-          "dataFields": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DataFieldModel"
-            }
-          },
-          "filters": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DataFilterModel"
-            }
           },
           "optionDataSources": {
             "type": "object",

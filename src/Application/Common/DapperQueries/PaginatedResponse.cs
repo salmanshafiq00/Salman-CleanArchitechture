@@ -18,12 +18,6 @@ public class PaginatedResponse<TEntity>
     public bool HasNextPage => PageNumber < TotalPages;
 
     [JsonInclude]
-    public IReadOnlyCollection<DataFieldModel> DataFields { get; init; } = [];
-
-    [JsonInclude]
-    public HashSet<DataFilterModel> Filters { get; init; } = [];
-
-    [JsonInclude]
     public Dictionary<string, object> OptionDataSources { get; set; } = [];
 
 
@@ -33,14 +27,12 @@ public class PaginatedResponse<TEntity>
         IReadOnlyCollection<TEntity> items,
         int count,
         int pageNumber,
-        int pageSize,
-        HashSet<DataFilterModel>? filters = null)
+        int pageSize)
     {
         PageNumber = pageNumber;
         TotalPages = (int)Math.Ceiling(count / (double)pageSize);
         TotalCount = count;
         Items = items;
-        Filters = filters;
     }
 
     public static async Task<PaginatedResponse<TEntity>> CreateAsync(
@@ -129,7 +121,6 @@ public class PaginatedResponse<TEntity>
             count,
             (gridModel.Offset / gridModel.PageSize) + 1,
             gridModel.PageSize
-            //[.. gridModel.Filters]
             );
     }
 
@@ -309,42 +300,6 @@ public class PaginatedResponse<TEntity>
 
     #endregion
 
-    #region Other Functions
-
-    private static DataFieldModel? GetDataField(
-        IReadOnlyCollection<DataFieldModel> dataFields,
-        string field)
-    {
-        return dataFields.FirstOrDefault(x =>
-            string.Equals(x.FieldName, field, StringComparison.OrdinalIgnoreCase));
-    }
-
-    private static void SetFiltersToGridModel(
-        DataGridModel gridModel,
-        IReadOnlyCollection<DataFieldModel> fields)
-    {
-        gridModel.Filters = [];
-
-        var filters = new HashSet<DataFilterModel>();
-
-        foreach (var field in fields.Where(x => x.IsFilterable))
-        {
-            filters.Add(new DataFilterModel
-            {
-                FieldName = field.FieldName,
-                FieldType = field.FieldType,
-                DSName = field.DSName,
-                DataSource = [] 
-            });
-        }
-        if (filters.Count > 0)
-        {
-            gridModel.Filters.AddRange(filters);
-        }
-    }
-
-
-    #endregion
 
 
 }

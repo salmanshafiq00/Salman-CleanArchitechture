@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace CleanArchitechture.Application.Common.DapperQueries;
+﻿namespace CleanArchitechture.Application.Common.DapperQueries;
 
 public abstract record DataGridModel : IDataGrid
 {
@@ -29,20 +27,6 @@ public abstract record DataGridModel : IDataGrid
     public List<DataFilterModel> Filters { get; set; } = [];
 }
 
-public class DataFieldModel
-{
-    public string FieldName { get; set; } = string.Empty;
-    public string Caption { get; set; } = string.Empty;
-    public string FieldType { get; set; } = string.Empty;
-    public string DbField { get; set; } = string.Empty;
-    public int SortOrder { get; set; }
-    public bool IsVisible { get; set; }
-    public bool IsSortable { get; set; }
-    public bool IsGlobalFilterable { get; set; }
-    public bool IsFilterable { get; set; }
-    public string DSName { get; set; } = string.Empty;
-}
-
 public class DataFilterModel
 {
     public string FieldName { get; set; } = string.Empty;
@@ -52,7 +36,6 @@ public class DataFilterModel
     public string Operator { get; set; } = string.Empty;
     public string DSName {  get; set; } = string.Empty;
     public string DbField { get; set; } = string.Empty;
-    public List<SelectListModel> DataSource { get; set; } = [];
 }
 
 public class GlobalFilterFieldModel
