@@ -2,10 +2,10 @@
 
 public interface ICacheInvalidatorCommand<TResponse> : ICommand<TResponse>
 {
-    string CacheKey => string.Empty;
+    string CacheKey { get; }
 }
 
 public interface ICacheInvalidatorCommand : ICommand
 {
-    string CacheKey => string.Empty;
+    string CacheKey { get; }
 }

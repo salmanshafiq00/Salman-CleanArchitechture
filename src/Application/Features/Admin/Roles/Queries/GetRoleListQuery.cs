@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace CleanArchitechture.Application.Features.Admin.Roles.Queries;
+﻿namespace CleanArchitechture.Application.Features.Admin.Roles.Queries;
 
 public record GetRoleListQuery
     : DataGridModel, ICacheableQuery<PaginatedResponse<RoleModel>>

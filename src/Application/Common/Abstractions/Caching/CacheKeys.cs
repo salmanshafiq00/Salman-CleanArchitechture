@@ -17,6 +17,8 @@ public static class CacheKeys
     public const string AppMenu_All_SelectList = nameof(AppMenu_All_SelectList);
     public const string AppMenu_Tree_SelectList = nameof(AppMenu_Tree_SelectList);
     public const string AppMenu_Sidebar_Tree_List = nameof(AppMenu_Sidebar_Tree_List);
+    public const string AppPage = nameof(AppPage);
+    public const string AppPage_All_SelectList = nameof(AppPage_All_SelectList);
 
     #endregion
 }

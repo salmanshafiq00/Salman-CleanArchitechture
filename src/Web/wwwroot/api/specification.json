@@ -850,12 +850,89 @@
         }
       }
     },
-    "/api/AppPages/UpsertPage": {
+    "/api/AppPages/CreateAppPage": {
       "post": {
         "tags": [
           "AppPages"
         ],
-        "operationId": "UpsertPage",
+        "operationId": "CreateAppPage",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAppPageCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AppPages/UpdateAppPage": {
+      "put": {
+        "tags": [
+          "AppPages"
+        ],
+        "operationId": "UpdateAppPage",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAppPageCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AppPages/UpsertAppPage": {
+      "post": {
+        "tags": [
+          "AppPages"
+        ],
+        "operationId": "UpsertAppPage",
         "requestBody": {
           "x-name": "command",
           "content": {
@@ -1501,7 +1578,7 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "fieldName": {
+          "field": {
             "type": "string"
           },
           "dbField": {
@@ -1519,7 +1596,7 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "fieldName": {
+          "field": {
             "type": "string"
           },
           "fieldType": {
@@ -2274,6 +2351,12 @@
               "$ref": "#/components/schemas/AppPageFieldModel"
             }
           },
+          "appPageActions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AppPageActionModel"
+            }
+          },
           "optionsDataSources": {
             "type": "object",
             "additionalProperties": {}
@@ -2287,10 +2370,10 @@
           "id": {
             "type": "string"
           },
-          "fieldName": {
+          "field": {
             "type": "string"
           },
-          "caption": {
+          "header": {
             "type": "string"
           },
           "fieldType": {
@@ -2347,6 +2430,57 @@
           }
         }
       },
+      "AppPageActionModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "actionTypeId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "actionName": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string"
+          },
+          "permissions": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "functionName": {
+            "type": "string"
+          },
+          "navigationUrl": {
+            "type": "string"
+          },
+          "position": {
+            "type": "string"
+          },
+          "parentId": {
+            "type": "string",
+            "format": "guid",
+            "nullable": true
+          },
+          "sortOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isVisible": {
+            "type": "boolean"
+          }
+        }
+      },
       "GetAppPageListQuery": {
         "allOf": [
           {
@@ -2357,6 +2491,52 @@
             "additionalProperties": false
           }
         ]
+      },
+      "CreateAppPageCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "subTitle": {
+            "type": "string"
+          },
+          "componentName": {
+            "type": "string"
+          },
+          "appPageLayout": {
+            "type": "string"
+          },
+          "cacheKey": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateAppPageCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "subTitle": {
+            "type": "string"
+          },
+          "componentName": {
+            "type": "string"
+          },
+          "appPageLayout": {
+            "type": "string"
+          },
+          "cacheKey": {
+            "type": "string"
+          }
+        }
       },
       "UpsertAppPageCommand": {
         "allOf": [

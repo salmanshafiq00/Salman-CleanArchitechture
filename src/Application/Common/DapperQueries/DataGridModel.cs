@@ -29,7 +29,7 @@ public abstract record DataGridModel : IDataGrid
 
 public class DataFilterModel
 {
-    public string FieldName { get; set; } = string.Empty;
+    public string Field { get; set; } = string.Empty;
     public string FieldType { get; set; } = string.Empty;
     public string Value { get; set; } = string.Empty;
     public string MatchMode { get; set; } = string.Empty;
@@ -40,7 +40,7 @@ public class DataFilterModel
 
 public class GlobalFilterFieldModel
 {
-    public string FieldName { get; set; } = string.Empty;
+    public string Field { get; set; } = string.Empty;
     public string DbField { get; set; } = string.Empty;
     public string FieldType { get; set; } = string.Empty;
     public string MatchMode { get; set; } = string.Empty;

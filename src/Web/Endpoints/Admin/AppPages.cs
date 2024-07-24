@@ -10,8 +10,9 @@ public class AppPages : EndpointGroupBase
         app.MapGroup(this)
             .MapPost(GetAppPages)
             .MapGet(GetAppPage, "GetPage/{id}")
-            .MapPost(UpsertPage, "UpsertPage");
-
+            .MapPost(CreateAppPage, "CreateAppPage")
+            .MapPut(UpdateAppPage, "UpdateAppPage")
+            .MapPost(UpsertAppPage, "UpsertAppPage");
     }
 
     [ProducesResponseType(typeof(PaginatedResponse<AppPageModel>), StatusCodes.Status200OK)]
@@ -35,22 +36,31 @@ public class AppPages : EndpointGroupBase
 
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IResult> UpsertPage(ISender sender, [FromBody] UpsertAppPageCommand command)
+    public async Task<IResult> CreateAppPage(ISender sender, [FromBody] CreateAppPageCommand command)
+    {
+        var result = await sender.Send(command);
+
+        return Results.Ok(result.Value);
+    }
+
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    public async Task<IResult> UpdateAppPage(ISender sender, [FromBody] UpdateAppPageCommand command)
+    {
+        var result = await sender.Send(command);
+
+        return result.Match(
+             onSuccess: () => Results.NoContent(),
+             onFailure: result.ToProblemDetails);
+    }
+
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    public async Task<IResult> UpsertAppPage(ISender sender, [FromBody] UpsertAppPageCommand command)
     {
         var result = await sender.Send(command);
 
         return Results.Ok(result);
     }
-
-    //[ProducesResponseType(StatusCodes.Status204NoContent)]
-    //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    //public async Task<IResult> UpdatePage(ISender sender, [FromBody] UpdateAppPageCommand command)
-    //{
-    //    var result = await sender.Send(command);
-
-    //    return result.Match(
-    //         onSuccess: () => Results.NoContent(),
-    //         onFailure: result.ToProblemDetails);
-    //}
 
 }

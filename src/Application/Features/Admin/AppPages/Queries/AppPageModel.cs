@@ -11,6 +11,7 @@ public record AppPageModel
     public string AppPageLayout { get; set; } = string.Empty;
 
     public List<AppPageFieldModel> AppPageFields { get; set; } = [];
+    public List<AppPageActionModel> AppPageActions { get; set; } = [];
 
     public Dictionary<string, object> OptionsDataSources { get; set; } = [];
 
@@ -26,8 +27,8 @@ public record AppPageModel
 public record AppPageFieldModel
 {
     public string Id { get; set; } = string.Empty;
-    public string FieldName { get; set; } = string.Empty;
-    public string Caption { get; set; } = string.Empty;
+    public string Field { get; set; } = string.Empty;
+    public string Header { get; set; } = string.Empty;
     public string FieldType { get; set; } = string.Empty;
     public string DbField { get; set; } = string.Empty;
     public string Format { get; set; } = string.Empty;
@@ -54,6 +55,7 @@ public record AppPageActionModel
     public Guid Id { get; set; }
     public int? ActionTypeId { get; set; }
     public string ActionName { get; set; } = string.Empty;
+    public string Severity { get; set; } = string.Empty;
     public string Permissions { get; set; } = string.Empty;
     public string Caption { get; set; } = string.Empty;
     public string Icon { get; set; } = string.Empty;
