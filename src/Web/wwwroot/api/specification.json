@@ -2351,7 +2351,13 @@
               "$ref": "#/components/schemas/AppPageFieldModel"
             }
           },
-          "appPageActions": {
+          "toolbarActions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AppPageActionModel"
+            }
+          },
+          "rowActions": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/AppPageActionModel"

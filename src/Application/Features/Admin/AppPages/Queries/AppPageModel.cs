@@ -9,9 +9,12 @@ public record AppPageModel
     public string SubTitle { get; set; } = string.Empty;
     public string ComponentName { get; set; } = string.Empty;
     public string AppPageLayout { get; set; } = string.Empty;
+    //public bool showRowActionCol { get; set; }
+    //public string? rowActionType { get; set; }
 
     public List<AppPageFieldModel> AppPageFields { get; set; } = [];
-    public List<AppPageActionModel> AppPageActions { get; set; } = [];
+    public List<AppPageActionModel> ToolbarActions { get; set; } = [];
+    public List<AppPageActionModel> RowActions { get; set; } = [];
 
     public Dictionary<string, object> OptionsDataSources { get; set; } = [];
 
