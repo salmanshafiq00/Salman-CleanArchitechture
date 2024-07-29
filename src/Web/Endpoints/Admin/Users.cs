@@ -10,16 +10,16 @@ public class Users : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-            .MapPost(GetUsers)
-            .MapGet(GetUser, "GetUser/{id}")
-            .MapPost(CreateUser, "CreateUser")
-            .MapPut(UpdateUser, "UpdateUser")
+            .MapPost(GetAll, "GetAll", "GetUsers")
+            .MapGet(Get, "Get/{id}", "GetUser")
+            .MapPost(Create,"Create", "CreateUser")
+            .MapPut(Update, "Update", "UpdateUser")
             .MapPost(AddToRoles, "AddToRoles");
 
     }
 
     [ProducesResponseType(typeof(PaginatedResponse<AppUserModel>), StatusCodes.Status200OK)]
-    public async Task<IResult> GetUsers(ISender sender, [FromBody] GetAppUserListQuery query)
+    public async Task<IResult> GetAll(ISender sender, [FromBody] GetAppUserListQuery query)
     {
         var result = await sender.Send(query);
 
@@ -40,7 +40,7 @@ public class Users : EndpointGroupBase
 
     [ProducesResponseType(typeof(AppUserModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IResult> GetUser(ISender sender, [FromRoute] string id)
+    public async Task<IResult> Get(ISender sender, [FromRoute] string id)
     {
         var result = await sender.Send(new GetAppUserByIdQuery(id));
 
@@ -59,7 +59,7 @@ public class Users : EndpointGroupBase
 
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IResult> CreateUser(ISender sender, [FromBody] CreateAppUserCommand command)
+    public async Task<IResult> Create(ISender sender, [FromBody] CreateAppUserCommand command)
     {
         var result = await sender.Send(command);
 
@@ -70,7 +70,7 @@ public class Users : EndpointGroupBase
 
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IResult> UpdateUser(ISender sender, [FromBody] UpdateAppUserCommand command)
+    public async Task<IResult> Update(ISender sender, [FromBody] UpdateAppUserCommand command)
     {
         var result = await sender.Send(command);
 

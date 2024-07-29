@@ -13,15 +13,15 @@ public class Lookups : EndpointGroupBase
     {
         app.MapGroup(this)
            //.RequireAuthorization()
-           .MapPost(GetLookups, "GetLookups")
-           .MapGet(GetLookup, "{id:Guid}")
-           .MapPost(CreateLookup)
-           .MapPut(UpdateLookup)
-           .MapDelete(DeleteLookup, "{id:Guid}");
+           .MapPost(GetAll, "GetAll", "GetLookups")
+           .MapGet(Get, "Get/{id:Guid}", "GetLookup")
+           .MapPost(Create, "Create", "CreateLookup")
+           .MapPut(Update, "Update", "UpdateLookup")
+           .MapDelete(Delete, "Delete/{id:Guid}", "DeleteLookup");
     }
 
     [ProducesResponseType(typeof(PaginatedResponse<LookupModel>), StatusCodes.Status200OK)]
-    public async Task<IResult> GetLookups(ISender sender, [FromBody] GetLookupListQuery query)
+    public async Task<IResult> GetAll(ISender sender, [FromBody] GetLookupListQuery query)
     {
         var result = await sender.Send(query);
 
@@ -41,7 +41,7 @@ public class Lookups : EndpointGroupBase
     }
 
     [ProducesResponseType(typeof(LookupModel), StatusCodes.Status200OK)]
-    public async Task<IResult> GetLookup(ISender sender, [FromRoute] Guid id)
+    public async Task<IResult> Get(ISender sender, [FromRoute] Guid id)
     {
         var result = await sender.Send(new GetLookupByIdQuery(id));
 
@@ -70,32 +70,21 @@ public class Lookups : EndpointGroupBase
 
     [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IResult> CreateLookup(ISender sender, [FromBody] CreateLookupCommand command)
+    public async Task<IResult> Create(ISender sender, [FromBody] CreateLookupCommand command)
+    //public async Task<IResult> CreateLookup(ISender sender, [FromBody] CreateLookupCommand command)
     {
         var result = await sender.Send(command);
 
         return result.Match(
-             onSuccess: () => Results.CreatedAtRoute(nameof(GetLookup), new { id = result.Value }, result.Value),
+             onSuccess: () => Results.CreatedAtRoute(nameof(Get), new { id = result.Value }),
              onFailure: result.ToProblemDetails);
     }
-
-    //[ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
-    //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    //public async Task<IResult> CreateLookup(ISender sender, HttpRequest httpRequest)
-    //{
-    //    var form = await httpRequest.ReadFormAsync();
-    //    var result = await sender.Send(new CreateLookupCommand("", "", "", false, DateOnly.FromDateTime(DateTime.Now.Date), TimeOnly.FromDateTime(DateTime.Now), DateTime.Now, 23422, "", [], ""));
-
-    //    return result.Match(
-    //         onSuccess: () => Results.CreatedAtRoute(nameof(GetLookup), new { id = result.Value }, result.Value),
-    //         onFailure: result.ToProblemDetails);
-    //}
-
 
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IResult> UpdateLookup(ISender sender, [FromBody] UpdateLookupCommand command)
+    public async Task<IResult> Update(ISender sender, [FromBody] UpdateLookupCommand command)
+    //public async Task<IResult> UpdateLookup(ISender sender, [FromBody] UpdateLookupCommand command)
     {
         var result = await sender.Send(command);
 
@@ -106,7 +95,8 @@ public class Lookups : EndpointGroupBase
 
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IResult> DeleteLookup(ISender sender, [FromRoute] Guid id)
+    public async Task<IResult> Delete(ISender sender, [FromRoute] Guid id)
+    //public async Task<IResult> DeleteLookup(ISender sender, [FromRoute] Guid id)
     {
         var result = await sender.Send(new DeleteLookupCommand(id));
 

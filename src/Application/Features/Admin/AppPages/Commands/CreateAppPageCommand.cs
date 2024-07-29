@@ -10,6 +10,13 @@ public record CreateAppPageCommand(
     string AppPageLayout) : ICacheInvalidatorCommand<Guid>
 {
     public string CacheKey => CacheKeys.AppPage;
+    private class Mapper: Profile
+    {
+        public Mapper()
+        {
+            CreateMap<CreateAppPageCommand, AppPage>();
+        }
+    }
 }
 
 internal sealed class CreateAppPageCommandHandler(IApplicationDbContext dbContext, IMapper mapper)

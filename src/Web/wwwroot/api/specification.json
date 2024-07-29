@@ -6,7 +6,7 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/api/LookupDetails/GetLookupDetails": {
+    "/api/LookupDetails/GetAll": {
       "post": {
         "tags": [
           "LookupDetails"
@@ -35,10 +35,15 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
-    "/api/LookupDetails/{id}": {
+    "/api/LookupDetails/Get/{id}": {
       "get": {
         "tags": [
           "LookupDetails"
@@ -67,43 +72,15 @@
               }
             }
           }
-        }
-      },
-      "delete": {
-        "tags": [
-          "LookupDetails"
-        ],
-        "operationId": "DeleteLookupDetail",
-        "parameters": [
+        },
+        "security": [
           {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "guid"
-            },
-            "x-position": 1
+            "JWT": []
           }
-        ],
-        "responses": {
-          "204": {
-            "description": ""
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
+        ]
       }
     },
-    "/api/LookupDetails": {
+    "/api/LookupDetails/Create": {
       "post": {
         "tags": [
           "LookupDetails"
@@ -143,8 +120,15 @@
               }
             }
           }
-        }
-      },
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/LookupDetails/Update": {
       "put": {
         "tags": [
           "LookupDetails"
@@ -179,10 +163,55 @@
           "404": {
             "description": ""
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
-    "/api/Lookups/GetLookups": {
+    "/api/LookupDetails/Delete/{id}": {
+      "delete": {
+        "tags": [
+          "LookupDetails"
+        ],
+        "operationId": "DeleteLookupDetail",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/Lookups/GetAll": {
       "post": {
         "tags": [
           "Lookups"
@@ -214,7 +243,7 @@
         }
       }
     },
-    "/api/Lookups/{id}": {
+    "/api/Lookups/Get/{id}": {
       "get": {
         "tags": [
           "Lookups"
@@ -244,42 +273,9 @@
             }
           }
         }
-      },
-      "delete": {
-        "tags": [
-          "Lookups"
-        ],
-        "operationId": "DeleteLookup",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "guid"
-            },
-            "x-position": 1
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": ""
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
       }
     },
-    "/api/Lookups": {
+    "/api/Lookups/Create": {
       "post": {
         "tags": [
           "Lookups"
@@ -320,7 +316,9 @@
             }
           }
         }
-      },
+      }
+    },
+    "/api/Lookups/Update": {
       "put": {
         "tags": [
           "Lookups"
@@ -354,6 +352,41 @@
           },
           "404": {
             "description": ""
+          }
+        }
+      }
+    },
+    "/api/Lookups/Delete/{id}": {
+      "delete": {
+        "tags": [
+          "Lookups"
+        ],
+        "operationId": "DeleteLookup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
           }
         }
       }
@@ -592,7 +625,7 @@
         ]
       }
     },
-    "/api/AppMenus": {
+    "/api/AppMenus/GetAll": {
       "post": {
         "tags": [
           "AppMenus"
@@ -657,7 +690,7 @@
         }
       }
     },
-    "/api/AppMenus/GetMenu/{id}": {
+    "/api/AppMenus/Get/{id}": {
       "get": {
         "tags": [
           "AppMenus"
@@ -699,7 +732,7 @@
         }
       }
     },
-    "/api/AppMenus/CreateMenu": {
+    "/api/AppMenus/Create": {
       "post": {
         "tags": [
           "AppMenus"
@@ -741,7 +774,7 @@
         }
       }
     },
-    "/api/AppMenus/UpdateMenu": {
+    "/api/AppMenus/Update": {
       "put": {
         "tags": [
           "AppMenus"
@@ -776,7 +809,7 @@
         }
       }
     },
-    "/api/AppPages": {
+    "/api/AppPages/GetAll": {
       "post": {
         "tags": [
           "AppPages"
@@ -808,7 +841,7 @@
         }
       }
     },
-    "/api/AppPages/GetPage/{id}": {
+    "/api/AppPages/Get/{id}": {
       "get": {
         "tags": [
           "AppPages"
@@ -850,7 +883,7 @@
         }
       }
     },
-    "/api/AppPages/CreateAppPage": {
+    "/api/AppPages/Create": {
       "post": {
         "tags": [
           "AppPages"
@@ -892,7 +925,7 @@
         }
       }
     },
-    "/api/AppPages/UpdateAppPage": {
+    "/api/AppPages/Update": {
       "put": {
         "tags": [
           "AppPages"
@@ -969,7 +1002,7 @@
         }
       }
     },
-    "/api/Roles": {
+    "/api/Roles/GetAll": {
       "post": {
         "tags": [
           "Roles"
@@ -1001,7 +1034,7 @@
         }
       }
     },
-    "/api/Roles/GetRole/{id}": {
+    "/api/Roles/Get/{id}": {
       "get": {
         "tags": [
           "Roles"
@@ -1047,7 +1080,7 @@
         "tags": [
           "Roles"
         ],
-        "operationId": "Create",
+        "operationId": "CreateRole",
         "requestBody": {
           "x-name": "command",
           "content": {
@@ -1084,7 +1117,7 @@
         }
       }
     },
-    "/api/Roles/UpdateRole": {
+    "/api/Roles/Update": {
       "put": {
         "tags": [
           "Roles"
@@ -1163,7 +1196,7 @@
         }
       }
     },
-    "/api/Users": {
+    "/api/Users/GetAll": {
       "post": {
         "tags": [
           "Users"
@@ -1195,7 +1228,7 @@
         }
       }
     },
-    "/api/Users/GetUser/{id}": {
+    "/api/Users/Get/{id}": {
       "get": {
         "tags": [
           "Users"
@@ -1236,7 +1269,7 @@
         }
       }
     },
-    "/api/Users/CreateUser": {
+    "/api/Users/Create": {
       "post": {
         "tags": [
           "Users"
@@ -1278,7 +1311,7 @@
         }
       }
     },
-    "/api/Users/UpdateUser": {
+    "/api/Users/Update": {
       "put": {
         "tags": [
           "Users"

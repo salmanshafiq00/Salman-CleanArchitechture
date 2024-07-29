@@ -10,16 +10,16 @@ public class AppMenus : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-            .MapPost(GetAppMenus)
+            .MapPost(GetAll, "GetAll", "GetAppMenus")
             .MapGet(GetSidebarMenus, "GetSidebarMenus")
-            .MapGet(GetAppMenu, "GetMenu/{id}")
-            .MapPost(CreateMenu, "CreateMenu")
-            .MapPut(UpdateMenu, "UpdateMenu");
+            .MapGet(Get, "Get/{id}", "GetAppMenu")
+            .MapPost(Create,"Create", "CreateMenu")
+            .MapPut(Update, "Update", "UpdateMenu");
 
     }
 
     [ProducesResponseType(typeof(PaginatedResponse<AppMenuModel>), StatusCodes.Status200OK)]
-    public async Task<IResult> GetAppMenus(ISender sender, [FromBody] GetAppMenuListQuery query)
+    public async Task<IResult> GetAll(ISender sender, [FromBody] GetAppMenuListQuery query)
     {
         var result = await sender.Send(query);
 
@@ -40,7 +40,7 @@ public class AppMenus : EndpointGroupBase
 
     [ProducesResponseType(typeof(AppMenuModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IResult> GetAppMenu(ISender sender, [FromRoute] Guid id)
+    public async Task<IResult> Get(ISender sender, [FromRoute] Guid id)
     {
         var result = await sender.Send(new GetAppMenuByIdQuery(id));
 
@@ -61,7 +61,7 @@ public class AppMenus : EndpointGroupBase
 
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IResult> CreateMenu(ISender sender, [FromBody] CreateAppMenuCommand command)
+    public async Task<IResult> Create(ISender sender, [FromBody] CreateAppMenuCommand command)
     {
         var result = await sender.Send(command);
 
@@ -72,7 +72,7 @@ public class AppMenus : EndpointGroupBase
 
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IResult> UpdateMenu(ISender sender, [FromBody] UpdateAppMenuCommand command)
+    public async Task<IResult> Update(ISender sender, [FromBody] UpdateAppMenuCommand command)
     {
         var result = await sender.Send(command);
 

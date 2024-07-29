@@ -10,15 +10,15 @@ public class Roles : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-            .MapPost(GetRoles)
-            .MapGet(GetRole, "GetRole/{id}")
-            .MapPost(Create, "Create")
-            .MapPut(UpdateRole, "UpdateRole")
+            .MapPost(GetAll, "GetAll", "GetRoles")
+            .MapGet(Get, "Get/{id}", "GetRole")
+            .MapPost(Create, "Create", "CreateRole")
+            .MapPut(Update,"Update", "UpdateRole")
             .MapGet(GetRolePermissions, "GetRolePermissions/{id}");
     }
 
     [ProducesResponseType(typeof(PaginatedResponse<RoleModel>), StatusCodes.Status200OK)]
-    public async Task<IResult> GetRoles(ISender sender, [FromBody] GetRoleListQuery query)
+    public async Task<IResult> GetAll(ISender sender, [FromBody] GetRoleListQuery query)
     {
         var result = await sender.Send(query);
 
@@ -27,7 +27,7 @@ public class Roles : EndpointGroupBase
 
     [ProducesResponseType(typeof(RoleModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IResult> GetRole(ISender sender, [FromRoute] string id)
+    public async Task<IResult> Get(ISender sender, [FromRoute] string id)
     {
         var result = await sender.Send(new GetRoleByIdQuery(id));
 
@@ -55,7 +55,7 @@ public class Roles : EndpointGroupBase
 
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IResult> UpdateRole(ISender sender, [FromBody] UpdateRoleCommand command)
+    public async Task<IResult> Update(ISender sender, [FromBody] UpdateRoleCommand command)
     {
         var result = await sender.Send(command);
 

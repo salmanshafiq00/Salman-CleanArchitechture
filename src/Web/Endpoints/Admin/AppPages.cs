@@ -8,15 +8,15 @@ public class AppPages : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-            .MapPost(GetAppPages)
-            .MapGet(GetAppPage, "GetPage/{id}")
-            .MapPost(CreateAppPage, "CreateAppPage")
-            .MapPut(UpdateAppPage, "UpdateAppPage")
+            .MapPost(GetAll, "GetAll", "GetAppPages")
+            .MapGet(Get, "Get/{id}", "GetAppPage")
+            .MapPost(Create, "Create", "CreateAppPage")
+            .MapPut(Update, "Update", "UpdateAppPage")
             .MapPost(UpsertAppPage, "UpsertAppPage");
     }
 
     [ProducesResponseType(typeof(PaginatedResponse<AppPageModel>), StatusCodes.Status200OK)]
-    public async Task<IResult> GetAppPages(ISender sender, [FromBody] GetAppPageListQuery query)
+    public async Task<IResult> GetAll(ISender sender, [FromBody] GetAppPageListQuery query)
     {
         var result = await sender.Send(query);
 
@@ -25,7 +25,7 @@ public class AppPages : EndpointGroupBase
 
     [ProducesResponseType(typeof(AppPageModel), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IResult> GetAppPage(ISender sender, [FromRoute] Guid id)
+    public async Task<IResult> Get(ISender sender, [FromRoute] Guid id)
     {
         var result = await sender.Send(new GetAppPageByIdQuery(id));
 
@@ -36,7 +36,7 @@ public class AppPages : EndpointGroupBase
 
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IResult> CreateAppPage(ISender sender, [FromBody] CreateAppPageCommand command)
+    public async Task<IResult> Create(ISender sender, [FromBody] CreateAppPageCommand command)
     {
         var result = await sender.Send(command);
 
@@ -45,7 +45,7 @@ public class AppPages : EndpointGroupBase
 
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IResult> UpdateAppPage(ISender sender, [FromBody] UpdateAppPageCommand command)
+    public async Task<IResult> Update(ISender sender, [FromBody] UpdateAppPageCommand command)
     {
         var result = await sender.Send(command);
 
