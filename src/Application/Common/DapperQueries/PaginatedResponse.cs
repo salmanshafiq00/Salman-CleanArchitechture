@@ -18,7 +18,7 @@ public class PaginatedResponse<TEntity>
     public bool HasNextPage => PageNumber < TotalPages;
 
     [JsonInclude]
-    public Dictionary<string, object> OptionDataSources { get; set; } = [];
+    public Dictionary<string, object> OptionsDataSources { get; set; } = [];
 
 
     public PaginatedResponse() { }

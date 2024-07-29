@@ -35,12 +35,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
+        }
       }
     },
     "/api/LookupDetails/Get/{id}": {
@@ -72,12 +67,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
+        }
       }
     },
     "/api/LookupDetails/Create": {
@@ -120,12 +110,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
+        }
       }
     },
     "/api/LookupDetails/Update": {
@@ -163,12 +148,7 @@
           "404": {
             "description": ""
           }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
+        }
       }
     },
     "/api/LookupDetails/Delete/{id}": {
@@ -203,12 +183,7 @@
               }
             }
           }
-        },
-        "security": [
-          {
-            "JWT": []
-          }
-        ]
+        }
       }
     },
     "/api/Lookups/GetAll": {
@@ -1487,7 +1462,7 @@
           "hasNextPage": {
             "type": "boolean"
           },
-          "optionDataSources": {
+          "optionsDataSources": {
             "type": "object",
             "additionalProperties": {}
           }
@@ -1532,7 +1507,7 @@
           "lookupName": {
             "type": "string"
           },
-          "optionDataSources": {
+          "optionsDataSources": {
             "type": "object",
             "additionalProperties": {}
           }
@@ -1794,7 +1769,7 @@
           "hasNextPage": {
             "type": "boolean"
           },
-          "optionDataSources": {
+          "optionsDataSources": {
             "type": "object",
             "additionalProperties": {}
           }
@@ -1892,7 +1867,7 @@
             "type": "string",
             "format": "guid"
           },
-          "optionDataSources": {
+          "optionsDataSources": {
             "type": "object",
             "additionalProperties": {}
           }
@@ -2102,7 +2077,7 @@
           "hasNextPage": {
             "type": "boolean"
           },
-          "optionDataSources": {
+          "optionsDataSources": {
             "type": "object",
             "additionalProperties": {}
           }
@@ -2352,7 +2327,7 @@
           "hasNextPage": {
             "type": "boolean"
           },
-          "optionDataSources": {
+          "optionsDataSources": {
             "type": "object",
             "additionalProperties": {}
           }
@@ -2616,7 +2591,7 @@
           "hasNextPage": {
             "type": "boolean"
           },
-          "optionDataSources": {
+          "optionsDataSources": {
             "type": "object",
             "additionalProperties": {}
           }
@@ -2737,7 +2712,7 @@
           "hasNextPage": {
             "type": "boolean"
           },
-          "optionDataSources": {
+          "optionsDataSources": {
             "type": "object",
             "additionalProperties": {}
           }

@@ -33,8 +33,8 @@ public class Lookups : EndpointGroupBase
                 Key: CacheKeys.Lookup_All_SelectList,
                 AllowCacheList: false)
             );
-            result.Value.OptionDataSources.Add("parentSelectList", parentSelectList.Value);
-            result.Value.OptionDataSources.Add("statusSelectList", UtilityExtensions.GetActiveInactiveSelectList());
+            result.Value.OptionsDataSources.Add("parentSelectList", parentSelectList.Value);
+            result.Value.OptionsDataSources.Add("statusSelectList", UtilityExtensions.GetActiveInactiveSelectList());
         }
 
         return TypedResults.Ok(result.Value);
@@ -51,18 +51,18 @@ public class Lookups : EndpointGroupBase
                 Key: CacheKeys.Lookup_All_SelectList,
                 AllowCacheList: false)
             );
-        result?.Value?.OptionDataSources.Add("parentSelectList", parentSelectList.Value);
-        result?.Value?.OptionDataSources.Add("subjectSelectList", GetSubjectList());
-        result?.Value?.OptionDataSources.Add("subjectRadioSelectList", GetSubjectList());
-        result?.Value?.OptionDataSources.Add("multiParentSelectList", parentSelectList.Value);
+        result?.Value?.OptionsDataSources.Add("parentSelectList", parentSelectList.Value);
+        result?.Value?.OptionsDataSources.Add("subjectSelectList", GetSubjectList());
+        result?.Value?.OptionsDataSources.Add("subjectRadioSelectList", GetSubjectList());
+        result?.Value?.OptionsDataSources.Add("multiParentSelectList", parentSelectList.Value);
         
         var appMenuTreeList = await sender.Send(new GetAppMenuTreeSelectList()).ConfigureAwait(false);
-        result?.Value.OptionDataSources.Add("appMenuTreeList", appMenuTreeList.Value);
-        result?.Value.OptionDataSources.Add("singleMenuTreeList", appMenuTreeList.Value);
+        result?.Value.OptionsDataSources.Add("appMenuTreeList", appMenuTreeList.Value);
+        result?.Value.OptionsDataSources.Add("singleMenuTreeList", appMenuTreeList.Value);
 
         var parentTreeSelectList = await sender.Send(new GetAppMenuTreeSelectList());
-        result?.Value?.OptionDataSources.Add("treeSelectMenuseSelectList", parentTreeSelectList.Value);
-        result?.Value?.OptionDataSources.Add("treeSelectSingleMenuSelectList", parentTreeSelectList.Value);
+        result?.Value?.OptionsDataSources.Add("treeSelectMenuseSelectList", parentTreeSelectList.Value);
+        result?.Value?.OptionsDataSources.Add("treeSelectSingleMenuSelectList", parentTreeSelectList.Value);
 
         return TypedResults.Ok(result.Value);
 

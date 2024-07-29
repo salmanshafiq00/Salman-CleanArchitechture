@@ -31,8 +31,8 @@ public class AppMenus : EndpointGroupBase
                 Key: CacheKeys.AppMenu_All_SelectList,
                 AllowCacheList: false)
             );
-            result.Value.OptionDataSources.Add("parentSelectList", roleSelectList.Value);
-            result.Value.OptionDataSources.Add("statusSelectList", UtilityExtensions.GetActiveInactiveSelectList());
+            result.Value.OptionsDataSources.Add("parentSelectList", roleSelectList.Value);
+            result.Value.OptionsDataSources.Add("statusSelectList", UtilityExtensions.GetActiveInactiveSelectList());
         }
 
         return TypedResults.Ok(result.Value);

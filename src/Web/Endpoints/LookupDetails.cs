@@ -9,7 +9,7 @@ public class LookupDetails : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-           .RequireAuthorization()
+           //.RequireAuthorization()
            .MapPost(GetAll, "GetAll", "GetLookupDetails")
            .MapGet(Get, "Get/{id:Guid}", "GetLookupDetail")
            .MapPost(Create, "Create", "CreateLookupDetail")
@@ -35,7 +35,7 @@ public class LookupDetails : EndpointGroupBase
                 Key: CacheKeys.Lookup_All_SelectList,
                 AllowCacheList: false)
             );
-        result.Value.OptionDataSources.Add("lookupSelectList", lookupSelectList.Value);
+        result.Value.OptionsDataSources.Add("lookupSelectList", lookupSelectList.Value);
 
         var parentSelectList = await sender.Send(new GetSelectListQuery(
                 Sql: SelectListSqls.GetLookupDetailSelectListSql,
@@ -43,7 +43,7 @@ public class LookupDetails : EndpointGroupBase
                 Key: CacheKeys.LookupDetail_All_SelectList,
                 AllowCacheList: false)
             );
-        result.Value.OptionDataSources.Add("parentSelectList", parentSelectList.Value);
+        result.Value.OptionsDataSources.Add("parentSelectList", parentSelectList.Value);
 
         return TypedResults.Ok(result.Value);
 

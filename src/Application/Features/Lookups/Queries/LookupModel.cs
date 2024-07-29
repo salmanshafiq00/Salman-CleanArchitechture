@@ -27,7 +27,7 @@ public record LookupModel
     public List<Guid> TreeSelectMenus { get; set; } = [];
     public Guid TreeSelectSingleMenu { get; set; }
 
-    public Dictionary<string, object> OptionDataSources { get; set; } = [];
+    public Dictionary<string, object> OptionsDataSources { get; set; } = [];
 
     private class Mapper : Profile
     {
