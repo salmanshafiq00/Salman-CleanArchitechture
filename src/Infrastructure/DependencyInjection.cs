@@ -42,7 +42,7 @@ public static class DependencyInjection
         Guard.Against.Null(identityConString, message: $"Connection string '{nameof(IdentityConnection)}' not found.");
         Guard.Against.Null(redisConString, message: "Connection string 'RedisCache' not found.");
 
-        AddDatabase(services, dbConString, identityConString);
+        AddPersistence(services, dbConString, identityConString);
         AddRedis(services, redisConString);
         AddScopedServices(services);
         AddCaching(services);
@@ -54,7 +54,7 @@ public static class DependencyInjection
         return services;
     }
 
-    private static void AddDatabase(IServiceCollection services, string dbConString, string identityConString)
+    private static void AddPersistence(IServiceCollection services, string dbConString, string identityConString)
     {
         services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
         //services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
@@ -112,7 +112,7 @@ public static class DependencyInjection
 
         services.AddHangfireServer(options => options.SchedulePollingInterval = TimeSpan.FromSeconds(1)); // which is going to configure my application to act as a hangfire server
 
-        services.AddScoped<IProcessOutboxMessagesJob, ProcessOutboxMessagesDapperJob>();
+        //services.AddScoped<IProcessOutboxMessagesJob, ProcessOutboxMessagesDapperJob>(); // temp comment
     }
 
     private static void AddIdentity(IServiceCollection services)

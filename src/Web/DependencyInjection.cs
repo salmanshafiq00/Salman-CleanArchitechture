@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using CleanArchitechture.Application.Common.Abstractions.Identity;
+using CleanArchitechture.Web.Middlewares;
 using CleanArchitechture.Web.Services;
 using Dapper;
 using Microsoft.AspNetCore.Mvc;
@@ -92,7 +93,7 @@ public static class DependencyInjection
     private static void AddExceptionHandlers(IServiceCollection services)
     {
         services.AddExceptionHandler<CustomExceptionHandler>();
-        services.AddExceptionHandler<GlobalExceptionHandler>();
+        services.AddExceptionHandler<GlobalExceptionHandlerMiddleware>();
     }
 
     private static void AddRazorPages(IServiceCollection services)

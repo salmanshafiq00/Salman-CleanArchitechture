@@ -35,7 +35,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
     "/api/LookupDetails/Get/{id}": {
@@ -67,7 +72,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
     "/api/LookupDetails/Create": {
@@ -110,7 +120,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
     "/api/LookupDetails/Update": {
@@ -148,7 +163,12 @@
           "404": {
             "description": ""
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
     "/api/LookupDetails/Delete/{id}": {
@@ -183,7 +203,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
     "/api/Lookups/GetAll": {
@@ -215,39 +240,12 @@
               }
             }
           }
-        }
-      }
-    },
-    "/api/Lookups/Get/{id}": {
-      "get": {
-        "tags": [
-          "Lookups"
-        ],
-        "operationId": "GetLookup",
-        "parameters": [
+        },
+        "security": [
           {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "guid"
-            },
-            "x-position": 1
+            "JWT": []
           }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LookupModel"
-                }
-              }
-            }
-          }
-        }
+        ]
       }
     },
     "/api/Lookups/Create": {
@@ -290,7 +288,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
     "/api/Lookups/Update": {
@@ -328,7 +331,12 @@
           "404": {
             "description": ""
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
     "/api/Lookups/Delete/{id}": {
@@ -363,7 +371,53 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/Lookups/Get/{id}": {
+      "get": {
+        "tags": [
+          "Lookups"
+        ],
+        "description": "Get Single Entity of Lookup",
+        "operationId": "GetLookup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LookupModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
     "/api/SelectLists/GetLookupSelectList": {

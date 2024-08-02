@@ -7,17 +7,22 @@ using CleanArchitechture.Application.Features.Lookups.Queries;
 
 namespace CleanArchitechture.Web.Endpoints;
 
-public class Lookups : EndpointGroupBase
+public sealed class Lookups : EndpointGroupBase
 {
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-           //.RequireAuthorization()
+           .RequireAuthorization()
            .MapPost(GetAll, "GetAll", "GetLookups")
-           .MapGet(Get, "Get/{id:Guid}", "GetLookup")
+           //.MapGet(Get, "Get/{id:Guid}", "GetLookup")
            .MapPost(Create, "Create", "CreateLookup")
            .MapPut(Update, "Update", "UpdateLookup")
-           .MapDelete(Delete, "Delete/{id:Guid}", "DeleteLookup");
+           .MapDelete(Delete, "Delete/{id:Guid}", "DeleteLookup")
+           .MapGet("Get/{id:Guid}", Get)
+            .WithDescription("Get Single Entity of Lookup")
+            .WithName("GetLookup")
+            .Produces<LookupModel>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status400BadRequest);
     }
 
     [ProducesResponseType(typeof(PaginatedResponse<LookupModel>), StatusCodes.Status200OK)]
@@ -40,7 +45,7 @@ public class Lookups : EndpointGroupBase
         return TypedResults.Ok(result.Value);
     }
 
-    [ProducesResponseType(typeof(LookupModel), StatusCodes.Status200OK)]
+    //[ProducesResponseType(typeof(LookupModel), StatusCodes.Status200OK)]
     public async Task<IResult> Get(ISender sender, [FromRoute] Guid id)
     {
         var result = await sender.Send(new GetLookupByIdQuery(id));

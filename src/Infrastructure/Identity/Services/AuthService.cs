@@ -133,8 +133,8 @@ internal sealed class AuthService(
         var newRefreshToken = new RefreshToken
         {
             Token = tokenProvider.GenerateRefreshToken(),
-            Expires = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenExpires),
-            Created = DateTime.UtcNow,
+            Expires = DateTime.Now.AddDays(_jwtOptions.RefreshTokenExpires),
+            Created = DateTime.Now,
             CreatedByIp = GetIpAddress(),
             ApplicationUserId = userId
         };

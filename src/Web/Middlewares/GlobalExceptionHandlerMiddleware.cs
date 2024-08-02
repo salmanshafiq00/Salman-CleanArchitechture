@@ -2,17 +2,17 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 
-namespace WebApi.Web.Infrastructure;
+namespace CleanArchitechture.Web.Middlewares;
 
-public class GlobalExceptionHandler(
-    ILogger<GlobalExceptionHandler> logger) 
+public class GlobalExceptionHandlerMiddleware(
+    ILogger<GlobalExceptionHandlerMiddleware> logger)
     : IExceptionHandler
 {
     private const string CorrelationIdHeaderName = "X-Correlation-Id";
     private const string CorrelationId = "correlationId";
     public async ValueTask<bool> TryHandleAsync(
-        HttpContext httpContext, 
-        Exception exception, 
+        HttpContext httpContext,
+        Exception exception,
         CancellationToken cancellationToken)
     {
         logger.LogError(exception, "Exception occured: {Message}", exception.Message);
@@ -28,7 +28,7 @@ public class GlobalExceptionHandler(
         };
 
         var env = httpContext.RequestServices.GetRequiredService<IWebHostEnvironment>();
-        if(env.IsDevelopment())
+        if (env.IsDevelopment())
         {
             //httpContext.Items.TryGetValue("correlationId", out var correlationId);
             httpContext.Request.Headers.TryGetValue(CorrelationIdHeaderName, out StringValues correlationId);

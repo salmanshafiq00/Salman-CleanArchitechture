@@ -9,7 +9,7 @@ public class LookupDetails : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-           //.RequireAuthorization()
+           .RequireAuthorization()
            .MapPost(GetAll, "GetAll", "GetLookupDetails")
            .MapGet(Get, "Get/{id:Guid}", "GetLookupDetail")
            .MapPost(Create, "Create", "CreateLookupDetail")

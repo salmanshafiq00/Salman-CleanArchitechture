@@ -1,7 +1,4 @@
 using CleanArchitechture.Application.Common.Abstractions;
-using CleanArchitechture.Infrastructure.Identity;
-using CleanArchitechture.Infrastructure.Persistence;
-using CleanArchitechture.Web.Extensions;
 using CleanArchitechture.Web.Middlewares;
 using Hangfire;
 using HealthChecks.UI.Client;
@@ -18,7 +15,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(Allow_Origin_Policy, builder =>
     {
-        builder.WithOrigins("http://localhost:4200", "http://localhost:8114", "http://localhost:8081", "http://localhost:4444")
+        builder.WithOrigins("http://localhost:4200", "https://localhost:4200")
                .AllowAnyHeader()
                .AllowAnyMethod()
                .AllowCredentials();
@@ -38,6 +35,12 @@ builder.Services.AddWebServices();
 // Configure the HTTP request pipeline.
 
 var app = builder.Build();
+
+app.Use(async (context, next) =>
+{
+    var contexta = context;
+    await next.Invoke();
+});
 
 // Set the service provider
 ServiceLocator.ServiceProvider = app.Services;
@@ -60,10 +63,8 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-//app.UseMiddleware<DateTimeAdjustmentMiddleware>();
-app.UseMiddleware<RequestContextLoggingMiddleware>();
-
 app.UseCors(Allow_Origin_Policy);
+app.UseMiddleware<RequestContextLoggingMiddleware>();
 
 //app.UseAuthentication();
 //app.UseAuthorization();
@@ -83,11 +84,7 @@ app.UseHangfireDashboard(options: new DashboardOptions
 
 app.UseBackgroundJobs();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller}/{action=Index}/{id?}");
-
-app.MapRazorPages();
+//app.MapRazorPages();
 
 app.MapFallbackToFile("index.html");
 
