@@ -36,12 +36,6 @@ builder.Services.AddWebServices();
 
 var app = builder.Build();
 
-app.Use(async (context, next) =>
-{
-    var contexta = context;
-    await next.Invoke();
-});
-
 // Set the service provider
 ServiceLocator.ServiceProvider = app.Services;
 
@@ -66,8 +60,14 @@ app.UseStaticFiles();
 app.UseCors(Allow_Origin_Policy);
 app.UseMiddleware<RequestContextLoggingMiddleware>();
 
-//app.UseAuthentication();
-//app.UseAuthorization();
+app.UseAuthentication();
+app.Use(async (context, next) =>
+{
+    var contexta = context;
+    await next.Invoke();
+});
+app.UseRouting();
+app.UseAuthorization();
 app.UseSerilogRequestLogging();
 
 app.UseHealthChecks("/api/health", new HealthCheckOptions
