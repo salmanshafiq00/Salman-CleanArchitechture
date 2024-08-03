@@ -1,9 +1,6 @@
-﻿using System.Text.Json.Serialization;
-using CleanArchitechture.Application.Features.Lookups.Queries;
+﻿namespace CleanArchitechture.Application.Features.LookupDetails.Queries;
 
-namespace CleanArchitechture.Application.Features.LookupDetails.Queries;
-
-//[Authorize(Policy = Permissions.CommonSetup.LookupDetails.View)]
+[Authorize(Policy = Permissions.CommonSetup.LookupDetails.View)]
 public record GetLookupDetailListQuery
     : DataGridModel, ICacheableQuery<PaginatedResponse<LookupDetailModel>>
 {

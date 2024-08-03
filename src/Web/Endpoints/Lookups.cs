@@ -1,9 +1,12 @@
-﻿using CleanArchitechture.Application.Common.Extensions;
+﻿using CleanArchitechture.Application.Common.Abstractions;
+using CleanArchitechture.Application.Common.Extensions;
 using CleanArchitechture.Application.Common.Models;
 using CleanArchitechture.Application.Features.Admin.AppMenus.Queries;
 using CleanArchitechture.Application.Features.Common.Queries;
 using CleanArchitechture.Application.Features.Lookups.Commands;
 using CleanArchitechture.Application.Features.Lookups.Queries;
+using CleanArchitechture.Infrastructure.Communications;
+using Microsoft.AspNetCore.SignalR;
 
 namespace CleanArchitechture.Web.Endpoints;
 
@@ -26,10 +29,10 @@ public sealed class Lookups : EndpointGroupBase
     }
 
     [ProducesResponseType(typeof(PaginatedResponse<LookupModel>), StatusCodes.Status200OK)]
-    public async Task<IResult> GetAll(ISender sender, [FromBody] GetLookupListQuery query)
+    public async Task<IResult> GetAll(ISender sender, [FromBody] GetLookupListQuery query, IHubContext<NotificationHub, INotificationHub> context)
     {
         var result = await sender.Send(query);
-
+        await context.Clients.All.ReceiveNotification("Helooo! welcome to signalr!!!");
         if (!query.IsInitialLoaded)
         {
             var parentSelectList = await sender.Send(new GetSelectListQuery(

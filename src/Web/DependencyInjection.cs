@@ -18,6 +18,7 @@ public static class DependencyInjection
     private const string CorrelationId = "correlationId";
     public static IServiceCollection AddWebServices(this IServiceCollection services)
     {
+        services.AddSignalR();
         AddCustomProblemDetails(services);
         AddDapperTypeHandler(services);
         AddDatabaseDeveloperPageExceptionFilter(services);
