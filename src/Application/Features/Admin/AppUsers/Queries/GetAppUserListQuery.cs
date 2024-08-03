@@ -1,7 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿namespace CleanArchitechture.Application.Features.Admin.AppUsers.Queries;
 
-namespace CleanArchitechture.Application.Features.Admin.AppUsers.Queries;
-
+[Authorize(Policy = Permissions.Admin.ApplicationUsers.View)]
 public record GetAppUserListQuery
     : DataGridModel, ICacheableQuery<PaginatedResponse<AppUserModel>>
 {
