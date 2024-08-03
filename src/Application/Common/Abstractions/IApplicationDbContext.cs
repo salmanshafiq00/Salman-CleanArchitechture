@@ -12,6 +12,7 @@ public interface IApplicationDbContext
     DbSet<AppMenu> AppMenus { get; }
     DbSet<RoleMenu> RoleMenus { get; }
     DbSet<AppPage> AppPages { get; }
+    DbSet<AppNotification> AppNotifications { get; }
     #endregion
 
     #region Common Setup

@@ -33,8 +33,6 @@ internal sealed class AuthService(
         var user = await userManager.FindByEmailAsync(username)
            ?? await userManager.FindByNameAsync(username);
 
-        //Guard.Against.NotFound(nameof(username), user, ErrorMessages.WRONG_USERNAME_PASSWORD);
-
         if (user is null)
         {
             return Result.Failure<AuthenticatedResponse>(Error.NotFound(nameof(user), ErrorMessages.WRONG_USERNAME_PASSWORD));
@@ -190,7 +188,7 @@ internal sealed class AuthService(
             {
                 ValidateIssuer = true,
                 ValidateAudience = true,
-                ValidateLifetime = false,
+                ValidateLifetime = false, // it's false because already token lifetime validated
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = _jwtOptions.Issuer,
                 ValidAudience = _jwtOptions.Audience,
@@ -201,6 +199,7 @@ internal sealed class AuthService(
             var tokenHandler = new JwtSecurityTokenHandler();
 
             var principal = tokenHandler.ValidateToken(accessToken, tokenValidationParameters, out SecurityToken securityToken);
+            
             if (securityToken is not JwtSecurityToken jwtSecurityToken
                 || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
             {

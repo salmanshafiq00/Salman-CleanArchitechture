@@ -7,7 +7,7 @@ public record GetAppPageByIdQuery(Guid Id) : ICacheableQuery<AppPageModel?>
     public string CacheKey => $"AppPage_{Id}";
     [JsonIgnore]
     public TimeSpan? Expiration => null;
-    public bool? AllowCache => false;
+    public bool? AllowCache => true;
 
 }
 

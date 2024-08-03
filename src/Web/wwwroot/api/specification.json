@@ -838,6 +838,61 @@
         }
       }
     },
+    "/api/AppNotifications/GetAll": {
+      "post": {
+        "tags": [
+          "AppNotifications"
+        ],
+        "operationId": "GetAppNotifications",
+        "requestBody": {
+          "x-name": "query",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetAppNotificationListQuery"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponseOfAppNotificationModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AppNotifications/GetByUser": {
+      "get": {
+        "tags": [
+          "AppNotifications"
+        ],
+        "operationId": "GetAppNotification",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AppNotificationModel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/AppPages/GetAll": {
       "post": {
         "tags": [
@@ -2352,6 +2407,98 @@
             "type": "string"
           }
         }
+      },
+      "PaginatedResponseOfAppNotificationModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AppNotificationModel"
+            }
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          },
+          "hasNextPage": {
+            "type": "boolean"
+          },
+          "optionsDataSources": {
+            "type": "object",
+            "additionalProperties": {}
+          }
+        }
+      },
+      "AppNotificationModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "url": {
+            "type": "string",
+            "nullable": true
+          },
+          "senderId": {
+            "type": "string"
+          },
+          "recieverId": {
+            "type": "string"
+          },
+          "isSeen": {
+            "type": "boolean"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "lastModifiedBy": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "GetAppNotificationListQuery": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/DataGridModel"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false
+          }
+        ]
       },
       "PaginatedResponseOfAppPageModel": {
         "type": "object",

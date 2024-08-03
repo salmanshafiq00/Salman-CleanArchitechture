@@ -1,4 +1,5 @@
 using CleanArchitechture.Application.Common.Abstractions;
+using CleanArchitechture.Infrastructure.Communications;
 using CleanArchitechture.Web.Middlewares;
 using Hangfire;
 using HealthChecks.UI.Client;
@@ -89,6 +90,8 @@ app.UseBackgroundJobs();
 app.MapFallbackToFile("index.html");
 
 app.UseExceptionHandler(options => { });
+
+app.MapHub<NotificationHub>("/notificationHub");
 
 app.Map("/", () => Results.Redirect("/api"));
 
