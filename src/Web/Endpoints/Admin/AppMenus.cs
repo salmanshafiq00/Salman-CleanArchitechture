@@ -10,6 +10,7 @@ public class AppMenus : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
+            .RequireAuthorization()
             .MapPost(GetAll, "GetAll", "GetAppMenus")
             .MapGet(GetSidebarMenus, "GetSidebarMenus")
             .MapGet(Get, "Get/{id}", "GetAppMenu")

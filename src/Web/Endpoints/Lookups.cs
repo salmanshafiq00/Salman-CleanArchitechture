@@ -2,6 +2,7 @@
 using CleanArchitechture.Application.Common.Extensions;
 using CleanArchitechture.Application.Common.Models;
 using CleanArchitechture.Application.Features.Admin.AppMenus.Queries;
+using CleanArchitechture.Application.Features.Admin.AppNotifications.Queries;
 using CleanArchitechture.Application.Features.Common.Queries;
 using CleanArchitechture.Application.Features.Lookups.Commands;
 using CleanArchitechture.Application.Features.Lookups.Queries;
@@ -32,7 +33,7 @@ public sealed class Lookups : EndpointGroupBase
     public async Task<IResult> GetAll(ISender sender, [FromBody] GetLookupListQuery query, IHubContext<NotificationHub, INotificationHub> context)
     {
         var result = await sender.Send(query);
-        await context.Clients.All.ReceiveNotification("Helooo! welcome to signalr!!!");
+        await context.Clients.All.ReceiveNotification(new AppNotificationModel { Title = "Welcome to Lookup", Description = "Welcome to Lookup"});
         if (!query.IsInitialLoaded)
         {
             var parentSelectList = await sender.Send(new GetSelectListQuery(
