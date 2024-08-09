@@ -1,5 +1,6 @@
 ﻿using CleanArchitechture.Application.Features.Admin.AppPages.Queries;
 using CleanArchitechture.Domain.Admin;
+using Mapster;
 
 namespace CleanArchitechture.Application.Features.Admin.AppPages.Commands;
 
@@ -7,7 +8,7 @@ public record UpsertAppPageCommand: AppPageModel, IRequest<Guid>
 {
 }
 
-internal sealed class UpsertAppPageCommandHandler(IApplicationDbContext dbContext, IMapper mapper) 
+internal sealed class UpsertAppPageCommandHandler(IApplicationDbContext dbContext) 
     : IRequestHandler<UpsertAppPageCommand, Guid>
 {
     public async Task<Guid> Handle(UpsertAppPageCommand request, CancellationToken cancellationToken)
@@ -18,12 +19,12 @@ internal sealed class UpsertAppPageCommandHandler(IApplicationDbContext dbContex
 
         if (entity is null)
         {
-            entity = mapper.Map<AppPage>(request);
+            entity = request.Adapt<AppPage>();
             await dbContext.AppPages.AddAsync(entity, cancellationToken);
         }
         else
         {
-            mapper.Map(request, entity);
+            request.Adapt(entity);
             dbContext.AppPages.Update(entity);
         }
 

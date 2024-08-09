@@ -1,6 +1,4 @@
-﻿using CleanArchitechture.Domain.Admin;
-
-namespace CleanArchitechture.Application.Features.Admin.AppPages.Queries;
+﻿namespace CleanArchitechture.Application.Features.Admin.AppPages.Queries;
 
 public record AppPageModel
 {
@@ -17,14 +15,6 @@ public record AppPageModel
     public List<AppPageActionModel> RowActions { get; set; } = [];
 
     public Dictionary<string, object> OptionsDataSources { get; set; } = [];
-
-    private class Mapper : Profile
-    {
-        public Mapper()
-        {
-            CreateMap<AppPage, AppPageModel>().ReverseMap();
-        }
-    }
 }
 
 public record AppPageFieldModel

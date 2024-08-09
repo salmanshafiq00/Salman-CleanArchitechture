@@ -8,7 +8,7 @@ public record UpdateAppNotificationCommand(
     public string CacheKey => CacheKeys.AppNotification;
 }
 
-internal sealed class UpdateAppNotificationCommandHandler(IApplicationDbContext dbContext, IMapper mapper)
+internal sealed class UpdateAppNotificationCommandHandler(IApplicationDbContext dbContext)
     : IRequestHandler<UpdateAppNotificationCommand, Result>
 {
     public async Task<Result> Handle(UpdateAppNotificationCommand request, CancellationToken cancellationToken)

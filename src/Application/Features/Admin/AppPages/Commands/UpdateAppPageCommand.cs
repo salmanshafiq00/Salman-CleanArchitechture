@@ -1,4 +1,5 @@
 ﻿using CleanArchitechture.Application.Common.Abstractions.Caching;
+using Mapster;
 
 namespace CleanArchitechture.Application.Features.Admin.AppPages.Commands;
 
@@ -12,7 +13,7 @@ public record UpdateAppPageCommand(
     public string CacheKey => CacheKeys.AppPage;
 }
 
-internal sealed class UpdateAppPageCommandHandler(IApplicationDbContext dbContext, IMapper mapper)
+internal sealed class UpdateAppPageCommandHandler(IApplicationDbContext dbContext)
     : IRequestHandler<UpdateAppPageCommand, Result>
 {
     public async Task<Result> Handle(UpdateAppPageCommand request, CancellationToken cancellationToken)
@@ -26,10 +27,12 @@ internal sealed class UpdateAppPageCommandHandler(IApplicationDbContext dbContex
             return Result.Failure(Error.NotFound("AppPage.NotFound", "AppPage not found"));
         }
 
-        entity.Title = request.Title;
-        entity.SubTitle = request.SubTitle;
-        entity.ComponentName = request.ComponentName;
-        entity.AppPageLayout = request.AppPageLayout;
+        request.Adapt(entity);
+
+        //entity.Title = request.Title;
+        //entity.SubTitle = request.SubTitle;
+        //entity.ComponentName = request.ComponentName;
+        //entity.AppPageLayout = request.AppPageLayout;
 
         dbContext.AppPages.Update(entity);
 

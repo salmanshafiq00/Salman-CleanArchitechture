@@ -1,5 +1,6 @@
 ﻿using CleanArchitechture.Application.Common.Abstractions.Caching;
 using CleanArchitechture.Domain.Admin;
+using Mapster;
 
 namespace CleanArchitechture.Application.Features.Admin.AppPages.Commands;
 
@@ -10,21 +11,14 @@ public record CreateAppPageCommand(
     string AppPageLayout) : ICacheInvalidatorCommand<Guid>
 {
     public string CacheKey => CacheKeys.AppPage;
-    private class Mapper: Profile
-    {
-        public Mapper()
-        {
-            CreateMap<CreateAppPageCommand, AppPage>();
-        }
-    }
 }
 
-internal sealed class CreateAppPageCommandHandler(IApplicationDbContext dbContext, IMapper mapper)
+internal sealed class CreateAppPageCommandHandler(IApplicationDbContext dbContext)
     : ICommandHandler<CreateAppPageCommand, Guid>
 {
     public async Task<Result<Guid>> Handle(CreateAppPageCommand request, CancellationToken cancellationToken)
     {
-        var entity = mapper.Map<AppPage>(request);
+        var entity = request.Adapt<AppPage>();
         dbContext.AppPages.Add(entity);
         await dbContext.SaveChangesAsync(cancellationToken);
 

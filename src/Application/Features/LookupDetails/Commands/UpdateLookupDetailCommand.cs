@@ -1,5 +1,6 @@
 ﻿using Application.Constants;
 using CleanArchitechture.Application.Common.Abstractions.Caching;
+using Mapster;
 
 namespace CleanArchitechture.Application.Features.LookupDetails.Commands;
 
@@ -25,16 +26,10 @@ internal sealed class UpdateLookupDetailCommandHandler(
 
         if (entity is null) return Result.Failure(Error.NotFound(nameof(entity), ErrorMessages.EntityNotFound));
 
-        entity.Name = request.Name;
-        entity.Code = request.Code;
-        entity.Description = request.Description;
-        entity.Status = request.Status;
-        entity.LookupId = request.LookupId;
-        entity.ParentId = request.ParentId;
+        request.Adapt(entity);
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        //return Result.Success(CommonMessage.UPDATED_SUCCESSFULLY);
         return Result.Success();
     }
 }
