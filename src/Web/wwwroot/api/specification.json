@@ -1490,7 +1490,7 @@
         }
       }
     },
-    "/api/Accounts": {
+    "/api/Accounts/Login": {
       "post": {
         "tags": [
           "Accounts"
@@ -1561,6 +1561,32 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/Accounts/Logout": {
+      "post": {
+        "tags": [
+          "Accounts"
+        ],
+        "operationId": "Logout",
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": ""
           }
         }
       }

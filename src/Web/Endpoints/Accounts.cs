@@ -13,8 +13,9 @@ public class Accounts : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-            .MapPost(Login)
-            .MapPost(RefreshToken, "RefreshToken");
+            .MapPost(Login, "Login", "Login")
+            .MapPost(RefreshToken, "RefreshToken")
+            .MapPost(Logout, "Logout");
     }
 
     [ProducesResponseType(typeof(AuthenticatedResponse), StatusCodes.Status200OK)]
@@ -61,6 +62,28 @@ public class Accounts : EndpointGroupBase
 
         return result.Match(
              onSuccess: () => TypedResults.Ok(result.Value),
+             onFailure: result.ToProblemDetails);
+    }
+
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IResult> Logout(
+        ISender sender,
+        IHttpContextAccessor context)
+    {
+        if (!context.HttpContext.Request.Headers.TryGetValue(Authorization, out var authorizationHeader))
+        {
+            return TypedResults.BadRequest("Invalid Token");
+        }
+        var accessToken = authorizationHeader.ToString().Replace("Bearer ", "");
+
+        var result = await sender.Send(new LogoutRequestCommand(accessToken));
+
+        SetRefreshTokenInCookie(context, string.Empty, DateTime.Now);
+
+        return result.Match(
+             onSuccess: () => TypedResults.Ok(),
              onFailure: result.ToProblemDetails);
     }
 

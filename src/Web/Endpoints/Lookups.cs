@@ -1,4 +1,5 @@
 ﻿using CleanArchitechture.Application.Common.Abstractions;
+using CleanArchitechture.Application.Common.Abstractions.Identity;
 using CleanArchitechture.Application.Common.Extensions;
 using CleanArchitechture.Application.Common.Models;
 using CleanArchitechture.Application.Features.Admin.AppMenus.Queries;
@@ -30,10 +31,14 @@ public sealed class Lookups : EndpointGroupBase
     }
 
     [ProducesResponseType(typeof(PaginatedResponse<LookupModel>), StatusCodes.Status200OK)]
-    public async Task<IResult> GetAll(ISender sender, [FromBody] GetLookupListQuery query, IHubContext<NotificationHub, INotificationHub> context)
+    public async Task<IResult> GetAll(
+        ISender sender, 
+        IHubContext<NotificationHub, INotificationHub> context, 
+        IUser user,
+        [FromBody] GetLookupListQuery query)
     {
         var result = await sender.Send(query);
-        await context.Clients.All.ReceiveNotification(new AppNotificationModel { Title = "Welcome to Lookup", Description = "Welcome to Lookup"});
+        await context.Clients.All.ReceiveNotification(new AppNotificationModel {RecieverId = user.Id, SenderId = user.Id,  Title = "Welcome to Lookup", Description = "Welcome to Lookup"});
         if (!query.IsInitialLoaded)
         {
             var parentSelectList = await sender.Send(new GetSelectListQuery(
