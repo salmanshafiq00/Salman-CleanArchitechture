@@ -8,80 +8,86 @@ public class LookupDetails : EndpointGroupBase
 {
     public override void Map(WebApplication app)
     {
-        app.MapGroup(this)
-           .RequireAuthorization()
-           .MapPost(GetAll, "GetAll", "GetLookupDetails")
-           .MapGet(Get, "Get/{id:Guid}", "GetLookupDetail")
-           .MapPost(Create, "Create", "CreateLookupDetail")
-           .MapPut(Update, "Update", "UpdateLookupDetail")
-           .MapDelete(Delete, "Delete/{id:Guid}", "DeleteLookupDetail");
+        var group = app.MapGroup(this);
+
+        group.MapPost("GetAll", GetAll)
+             .WithName("GetLookupDetails")
+             .Produces<PaginatedResponse<LookupDetailModel>>(StatusCodes.Status200OK);
+
+        group.MapGet("Get/{id:Guid}", Get)
+             .WithName("GetLookupDetail")
+             .Produces<LookupDetailModel>(StatusCodes.Status200OK);
+
+        group.MapPost("Create", Create)
+             .WithName("CreateLookupDetail")
+             .Produces<Guid>(StatusCodes.Status201Created)
+             .Produces<ProblemDetails>(StatusCodes.Status400BadRequest);
+
+        group.MapPut("Update", Update)
+             .WithName("UpdateLookupDetail")
+             .Produces(StatusCodes.Status200OK)
+             .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
+             .Produces(StatusCodes.Status404NotFound);
+
+        group.MapDelete("Delete/{id:Guid}", Delete)
+             .WithName("DeleteLookupDetail")
+             .Produces(StatusCodes.Status204NoContent)
+             .Produces<ProblemDetails>(StatusCodes.Status400BadRequest);
     }
 
-    [ProducesResponseType(typeof(PaginatedResponse<LookupDetailModel>), StatusCodes.Status200OK)]
-    public async Task<IResult> GetAll(ISender sender,  GetLookupDetailListQuery query)
+    private async Task<IResult> GetAll(ISender sender, GetLookupDetailListQuery query)
     {
         var result = await sender.Send(query);
         return TypedResults.Ok(result.Value);
     }
 
-    [ProducesResponseType(typeof(LookupDetailModel), StatusCodes.Status200OK)]
-    public async Task<IResult> Get(ISender sender, Guid id)
+    private async Task<IResult> Get(ISender sender, Guid id)
     {
         var result = await sender.Send(new GetLookupDetailByIdQuery(id));
 
         var lookupSelectList = await sender.Send(new GetSelectListQuery(
-                Sql: SelectListSqls.GetLookupSelectListSql,
-                Parameters: new { },
-                Key: CacheKeys.Lookup_All_SelectList,
-                AllowCacheList: false)
-            );
+            Sql: SelectListSqls.GetLookupSelectListSql,
+            Parameters: new { },
+            Key: CacheKeys.Lookup_All_SelectList,
+            AllowCacheList: false));
+
         result.Value.OptionsDataSources.Add("lookupSelectList", lookupSelectList.Value);
 
         var parentSelectList = await sender.Send(new GetSelectListQuery(
-                Sql: SelectListSqls.GetLookupDetailSelectListSql,
-                Parameters: new { },
-                Key: CacheKeys.LookupDetail_All_SelectList,
-                AllowCacheList: false)
-            );
+            Sql: SelectListSqls.GetLookupDetailSelectListSql,
+            Parameters: new { },
+            Key: CacheKeys.LookupDetail_All_SelectList,
+            AllowCacheList: false));
+
         result.Value.OptionsDataSources.Add("parentSelectList", parentSelectList.Value);
 
         return TypedResults.Ok(result.Value);
-
     }
 
-    [ProducesResponseType(typeof(Guid), StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IResult> Create(ISender sender, [FromBody] CreateLookupDetailCommand command)
+    private async Task<IResult> Create(ISender sender, [FromBody] CreateLookupDetailCommand command)
     {
         var result = await sender.Send(command);
 
         return result.Match(
-             //onSuccess: () => Results.Ok(result.Value),
-             onSuccess: () => Results.CreatedAtRoute("GetLookupDetail", new {id = result.Value}),
-             onFailure: result.ToProblemDetails);
+            onSuccess: () => Results.CreatedAtRoute("GetLookupDetail", new { id = result.Value }),
+            onFailure: result.ToProblemDetails);
     }
 
-
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IResult> Update(ISender sender, [FromBody] UpdateLookupDetailCommand command)
+    private async Task<IResult> Update(ISender sender, [FromBody] UpdateLookupDetailCommand command)
     {
         var result = await sender.Send(command);
 
         return result.Match(
-             onSuccess: () => Results.Ok(),
-             onFailure: result.ToProblemDetails);
+            onSuccess: () => Results.Ok(),
+            onFailure: result.ToProblemDetails);
     }
 
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IResult> Delete(ISender sender, Guid id)
-    {      
+    private async Task<IResult> Delete(ISender sender, Guid id)
+    {
         var result = await sender.Send(new DeleteLookupDetailCommand(id));
 
         return result.Match(
-             onSuccess: Results.NoContent,
-             onFailure: result.ToProblemDetails);
+            onSuccess: Results.NoContent,
+            onFailure: result.ToProblemDetails);
     }
 }

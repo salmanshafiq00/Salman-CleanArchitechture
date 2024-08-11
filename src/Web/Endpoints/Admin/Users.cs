@@ -9,17 +9,34 @@ public class Users : EndpointGroupBase
 {
     public override void Map(WebApplication app)
     {
-        app.MapGroup(this)
-            .MapPost(GetAll, "GetAll", "GetUsers")
-            .MapGet(Get, "Get/{id}", "GetUser")
-            .MapPost(Create,"Create", "CreateUser")
-            .MapPut(Update, "Update", "UpdateUser")
-            .MapPost(AddToRoles, "AddToRoles");
+        var group = app.MapGroup(this);
 
+        group.MapPost("GetAll", GetAll)
+            .WithName("GetUsers")
+            .Produces<PaginatedResponse<AppUserModel>>(StatusCodes.Status200OK);
+
+        group.MapGet("Get/{id}", Get)
+            .WithName("GetUser")
+            .Produces<AppUserModel>(StatusCodes.Status200OK)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest);
+
+        group.MapPost("Create", Create)
+            .WithName("CreateUser")
+            .Produces<string>(StatusCodes.Status200OK)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest);
+
+        group.MapPut("Update", Update)
+            .WithName("UpdateUser")
+            .Produces(StatusCodes.Status204NoContent)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest);
+
+        group.MapPost("AddToRoles", AddToRoles)
+            .WithName("AddToRoles")
+            .Produces(StatusCodes.Status204NoContent)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest);
     }
 
-    [ProducesResponseType(typeof(PaginatedResponse<AppUserModel>), StatusCodes.Status200OK)]
-    public async Task<IResult> GetAll(ISender sender, [FromBody] GetAppUserListQuery query)
+    private async Task<IResult> GetAll(ISender sender, [FromBody] GetAppUserListQuery query)
     {
         var result = await sender.Send(query);
 
@@ -38,9 +55,7 @@ public class Users : EndpointGroupBase
         return TypedResults.Ok(result.Value);
     }
 
-    [ProducesResponseType(typeof(AppUserModel), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IResult> Get(ISender sender, [FromRoute] string id)
+    private async Task<IResult> Get(ISender sender, [FromRoute] string id)
     {
         var result = await sender.Send(new GetAppUserByIdQuery(id));
 
@@ -53,42 +68,34 @@ public class Users : EndpointGroupBase
         result.Value.OptionsDataSources.Add("roleSelectList", roleSelectList.Value);
 
         return result.Match(
-             onSuccess: () => Results.Ok(result.Value),
-             onFailure: result.ToProblemDetails);
+            onSuccess: () => Results.Ok(result.Value),
+            onFailure: result.ToProblemDetails);
     }
 
-    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IResult> Create(ISender sender, [FromBody] CreateAppUserCommand command)
+    private async Task<IResult> Create(ISender sender, [FromBody] CreateAppUserCommand command)
     {
         var result = await sender.Send(command);
 
         return result.Match(
-             onSuccess: () => Results.Ok(result.Value),
-             onFailure: result.ToProblemDetails);
+            onSuccess: () => Results.Ok(result.Value),
+            onFailure: result.ToProblemDetails);
     }
 
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IResult> Update(ISender sender, [FromBody] UpdateAppUserCommand command)
+    private async Task<IResult> Update(ISender sender, [FromBody] UpdateAppUserCommand command)
     {
         var result = await sender.Send(command);
 
         return result.Match(
-             onSuccess: () => Results.NoContent(),
-             onFailure: result.ToProblemDetails);
+            onSuccess: () => Results.NoContent(),
+            onFailure: result.ToProblemDetails);
     }
 
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    public async Task<IResult> AddToRoles(ISender sender, [FromBody] AddToRolesCommand command)
+    private async Task<IResult> AddToRoles(ISender sender, [FromBody] AddToRolesCommand command)
     {
         var result = await sender.Send(command);
 
         return result.Match(
-             onSuccess: () => Results.NoContent(),
-             onFailure: result.ToProblemDetails);
+            onSuccess: () => Results.NoContent(),
+            onFailure: result.ToProblemDetails);
     }
-
-
 }
