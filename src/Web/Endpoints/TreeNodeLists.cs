@@ -8,21 +8,24 @@ public class TreeNodeLists : EndpointGroupBase
 {
     public override void Map(WebApplication app)
     {
-        app.MapGroup(this)
-            .RequireAuthorization()
-            .MapGet(GetAllPermissionNodeList, "GetAllPermissionNodeList")
-            .MapGet(GetAllAppMenuTreeSelectList, "GetAllAppMenuTreeSelectList");
+        var group = app.MapGroup(this);
+
+        group.MapGet("GetAllPermissionNodeList", GetAllPermissionNodeList)
+             .WithName("GetAllPermissionNodeList")
+             .Produces<List<TreeNodeModel>>(StatusCodes.Status200OK);
+
+        group.MapGet("GetAllAppMenuTreeSelectList", GetAllAppMenuTreeSelectList)
+             .WithName("GetAllAppMenuTreeSelectList")
+             .Produces<List<TreeNodeModel>>(StatusCodes.Status200OK);
     }
 
-    [ProducesResponseType(typeof(List<TreeNodeModel>), StatusCodes.Status200OK)]
-    public async Task<List<TreeNodeModel>> GetAllPermissionNodeList(ISender sender, [FromQuery] bool? allowCache = null)
+    private async Task<List<TreeNodeModel>> GetAllPermissionNodeList(ISender sender, [FromQuery] bool? allowCache = null)
     {
         var result = await sender.Send(new GetPermissionTreeSelectListQuery());
         return result.Value;
     }
 
-    [ProducesResponseType(typeof(List<TreeNodeModel>), StatusCodes.Status200OK)]
-    public async Task<List<TreeNodeModel>> GetAllAppMenuTreeSelectList(ISender sender, [FromQuery] bool? allowCache = null)
+    private async Task<List<TreeNodeModel>> GetAllAppMenuTreeSelectList(ISender sender, [FromQuery] bool? allowCache = null)
     {
         var result = await sender.Send(new GetAppMenuTreeSelectList());
         return result.Value;

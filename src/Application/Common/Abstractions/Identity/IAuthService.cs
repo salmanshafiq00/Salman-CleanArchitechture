@@ -9,4 +9,5 @@ public interface IAuthService
     Task<Result<AuthenticatedResponse>> RefreshToken(string accessToken, string refreshToken, CancellationToken cancellation = default);
     Task<(Result Result, string UserId)> ForgotPassword(string email);
     Task<(Result Result, string UserId)> ResetPassword(string email);
+    Task<Result> Logout(string userId, string accessToken, CancellationToken cancellation = default);
 }

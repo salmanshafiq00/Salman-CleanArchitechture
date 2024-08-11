@@ -1,5 +1,4 @@
-﻿using static CleanArchitechture.Application.Common.DapperQueries.Constants;
-
+﻿
 namespace CleanArchitechture.Application.Features.Admin.AppUsers.Queries;
 
 public record AppUserModel

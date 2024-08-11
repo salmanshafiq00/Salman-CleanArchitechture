@@ -112,7 +112,7 @@ public static class DependencyInjection
 
         services.AddHangfireServer(options => options.SchedulePollingInterval = TimeSpan.FromSeconds(1)); // which is going to configure my application to act as a hangfire server
 
-        //services.AddScoped<IProcessOutboxMessagesJob, ProcessOutboxMessagesDapperJob>(); // temp comment
+        services.AddScoped<IProcessOutboxMessagesJob, ProcessOutboxMessagesDapperJob>();
     }
 
     private static void AddIdentity(IServiceCollection services)

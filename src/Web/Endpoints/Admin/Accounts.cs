@@ -1,9 +1,7 @@
 ﻿using CleanArchitechture.Application.Features.Identity.Commands;
 using CleanArchitechture.Application.Features.Identity.Models;
-using CleanArchitechture.Web.Extensions;
-using Microsoft.AspNetCore.Mvc;
 
-namespace WebApi.Web.Endpoints;
+namespace CleanArchitechture.Web.Endpoints.Admin;
 
 public class Accounts : EndpointGroupBase
 {
@@ -12,14 +10,28 @@ public class Accounts : EndpointGroupBase
 
     public override void Map(WebApplication app)
     {
-        app.MapGroup(this)
-            .MapPost(Login)
-            .MapPost(RefreshToken, "RefreshToken");
+        var group = app.MapGroup(this);
+
+        group.MapPost("Login", Login)
+            .WithName("Login")
+            .AllowAnonymous()
+            .Produces<AuthenticatedResponse>(StatusCodes.Status200OK)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status404NotFound);
+
+        group.MapPost("RefreshToken", RefreshToken)
+            .WithName("RefreshToken")
+            .AllowAnonymous()
+            .Produces<AuthenticatedResponse>(StatusCodes.Status200OK)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest);
+
+        group.MapPost("Logout", Logout)
+            .WithName("Logout")
+            .Produces(StatusCodes.Status200OK)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status404NotFound);
     }
 
-    [ProducesResponseType(typeof(AuthenticatedResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IResult> Login(
         ISender sender,
         IHttpContextAccessor context,
@@ -37,8 +49,6 @@ public class Accounts : EndpointGroupBase
              onFailure: result.ToProblemDetails);
     }
 
-    [ProducesResponseType(typeof(AuthenticatedResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<IResult> RefreshToken(
         ISender sender,
         IHttpContextAccessor context)
@@ -61,6 +71,25 @@ public class Accounts : EndpointGroupBase
 
         return result.Match(
              onSuccess: () => TypedResults.Ok(result.Value),
+             onFailure: result.ToProblemDetails);
+    }
+
+    public async Task<IResult> Logout(
+        ISender sender,
+        IHttpContextAccessor context)
+    {
+        if (!context.HttpContext.Request.Headers.TryGetValue(Authorization, out var authorizationHeader))
+        {
+            return TypedResults.BadRequest("Invalid Token");
+        }
+        var accessToken = authorizationHeader.ToString().Replace("Bearer ", "");
+
+        var result = await sender.Send(new LogoutRequestCommand(accessToken));
+
+        SetRefreshTokenInCookie(context, string.Empty, DateTime.Now);
+
+        return result.Match(
+             onSuccess: () => TypedResults.Ok(),
              onFailure: result.ToProblemDetails);
     }
 

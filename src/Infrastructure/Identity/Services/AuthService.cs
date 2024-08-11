@@ -1,18 +1,16 @@
-﻿using System.Net.Sockets;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Net;
+using System.Net.Sockets;
+using System.Security.Claims;
+using System.Text;
 using Application.Constants;
-using CleanArchitechture.Application.Common.Models;
+using CleanArchitechture.Application.Common.Abstractions.Identity;
 using CleanArchitechture.Application.Features.Identity.Models;
+using CleanArchitechture.Infrastructure.Identity.OptionsSetup;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using CleanArchitechture.Application.Common.Abstractions.Identity;
-using CleanArchitechture.Application.Common.Abstractions;
-using CleanArchitechture.Infrastructure.Identity.OptionsSetup;
 
 namespace CleanArchitechture.Infrastructure.Identity.Services;
 
@@ -70,8 +68,8 @@ internal sealed class AuthService(
         var refreshToken = new RefreshToken
         {
             Token = tokenProvider.GenerateRefreshToken(),
-            Expires = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenExpires),
-            Created = DateTime.UtcNow,
+            Expires = DateTime.Now.AddDays(_jwtOptions.RefreshTokenExpires),
+            Created = DateTime.Now,
             CreatedByIp = GetIpAddress(),
             ApplicationUserId = user.Id
         };
@@ -152,6 +150,27 @@ internal sealed class AuthService(
         return !string.IsNullOrEmpty(token)
                     ? Result.Success(tokenResponse)
                     : Result.Failure<AuthenticatedResponse>(Error.NotFound("Token", ErrorMessages.INVALID_TOKEN));
+
+    }
+
+    public async Task<Result> Logout(string userId, string accessToken, CancellationToken cancellation = default)
+    {
+        // Get ClaimPrincipal from accessToken
+        var claimsPrincipalResult = GetClaimsPrincipalFromToken(accessToken);
+
+        // Get Identity UserId  from ClaimPrincipal
+        var userIdFromAccessToken = claimsPrincipalResult.Value?.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        var affectedRow = dbContext.RefreshTokens
+            .Where(x => x.ApplicationUserId == (userId ?? userIdFromAccessToken) && x.Revoked == null)
+            .ExecuteUpdate(x => x
+                .SetProperty(p => p.Revoked, DateTime.Now));
+
+        await dbContext.SaveChangesAsync(cancellation);
+
+        return affectedRow > 0
+            ? Result.Success()
+            : Result.Failure<AuthenticatedResponse>(Error.NotFound("Token", ErrorMessages.INVALID_TOKEN));
 
     }
 

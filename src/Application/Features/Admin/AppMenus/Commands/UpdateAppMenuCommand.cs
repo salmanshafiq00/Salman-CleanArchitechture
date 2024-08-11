@@ -1,5 +1,6 @@
 ﻿using Application.Constants;
 using CleanArchitechture.Application.Common.Abstractions.Caching;
+using Mapster;
 
 namespace CleanArchitechture.Application.Features.Admin.AppMenus.Commands;
 
@@ -29,16 +30,7 @@ internal sealed class UpdateAppMenuCommandHandler(
 
         if (entity is null) return Result.Failure(Error.NotFound(nameof(entity), ErrorMessages.EntityNotFound));
 
-        entity.Label = request.Label;
-        entity.RouterLink = request.RouterLink;
-        entity.Icon = request.Icon;
-        entity.Tooltip = request.Tooltip;
-        entity.IsActive = request.IsActive;
-        entity.OrderNo = request.OrderNo;
-        entity.Visible = request.Visible;
-        entity.Description = request.Description;
-        entity.ParentId = request.ParentId;
-        entity.MenuTypeId = request.MenuTypeId;
+        request.Adapt(entity);
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
