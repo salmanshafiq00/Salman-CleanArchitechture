@@ -161,17 +161,47 @@ internal sealed class AuthService(
         // Get Identity UserId  from ClaimPrincipal
         var userIdFromAccessToken = claimsPrincipalResult.Value?.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        var affectedRow = dbContext.RefreshTokens
+        dbContext.RefreshTokens
             .Where(x => x.ApplicationUserId == (userId ?? userIdFromAccessToken) && x.Revoked == null)
             .ExecuteUpdate(x => x
                 .SetProperty(p => p.Revoked, DateTime.Now));
 
-        await dbContext.SaveChangesAsync(cancellation);
+        var affectedRow = await dbContext.SaveChangesAsync(cancellation);
 
         return affectedRow > 0
             ? Result.Success()
             : Result.Failure<AuthenticatedResponse>(Error.NotFound("Token", ErrorMessages.INVALID_TOKEN));
 
+    }
+
+    public async Task<Result> ChangePasswordAsync(
+         string userId,
+         string currentPassword,
+         string newPassword,
+         CancellationToken cancellation = default)
+    {
+        var user = await dbContext.Users
+            .SingleOrDefaultAsync(u => u.Id == userId, cancellation)
+            .ConfigureAwait(false);
+
+        if (user is null)
+            return Result.Failure(Error.Failure("User.Update", ErrorMessages.USER_NOT_FOUND));
+
+        var identityResult = await userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+
+        if (!identityResult.Succeeded)
+        {
+            return identityResult.ToApplicationResult();
+        }
+
+        dbContext.RefreshTokens
+            .Where(x => x.ApplicationUserId == userId && x.Revoked == null)
+            .ExecuteUpdate(x => x
+                .SetProperty(p => p.Revoked, DateTime.Now));
+
+        var affectedRow = await dbContext.SaveChangesAsync(cancellation);
+
+        return identityResult.ToApplicationResult();
     }
 
     public Task<(Result Result, string UserId)> ForgotPassword(string email)

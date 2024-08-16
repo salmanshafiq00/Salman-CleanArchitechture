@@ -110,6 +110,68 @@ public class IdentityService : IIdentityService
         return Result.Success();
     }
 
+    public async Task<Result> UpdateUserBasicAsync(
+      UpdateAppUserBasicCommand command,
+      CancellationToken cancellation = default)
+    {
+        var user = await _identityContext.Users
+            .SingleOrDefaultAsync(u => u.Id == command.Id, cancellation)
+            .ConfigureAwait(false);
+
+        if (user is null)
+            return Result.Failure(Error.Failure("User.Update", ErrorMessages.USER_NOT_FOUND));
+
+        user.Email = command.Email;
+        user.FirstName = command.FirstName;
+        user.LastName = command.LastName;
+        user.PhoneNumber = command.PhoneNumber;
+
+       var result = await _identityContext.SaveChangesAsync(cancellation);
+
+        return result > 0
+            ? Result.Success()
+            : Result.Failure(Error.Failure("User.Update", ErrorMessages.UNABLE_UPDATE_USER));
+    }
+
+    public async Task<Result> ChangePasswordAsync(
+      string userId,
+      string currentPassword,
+      string newPassword,
+      CancellationToken cancellation = default)
+    {
+        var user = await _identityContext.Users
+            .SingleOrDefaultAsync(u => u.Id == userId, cancellation)
+            .ConfigureAwait(false);
+
+        if (user is null)
+            return Result.Failure(Error.Failure("User.Update", ErrorMessages.USER_NOT_FOUND));
+
+        var identityResult = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+
+        return identityResult.ToApplicationResult(); 
+    }
+
+    public async Task<Result> ChangePhotoAsync(
+      string userId,
+      string photoUrl,
+      CancellationToken cancellation = default)
+    {
+        var user = await _identityContext.Users
+            .SingleOrDefaultAsync(u => u.Id == userId, cancellation)
+            .ConfigureAwait(false);
+
+        if (user is null)
+            return Result.Failure(Error.Failure("User.Update", ErrorMessages.USER_NOT_FOUND));
+
+        user.PhotoUrl = photoUrl;
+
+        var result = await _identityContext.SaveChangesAsync(cancellation);
+
+        return result > 0
+            ? Result.Success()
+            : Result.Failure(Error.Failure("User.Update", ErrorMessages.UNABLE_UPDATE_USER_PHOTO));
+    }
+
     private async Task DeleteAndAddUserRoles(
         List<string> roles, 
         ApplicationUser user, 

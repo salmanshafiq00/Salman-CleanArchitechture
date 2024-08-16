@@ -1,4 +1,5 @@
-﻿using CleanArchitechture.Application.Common.Extensions;
+﻿using CleanArchitechture.Application.Common.Abstractions.Identity;
+using CleanArchitechture.Application.Common.Extensions;
 using CleanArchitechture.Application.Features.Admin.AppUsers.Commands;
 using CleanArchitechture.Application.Features.Admin.AppUsers.Queries;
 using CleanArchitechture.Application.Features.Common.Queries;
@@ -20,6 +21,11 @@ public class Users : EndpointGroupBase
             .Produces<AppUserModel>(StatusCodes.Status200OK)
             .Produces<ProblemDetails>(StatusCodes.Status400BadRequest);
 
+        group.MapGet("GetProfile", GetProfile)
+            .WithName("GetProfile")
+            .Produces<AppUserModel>(StatusCodes.Status200OK)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest);
+
         group.MapPost("Create", Create)
             .WithName("CreateUser")
             .Produces<string>(StatusCodes.Status200OK)
@@ -27,6 +33,11 @@ public class Users : EndpointGroupBase
 
         group.MapPut("Update", Update)
             .WithName("UpdateUser")
+            .Produces(StatusCodes.Status204NoContent)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest);
+
+        group.MapPut("UpdateBasic", UpdateBasic)
+            .WithName("UpdateBasic")
             .Produces(StatusCodes.Status204NoContent)
             .Produces<ProblemDetails>(StatusCodes.Status400BadRequest);
 
@@ -72,6 +83,15 @@ public class Users : EndpointGroupBase
             onFailure: result.ToProblemDetails);
     }
 
+    private async Task<IResult> GetProfile(ISender sender, IUser user)
+    {
+        var result = await sender.Send(new GetAppUserProfileQuery(user.Id));
+
+        return result.Match(
+            onSuccess: () => Results.Ok(result.Value),
+            onFailure: result.ToProblemDetails);
+    }
+
     private async Task<IResult> Create(ISender sender, [FromBody] CreateAppUserCommand command)
     {
         var result = await sender.Send(command);
@@ -82,6 +102,15 @@ public class Users : EndpointGroupBase
     }
 
     private async Task<IResult> Update(ISender sender, [FromBody] UpdateAppUserCommand command)
+    {
+        var result = await sender.Send(command);
+
+        return result.Match(
+            onSuccess: () => Results.NoContent(),
+            onFailure: result.ToProblemDetails);
+    }
+
+    private async Task<IResult> UpdateBasic(ISender sender, [FromBody] UpdateAppUserBasicCommand command)
     {
         var result = await sender.Send(command);
 

@@ -11,6 +11,7 @@ public static class ErrorMessages
     public const string UNABLE_DELETE_USER = "Unable to delete the user";
     public const string UNABLE_CREATE_USER = "Unable to create the user";
     public const string UNABLE_UPDATE_USER = "Unable to update the user";
+    public const string UNABLE_UPDATE_USER_PHOTO = "Unable to update the user's photo";
     public const string ROLE_NOT_FOUND = "Role not found";
     public const string UNABLE_DELETE_ROLE = "Unable to delete the role";
     public const string UNABLE_CREATE_ROLE = "Unable to create the role";

@@ -8,7 +8,7 @@ public record GetAppUserByIdQuery(string Id)
     : ICacheableQuery<AppUserModel>
 {
     [JsonIgnore]
-    public string CacheKey => CacheKeys.AppUser;
+    public string CacheKey => $"{CacheKeys.AppUser}_{Id}";
 
     public bool? AllowCache => false;
 

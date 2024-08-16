@@ -1,4 +1,6 @@
-﻿using CleanArchitechture.Application.Features.Identity.Commands;
+﻿using CleanArchitechture.Application.Common.Abstractions.Identity;
+using CleanArchitechture.Application.Features.Admin.AppUsers.Commands;
+using CleanArchitechture.Application.Features.Identity.Commands;
 using CleanArchitechture.Application.Features.Identity.Models;
 
 namespace CleanArchitechture.Web.Endpoints.Admin;
@@ -28,6 +30,12 @@ public class Accounts : EndpointGroupBase
         group.MapPost("Logout", Logout)
             .WithName("Logout")
             .Produces(StatusCodes.Status200OK)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status404NotFound);
+
+        group.MapPost("ChangePassword", ChangePassword)
+            .WithName("ChangePassword")
+            .Produces(StatusCodes.Status204NoContent)
             .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status404NotFound);
     }
@@ -91,6 +99,24 @@ public class Accounts : EndpointGroupBase
         return result.Match(
              onSuccess: () => TypedResults.Ok(),
              onFailure: result.ToProblemDetails);
+    }
+
+    private async Task<IResult> ChangePassword(
+        ISender sender, 
+        IHttpContextAccessor context, 
+        IIdentityService identityService,
+        [FromBody] ChangePasswordCommand command)
+    {
+        var result = await sender.Send(command);
+
+        if (result.IsSuccess) 
+        {
+            SetRefreshTokenInCookie(context, string.Empty, DateTime.Now);
+        }
+
+        return result.Match(
+            onSuccess: () => Results.NoContent(),
+            onFailure: result.ToProblemDetails);
     }
 
     private static void SetRefreshTokenInCookie(
