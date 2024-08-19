@@ -21,7 +21,6 @@ public class IdentityService : IIdentityService
     private readonly IdentityContext _identityContext;
     private readonly IDistributedCacheService _cacheService;
     private readonly ILogger<IdentityService> _logger;
-    private readonly Stopwatch _timer;
 
     public IdentityService(
         UserManager<ApplicationUser> userManager,
@@ -37,7 +36,6 @@ public class IdentityService : IIdentityService
         _identityContext = identityContext;
         _cacheService = cacheService;
         _logger = logger;
-        _timer = new Stopwatch();
     }
 
     public async Task<string?> GetUserNameAsync(string userId, CancellationToken cancellation = default)
@@ -236,8 +234,6 @@ public class IdentityService : IIdentityService
 
     public async Task<Result> AuthorizeAsync(string userId, string policyName, CancellationToken cancellation = default)
     {
-        _timer.Start();
-
         var user = _userManager.Users
             .AsNoTracking()
             .SingleOrDefault(u => u.Id == userId);
@@ -246,15 +242,7 @@ public class IdentityService : IIdentityService
 
         var principal = await _userClaimsPrincipalFactory.CreateAsync(user);
 
-        _logger.LogInformation("Current DateTime: {Now}", DateTime.Now);
-
         var result = await _authorizationService.AuthorizeAsync(principal, policyName);
-
-        _timer.Stop();
-
-        var ellapsed = _timer.ElapsedMilliseconds;
-
-        _logger.LogInformation("Elapsed Time: {Elapsed}ms", ellapsed);
 
         return result.Succeeded
             ? Result.Success()
@@ -273,6 +261,29 @@ public class IdentityService : IIdentityService
         return result.Succeeded
             ? Result.Success()
             : Result.Failure(Error.Failure("User.Delete", ErrorMessages.UNABLE_DELETE_USER));
+    }
+
+    public async Task<Result<string[]>> GetUserPermissionsAsync(string userId, CancellationToken cancellationToken = default)
+    {
+
+        if (!await _identityContext.Users
+            .AsNoTracking()
+            .AnyAsync(u => u.Id == userId, cancellationToken))
+        {
+            return Result.Failure<string[]>(Error.NotFound(nameof(userId), ErrorMessages.USER_NOT_FOUND));
+        }
+
+        var userRoles = _identityContext.UserRoles
+            .AsNoTracking()
+            .Where(x => x.UserId == userId)
+            .Select(x => x.RoleId)
+            .AsQueryable();
+
+        return await _identityContext.RoleClaims
+            .Where(x => userRoles.Contains(x.RoleId))
+            .Select(x => x.ClaimValue!)
+            .ToArrayAsync(cancellationToken);
+
     }
 
     public async Task<IDictionary<string, string?>> GetUsersByRole(

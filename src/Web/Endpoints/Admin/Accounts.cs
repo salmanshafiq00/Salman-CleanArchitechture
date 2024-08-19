@@ -2,6 +2,7 @@
 using CleanArchitechture.Application.Features.Admin.AppUsers.Commands;
 using CleanArchitechture.Application.Features.Identity.Commands;
 using CleanArchitechture.Application.Features.Identity.Models;
+using CleanArchitechture.Application.Features.Identity.Queries;
 
 namespace CleanArchitechture.Web.Endpoints.Admin;
 
@@ -37,6 +38,11 @@ public class Accounts : EndpointGroupBase
             .WithName("ChangePassword")
             .Produces(StatusCodes.Status204NoContent)
             .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status404NotFound);
+
+        group.MapGet("GetUserPermissions", GetUserPermissions)
+            .WithName("GetUserPermissions")
+            .Produces<string[]>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound);
     }
 
@@ -116,6 +122,17 @@ public class Accounts : EndpointGroupBase
 
         return result.Match(
             onSuccess: () => Results.NoContent(),
+            onFailure: result.ToProblemDetails);
+    }
+
+    private async Task<IResult> GetUserPermissions(
+        ISender sender,
+        IUser user)
+    {
+        var result = await sender.Send(new GetUserPermissionsQuery(user.Id));
+
+        return result.Match(
+            onSuccess: () => Results.Ok(result.Value),
             onFailure: result.ToProblemDetails);
     }
 

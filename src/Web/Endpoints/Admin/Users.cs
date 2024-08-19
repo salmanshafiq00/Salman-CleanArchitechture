@@ -31,6 +31,11 @@ public class Users : EndpointGroupBase
             .Produces<string>(StatusCodes.Status200OK)
             .Produces<ProblemDetails>(StatusCodes.Status400BadRequest);
 
+        group.MapPost("Upload", Upload)
+            .WithName("Upload")
+            .Produces<string>(StatusCodes.Status200OK)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest);
+
         group.MapPut("Update", Update)
             .WithName("UpdateUser")
             .Produces(StatusCodes.Status204NoContent)
@@ -117,6 +122,23 @@ public class Users : EndpointGroupBase
         return result.Match(
             onSuccess: () => Results.NoContent(),
             onFailure: result.ToProblemDetails);
+    }
+
+    private async Task<IResult> Upload(IWebHostEnvironment webHost, IFormFile file)
+    {
+        if(file is null || file.Length == 0)
+        {
+            return Results.BadRequest("File is empty");
+        }
+
+        var filePath = Path.Combine(webHost.WebRootPath, "uploads", "user-photos");
+
+        using var stream = new FileStream(filePath, FileMode.Create);
+
+        await file.CopyToAsync(stream);
+
+        return Results.Ok(filePath);
+
     }
 
     private async Task<IResult> AddToRoles(ISender sender, [FromBody] AddToRolesCommand command)
