@@ -19,7 +19,6 @@ internal sealed class UpdateAppPageCommandHandler(IApplicationDbContext dbContex
     public async Task<Result> Handle(UpdateAppPageCommand request, CancellationToken cancellationToken)
     {
         var entity = await dbContext.AppPages
-            .AsNoTracking()
             .FirstOrDefaultAsync(ap => ap.Id == request.Id, cancellationToken);
 
         if (entity is null)
@@ -28,13 +27,6 @@ internal sealed class UpdateAppPageCommandHandler(IApplicationDbContext dbContex
         }
 
         request.Adapt(entity);
-
-        //entity.Title = request.Title;
-        //entity.SubTitle = request.SubTitle;
-        //entity.ComponentName = request.ComponentName;
-        //entity.AppPageLayout = request.AppPageLayout;
-
-        dbContext.AppPages.Update(entity);
 
         await dbContext.SaveChangesAsync(cancellationToken);
 

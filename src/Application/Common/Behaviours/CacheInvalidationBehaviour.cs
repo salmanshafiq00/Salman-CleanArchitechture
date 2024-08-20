@@ -14,7 +14,7 @@ internal sealed class CacheInvalidationBehaviour<TRequest, TResponse>(
         if (!string.IsNullOrEmpty(request.CacheKey))
         {
             await distributedCache.RemoveByPrefixAsync(request.CacheKey, CancellationToken.None);
-            logger.LogInformation("Cach value of {CacheKey} expired with {@Request}", request.CacheKey, request);
+            logger.LogInformation("Cache value of {CacheKey} expired with {@Request}", request.CacheKey, request);
         }
        
         return response;
