@@ -2944,6 +2944,13 @@
           "appPageLayout": {
             "type": "string"
           },
+          "showRowActionCol": {
+            "type": "boolean"
+          },
+          "rowActionType": {
+            "type": "string",
+            "nullable": true
+          },
           "appPageFields": {
             "type": "array",
             "items": {
@@ -3060,6 +3067,9 @@
           "caption": {
             "type": "string"
           },
+          "showCaption": {
+            "type": "boolean"
+          },
           "icon": {
             "type": "string"
           },
@@ -3067,6 +3077,9 @@
             "type": "string"
           },
           "navigationUrl": {
+            "type": "string"
+          },
+          "params": {
             "type": "string"
           },
           "position": {

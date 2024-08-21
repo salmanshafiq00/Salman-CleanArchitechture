@@ -7,8 +7,8 @@ public record AppPageModel
     public string SubTitle { get; set; } = string.Empty;
     public string ComponentName { get; set; } = string.Empty;
     public string AppPageLayout { get; set; } = string.Empty;
-    //public bool showRowActionCol { get; set; }
-    //public string? rowActionType { get; set; }
+    public bool showRowActionCol { get; set; }
+    public string? rowActionType { get; set; }
 
     public List<AppPageFieldModel> AppPageFields { get; set; } = [];
     public List<AppPageActionModel> ToolbarActions { get; set; } = [];
@@ -41,8 +41,6 @@ public record AppPageFieldModel
     public bool IsActive { get; set; } = true;
 }
 
-
-
 public record AppPageActionModel 
 {
     public Guid Id { get; set; }
@@ -51,9 +49,11 @@ public record AppPageActionModel
     public string Severity { get; set; } = string.Empty;
     public string Permissions { get; set; } = string.Empty;
     public string Caption { get; set; } = string.Empty;
+    public bool ShowCaption { get; set; }
     public string Icon { get; set; } = string.Empty;
     public string FunctionName { get; set; } = string.Empty;   
     public string NavigationUrl { get; set; } = string.Empty;
+    public string Params { get; set; } = string.Empty;
     public string Position { get; set; } = string.Empty;
     public Guid? ParentId { get; set; }
     public int SortOrder { get; set; }
