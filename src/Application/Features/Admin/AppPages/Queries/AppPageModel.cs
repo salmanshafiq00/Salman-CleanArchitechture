@@ -9,6 +9,7 @@ public record AppPageModel
     public string AppPageLayout { get; set; } = string.Empty;
     public bool ShowRowActionCol { get; set; }
     public string? RowActionType { get; set; }
+    public bool ShowSelectCheckbox { get; set; }
 
     public List<AppPageFieldModel> AppPageFields { get; set; } = [];
     public List<AppPageActionModel> ToolbarActions { get; set; } = [];
@@ -44,8 +45,8 @@ public record AppPageFieldModel
 public record AppPageActionModel 
 {
     public Guid Id { get; set; }
-    public int? ActionTypeId { get; set; }
     public string ActionName { get; set; } = string.Empty;
+    public string ActionType { get; set; } = string.Empty;
     public string Severity { get; set; } = string.Empty;
     public string Permissions { get; set; } = string.Empty;
     public string Caption { get; set; } = string.Empty;

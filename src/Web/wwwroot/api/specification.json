@@ -211,6 +211,50 @@
         ]
       }
     },
+    "/api/LookupDetails/DeleteMultiple": {
+      "post": {
+        "tags": [
+          "LookupDetails"
+        ],
+        "operationId": "DeleteMultiple",
+        "requestBody": {
+          "x-name": "ids",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "guid"
+                }
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
     "/api/Lookups/GetAll": {
       "post": {
         "tags": [
@@ -2951,6 +2995,9 @@
             "type": "string",
             "nullable": true
           },
+          "showSelectCheckbox": {
+            "type": "boolean"
+          },
           "appPageFields": {
             "type": "array",
             "items": {
@@ -3050,12 +3097,10 @@
             "type": "string",
             "format": "guid"
           },
-          "actionTypeId": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
           "actionName": {
+            "type": "string"
+          },
+          "actionType": {
             "type": "string"
           },
           "severity": {
