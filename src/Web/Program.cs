@@ -4,6 +4,7 @@ using CleanArchitechture.Web.Middlewares;
 using Hangfire;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.FileProviders;
 using Serilog;
 
 const string Allow_Origin_Policy = "Allow-Origin-Policy";
@@ -58,15 +59,32 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+var resourcePath = Path.Combine(Directory.GetCurrentDirectory(), "Resources");
+
+if (Directory.Exists(resourcePath))
+{
+    app.UseStaticFiles(new StaticFileOptions()
+    {
+        FileProvider = new PhysicalFileProvider(resourcePath),
+        RequestPath = new PathString("/Resources")
+    });
+}
+else
+{
+    // Optionally, create the directory if it doesn't exist
+    Directory.CreateDirectory(resourcePath);
+    app.UseStaticFiles(new StaticFileOptions()
+    {
+        FileProvider = new PhysicalFileProvider(resourcePath),
+        RequestPath = new PathString("/Resources")
+    });
+}
+
+
 app.UseCors(Allow_Origin_Policy);
 app.UseMiddleware<RequestContextLoggingMiddleware>();
 
 app.UseAuthentication();
-app.Use(async (context, next) =>
-{
-    var contexta = context;
-    await next.Invoke();
-});
 app.UseRouting();
 app.UseAuthorization();
 app.UseSerilogRequestLogging();

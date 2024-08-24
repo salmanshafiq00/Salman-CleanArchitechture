@@ -1759,21 +1759,52 @@
           "Users"
         ],
         "operationId": "Upload",
-        "requestBody": {
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "file": {
-                    "type": "string",
-                    "format": "binary",
-                    "nullable": true
-                  }
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
           }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/Users/RemoveFile": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "RemoveFile",
+        "requestBody": {
+          "x-name": "removeFileReq",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveFileRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
         },
         "responses": {
           "200": {
@@ -1781,12 +1812,22 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/FileResponse"
                 }
               }
             }
           },
           "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
             "description": "",
             "content": {
               "application/json": {
@@ -3470,6 +3511,24 @@
             "items": {
               "type": "string"
             }
+          }
+        }
+      },
+      "FileResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "type": "string"
+          }
+        }
+      },
+      "RemoveFileRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "relativePath": {
+            "type": "string"
           }
         }
       },
