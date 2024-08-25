@@ -9,16 +9,34 @@ public class AppMenus : EndpointGroupBase
 {
     public override void Map(WebApplication app)
     {
-        app.MapGroup(this)
-            .MapPost(GetAll, "GetAll", "GetAppMenus")
-            .MapGet(GetSidebarMenus, "GetSidebarMenus")
-            .MapGet(Get, "Get/{id}", "GetAppMenu")
-            .MapPost(Create,"Create", "CreateMenu")
-            .MapPut(Update, "Update", "UpdateMenu");
+        var group = app.MapGroup(this);
+
+        group.MapPost("GetAll", GetAll)
+            .WithName("GetAppMenus")
+            .Produces<PaginatedResponse<AppMenuModel>>(StatusCodes.Status200OK);
+
+        group.MapGet("GetSidebarMenus", GetSidebarMenus)
+            .WithName("GetSidebarMenus")
+            .Produces<List<SidebarMenuModel>>(StatusCodes.Status200OK)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest);
+
+        group.MapGet("Get/{id}", Get)
+            .WithName("GetAppMenu")
+            .Produces<AppMenuModel>(StatusCodes.Status200OK)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest);
+
+        group.MapPost("Create", Create)
+            .WithName("CreateMenu")
+            .Produces<string>(StatusCodes.Status200OK)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest);
+
+        group.MapPut("Update", Update)
+            .WithName("UpdateMenu")
+            .Produces(StatusCodes.Status204NoContent)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest);
 
     }
 
-    [ProducesResponseType(typeof(PaginatedResponse<AppMenuModel>), StatusCodes.Status200OK)]
     public async Task<IResult> GetAll(ISender sender, [FromBody] GetAppMenuListQuery query)
     {
         var result = await sender.Send(query);
@@ -38,8 +56,6 @@ public class AppMenus : EndpointGroupBase
         return TypedResults.Ok(result.Value);
     }
 
-    [ProducesResponseType(typeof(AppMenuModel), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<IResult> Get(ISender sender, [FromRoute] Guid id)
     {
         var result = await sender.Send(new GetAppMenuByIdQuery(id));
@@ -59,8 +75,6 @@ public class AppMenus : EndpointGroupBase
              onFailure: result.ToProblemDetails);
     }
 
-    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<IResult> Create(ISender sender, [FromBody] CreateAppMenuCommand command)
     {
         var result = await sender.Send(command);
@@ -70,8 +84,6 @@ public class AppMenus : EndpointGroupBase
              onFailure: result.ToProblemDetails);
     }
 
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<IResult> Update(ISender sender, [FromBody] UpdateAppMenuCommand command)
     {
         var result = await sender.Send(command);
@@ -81,8 +93,6 @@ public class AppMenus : EndpointGroupBase
              onFailure: result.ToProblemDetails);
     }
 
-    [ProducesResponseType(typeof(List<SidebarMenuModel>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     public async Task<IResult> GetSidebarMenus(ISender sender)
     {
         var result = await sender.Send(new GetSidebarMenuQuery());

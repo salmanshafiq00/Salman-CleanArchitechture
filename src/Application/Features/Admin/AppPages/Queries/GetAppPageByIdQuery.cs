@@ -1,13 +1,15 @@
-﻿namespace CleanArchitechture.Application.Features.Admin.AppPages.Queries;
+﻿using CleanArchitechture.Application.Common.Abstractions.Caching;
+
+namespace CleanArchitechture.Application.Features.Admin.AppPages.Queries;
 
 //[Authorize(Policy = Permissions.Admin.AppPages.View)]
 public record GetAppPageByIdQuery(Guid Id) : ICacheableQuery<AppPageModel?>
 {
     [JsonIgnore]
-    public string CacheKey => $"AppPage_{Id}";
+    public string CacheKey => $"{CacheKeys.AppPage}_{Id}";
     [JsonIgnore]
     public TimeSpan? Expiration => null;
-    public bool? AllowCache => false;
+    public bool? AllowCache => true;
 
 }
 

@@ -1,6 +1,6 @@
-﻿
-using CleanArchitechture.Application.Common.Abstractions.Caching;
+﻿using CleanArchitechture.Application.Common.Abstractions.Caching;
 using CleanArchitechture.Domain.Common;
+using Mapster;
 
 namespace CleanArchitechture.Application.Features.LookupDetails.Commands;
 
@@ -21,15 +21,7 @@ internal sealed class CreateLookupDetailQueryHandler(
 {
     public async Task<Result<Guid>> Handle(CreateLookupDetailCommand request, CancellationToken cancellationToken)
     {
-        var entity = new LookupDetail
-        {
-            Name = request.Name,
-            Code = request.Code,
-            Description = request.Description,
-            Status = request.Status,
-            LookupId = request.LookupId,
-            ParentId = request.ParentId
-        };
+        var entity = request.Adapt<LookupDetail>();
 
         dbContext.LookupDetails.Add(entity);
         await dbContext.SaveChangesAsync(cancellationToken);

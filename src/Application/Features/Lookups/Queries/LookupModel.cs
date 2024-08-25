@@ -1,5 +1,4 @@
-﻿using CleanArchitechture.Domain.Common;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace CleanArchitechture.Application.Features.Lookups.Queries;
 
@@ -28,12 +27,4 @@ public record LookupModel
     public Guid TreeSelectSingleMenu { get; set; }
 
     public Dictionary<string, object> OptionsDataSources { get; set; } = [];
-
-    private class Mapper : Profile
-    {
-        public Mapper()
-        {
-            CreateMap<Lookup, LookupModel>().ReverseMap();
-        }
-    }
 }

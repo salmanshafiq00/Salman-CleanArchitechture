@@ -1,6 +1,6 @@
-﻿using System.Text.Json.Serialization;
-using CleanArchitechture.Application.Common.Abstractions.Caching;
+﻿using CleanArchitechture.Application.Common.Abstractions.Caching;
 using CleanArchitechture.Domain.Admin;
+using Mapster;
 
 namespace CleanArchitechture.Application.Features.Admin.AppMenus.Commands;
 
@@ -26,20 +26,7 @@ internal sealed class CreateAppMenuQueryHandler(
 {
     public async Task<Result<Guid>> Handle(CreateAppMenuCommand request, CancellationToken cancellationToken)
     {
-        var entity = new AppMenu
-        {
-            Label = request.Label,
-            RouterLink = request.RouterLink,
-            Icon = request.Icon,
-            Tooltip = request.Tooltip,
-            IsActive = request.IsActive,
-            OrderNo = request.OrderNo,
-            Visible = request.Visible,
-            Description = request.Description,
-            ParentId = request.ParentId,
-            MenuTypeId = request.MenuTypeId
-        };
-
+        var entity = request.Adapt<AppMenu>();
         dbContext.AppMenus.Add(entity);
         await dbContext.SaveChangesAsync(cancellationToken);
 

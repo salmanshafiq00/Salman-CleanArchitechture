@@ -1,18 +1,16 @@
-﻿using System.Net.Sockets;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Net;
+using System.Net.Sockets;
+using System.Security.Claims;
+using System.Text;
 using Application.Constants;
-using CleanArchitechture.Application.Common.Models;
+using CleanArchitechture.Application.Common.Abstractions.Identity;
 using CleanArchitechture.Application.Features.Identity.Models;
+using CleanArchitechture.Infrastructure.Identity.OptionsSetup;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using CleanArchitechture.Application.Common.Abstractions.Identity;
-using CleanArchitechture.Application.Common.Abstractions;
-using CleanArchitechture.Infrastructure.Identity.OptionsSetup;
 
 namespace CleanArchitechture.Infrastructure.Identity.Services;
 
@@ -32,8 +30,6 @@ internal sealed class AuthService(
     {
         var user = await userManager.FindByEmailAsync(username)
            ?? await userManager.FindByNameAsync(username);
-
-        //Guard.Against.NotFound(nameof(username), user, ErrorMessages.WRONG_USERNAME_PASSWORD);
 
         if (user is null)
         {
@@ -72,8 +68,8 @@ internal sealed class AuthService(
         var refreshToken = new RefreshToken
         {
             Token = tokenProvider.GenerateRefreshToken(),
-            Expires = DateTime.UtcNow.AddDays(_jwtOptions.RefreshTokenExpires),
-            Created = DateTime.UtcNow,
+            Expires = DateTime.Now.AddDays(_jwtOptions.RefreshTokenExpires),
+            Created = DateTime.Now,
             CreatedByIp = GetIpAddress(),
             ApplicationUserId = user.Id
         };
@@ -157,6 +153,57 @@ internal sealed class AuthService(
 
     }
 
+    public async Task<Result> Logout(string userId, string accessToken, CancellationToken cancellation = default)
+    {
+        // Get ClaimPrincipal from accessToken
+        var claimsPrincipalResult = GetClaimsPrincipalFromToken(accessToken);
+
+        // Get Identity UserId  from ClaimPrincipal
+        var userIdFromAccessToken = claimsPrincipalResult.Value?.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        dbContext.RefreshTokens
+            .Where(x => x.ApplicationUserId == (userId ?? userIdFromAccessToken) && x.Revoked == null)
+            .ExecuteUpdate(x => x
+                .SetProperty(p => p.Revoked, DateTime.Now));
+
+        var affectedRow = await dbContext.SaveChangesAsync(cancellation);
+
+        return affectedRow > 0
+            ? Result.Success()
+            : Result.Failure<AuthenticatedResponse>(Error.NotFound("Token", ErrorMessages.INVALID_TOKEN));
+
+    }
+
+    public async Task<Result> ChangePasswordAsync(
+         string userId,
+         string currentPassword,
+         string newPassword,
+         CancellationToken cancellation = default)
+    {
+        var user = await dbContext.Users
+            .SingleOrDefaultAsync(u => u.Id == userId, cancellation)
+            .ConfigureAwait(false);
+
+        if (user is null)
+            return Result.Failure(Error.Failure("User.Update", ErrorMessages.USER_NOT_FOUND));
+
+        var identityResult = await userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+
+        if (!identityResult.Succeeded)
+        {
+            return identityResult.ToApplicationResult();
+        }
+
+        dbContext.RefreshTokens
+            .Where(x => x.ApplicationUserId == userId && x.Revoked == null)
+            .ExecuteUpdate(x => x
+                .SetProperty(p => p.Revoked, DateTime.Now));
+
+        var affectedRow = await dbContext.SaveChangesAsync(cancellation);
+
+        return identityResult.ToApplicationResult();
+    }
+
     public Task<(Result Result, string UserId)> ForgotPassword(string email)
     {
         throw new NotImplementedException();
@@ -190,7 +237,7 @@ internal sealed class AuthService(
             {
                 ValidateIssuer = true,
                 ValidateAudience = true,
-                ValidateLifetime = false,
+                ValidateLifetime = false, // it's false because already token lifetime validated
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = _jwtOptions.Issuer,
                 ValidAudience = _jwtOptions.Audience,
@@ -201,6 +248,7 @@ internal sealed class AuthService(
             var tokenHandler = new JwtSecurityTokenHandler();
 
             var principal = tokenHandler.ValidateToken(accessToken, tokenValidationParameters, out SecurityToken securityToken);
+            
             if (securityToken is not JwtSecurityToken jwtSecurityToken
                 || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
             {

@@ -7,11 +7,11 @@
 
   <ItemGroup>
     <PackageReference Include="Ardalis.GuardClauses" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" />
     <PackageReference Include="Dapper" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
     <PackageReference Include="LazyCache" />
     <PackageReference Include="LazyCache.AspNetCore" />
+    <PackageReference Include="Mapster" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Serilog.AspNetCore" />
     <PackageReference Include="System.Data.SqlClient" />

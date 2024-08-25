@@ -1,7 +1,4 @@
-﻿using CleanArchitechture.Domain.Admin;
-using static CleanArchitechture.Application.Common.DapperQueries.Constants;
-
-namespace CleanArchitechture.Application.Features.Admin.AppMenus.Queries;
+﻿namespace CleanArchitechture.Application.Features.Admin.AppMenus.Queries;
 
 public record AppMenuModel
 {
@@ -22,11 +19,4 @@ public record AppMenuModel
     public string MenuTypeName { get; set; } = string.Empty;
     public Dictionary<string, object> OptionsDataSources { get; set; } = [];
 
-    private class Mapper : Profile
-    {
-        public Mapper()
-        {
-            CreateMap<AppMenu, AppMenuModel>().ReverseMap();
-        }
-    }
 }

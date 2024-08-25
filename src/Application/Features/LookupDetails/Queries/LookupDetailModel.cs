@@ -1,6 +1,4 @@
-﻿using CleanArchitechture.Domain.Common;
-
-namespace CleanArchitechture.Application.Features.LookupDetails.Queries;
+﻿namespace CleanArchitechture.Application.Features.LookupDetails.Queries;
 
 public record LookupDetailModel
 {
@@ -15,12 +13,4 @@ public record LookupDetailModel
     public Guid? LookupId { get; set; }
     public string LookupName { get; set; } = string.Empty;
     public Dictionary<string, object> OptionsDataSources { get; set; } = [];
-
-    public class Mapper : Profile
-    {
-        public Mapper()
-        {
-            CreateMap<LookupDetail, LookupDetailModel>().ReverseMap();
-        }
-    }
 }
