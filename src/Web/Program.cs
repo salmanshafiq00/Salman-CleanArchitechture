@@ -59,26 +59,31 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-var resourcePath = Path.Combine(Directory.GetCurrentDirectory(), "Resources");
 
-if (Directory.Exists(resourcePath))
+string folderName = "Resources";
+
+var resourcePath = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+
+if (!Directory.Exists(resourcePath))
 {
-    app.UseStaticFiles(new StaticFileOptions()
-    {
-        FileProvider = new PhysicalFileProvider(resourcePath),
-        RequestPath = new PathString("/Resources")
-    });
-}
-else
-{
-    // Optionally, create the directory if it doesn't exist
     Directory.CreateDirectory(resourcePath);
-    app.UseStaticFiles(new StaticFileOptions()
-    {
-        FileProvider = new PhysicalFileProvider(resourcePath),
-        RequestPath = new PathString("/Resources")
-    });
 }
+
+app.UseStaticFiles(new StaticFileOptions()
+{
+    FileProvider = new PhysicalFileProvider(resourcePath),
+    RequestPath = new PathString($"/{folderName}"),
+    //OnPrepareResponse = ctx =>
+    //{
+    //    var user = ctx.Context.User;
+    //    if (user?.Identity?.IsAuthenticated != true)
+    //    {
+    //        ctx.Context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+    //        ctx.Context.Response.ContentLength = 0;
+    //        ctx.Context.Response.Body = Stream.Null;
+    //    }
+    //}
+});
 
 
 app.UseCors(Allow_Origin_Policy);
