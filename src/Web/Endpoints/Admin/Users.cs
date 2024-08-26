@@ -1,11 +1,8 @@
-﻿using Azure.Core;
-using CleanArchitechture.Application.Common.Abstractions.Identity;
+﻿using CleanArchitechture.Application.Common.Abstractions.Identity;
 using CleanArchitechture.Application.Common.Extensions;
-using CleanArchitechture.Application.Common.Models;
 using CleanArchitechture.Application.Features.Admin.AppUsers.Commands;
 using CleanArchitechture.Application.Features.Admin.AppUsers.Queries;
 using CleanArchitechture.Application.Features.Common.Queries;
-using CleanArchitechture.Domain.Shared;
 
 namespace CleanArchitechture.Web.Endpoints.Admin;
 
@@ -33,17 +30,6 @@ public class Users : EndpointGroupBase
             .WithName("CreateUser")
             .Produces<string>(StatusCodes.Status200OK)
             .Produces<ProblemDetails>(StatusCodes.Status400BadRequest);
-
-        group.MapPost("Upload", Upload)
-            .WithName("Upload")
-            .Produces<FileResponse>(StatusCodes.Status200OK)
-            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest);
-
-        group.MapPost("RemoveFile", RemoveFile)
-            .WithName("RemoveFile")
-            .Produces<FileResponse>(StatusCodes.Status200OK)
-            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
-            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
 
         group.MapPut("Update", Update)
             .WithName("UpdateUser")
@@ -132,74 +118,6 @@ public class Users : EndpointGroupBase
             onSuccess: () => Results.NoContent(),
             onFailure: result.ToProblemDetails);
     }
-
-    private async Task<IResult> Upload(IHttpContextAccessor context)
-    {
-        var files =  context.HttpContext.Request.Form.Files;
-
-        if (files is not null && files.Count == 0) 
-        {
-            return Results.BadRequest("Files not found");
-        }
-
-        var fileResponses = new List<FileResponse>();
-
-        foreach (var file in files)
-        {
-            if (file is null || file.Length == 0)
-            {
-                return Results.BadRequest("File is empty");
-            }
-
-            string folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Resources", "user-photos");
-
-            Directory.CreateDirectory(folderPath);
-
-            var fileNameWithExt = $"{Path.GetFileNameWithoutExtension(file.FileName)}_{DateTime.Now:yyyyMMddHHmmss}{Path.GetExtension(file.FileName)}";
-
-            var filePath = Path.Combine(folderPath, fileNameWithExt);
-
-            await using var stream = new FileStream(filePath, FileMode.Create);
-
-            await file.CopyToAsync(stream);
-
-            var relativePath = Path.Combine($"{Path.DirectorySeparatorChar}Resources", "uploads", "user-photos", fileNameWithExt).Replace(@"\", "/");
-
-            fileResponses.Add(new FileResponse(relativePath));
-        }
-
-        return Results.Ok(fileResponses);
-
-    }
-
-    public async Task<IResult> RemoveFile([FromBody] RemoveFileRequest removeFileReq)
-    {
-        // Convert the relative path to an absolute path
-        string absolutePath = Path.Combine(Directory.GetCurrentDirectory(), removeFileReq.RelativePath.TrimStart(Path.DirectorySeparatorChar, '/'));
-
-        if (File.Exists(absolutePath))
-        {
-            try
-            {
-                File.Delete(absolutePath);
-                await Task.CompletedTask;
-                return Results.Ok("File removed successfully.");
-            }
-            catch (Exception )
-            {
-                // Handle exceptions like access issues, etc.
-                return Results.Problem(
-                   statusCode: StatusCodes.Status500InternalServerError,
-                   title: "Internal server error");
-
-            }
-        }
-        else
-        {
-            return Results.NotFound("File not found.");
-        }
-    }
-
 
     private async Task<IResult> AddToRoles(ISender sender, [FromBody] AddToRolesCommand command)
     {
