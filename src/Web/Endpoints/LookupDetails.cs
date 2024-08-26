@@ -1,4 +1,5 @@
-﻿using CleanArchitechture.Application.Features.Common.Queries;
+﻿using CleanArchitechture.Application.Common.Extensions;
+using CleanArchitechture.Application.Features.Common.Queries;
 using CleanArchitechture.Application.Features.LookupDetails.Commands;
 using CleanArchitechture.Application.Features.LookupDetails.Queries;
 
@@ -43,6 +44,18 @@ public class LookupDetails : EndpointGroupBase
     private async Task<IResult> GetAll(ISender sender, GetLookupDetailListQuery query)
     {
         var result = await sender.Send(query);
+        if (!query.IsInitialLoaded)
+        {
+            var parentSelectList = await sender.Send(new GetSelectListQuery(
+                Sql: SelectListSqls.GetLookupDetailParentSelectListSql,
+                Parameters: new { },
+                Key: CacheKeys.Lookup_All_SelectList,
+                AllowCacheList: false)
+            );
+
+            result.Value.OptionsDataSources.Add("parentSelectList", parentSelectList.Value);
+            result.Value.OptionsDataSources.Add("statusSelectList", UtilityExtensions.GetActiveInactiveSelectList());
+        }
         return TypedResults.Ok(result.Value);
     }
 

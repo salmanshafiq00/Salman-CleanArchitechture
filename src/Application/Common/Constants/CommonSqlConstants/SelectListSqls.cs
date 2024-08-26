@@ -24,6 +24,14 @@ public static class SelectListSqls
         ORDER BY Name
         """;
 
+    public const string GetLookupDetailParentSelectListSql = """
+        SELECT l.Id, l.Name 
+        FROM dbo.LookupDetails l
+        INNER JOIN dbo.LookupDetails l2 ON l2.ParentId = l.Id
+        WHERE 1 = 1
+        ORDER BY l.Name
+        """;
+
     public const string GetLookupDetailSelectListByDevCodeSql = """
         SELECT ld.Id, ld.Name 
         FROM dbo.Lookups l
