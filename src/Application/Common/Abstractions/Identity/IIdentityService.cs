@@ -22,6 +22,7 @@ public interface IIdentityService
     Task<Result> ChangePhotoAsync(string userId, string photoUrl, CancellationToken cancellation = default);
 
     Task<Result<AppUserModel>> GetUserAsync(string id, CancellationToken cancellation = default);
+    Task<Result<AppUserModel>> GetProfileAsync(string id, CancellationToken cancellation = default);
 
     Task<Result> DeleteUserAsync(string userId, CancellationToken cancellation = default);
 

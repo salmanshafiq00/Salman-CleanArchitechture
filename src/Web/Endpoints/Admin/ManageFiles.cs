@@ -10,7 +10,7 @@ public class ManageFiles : EndpointGroupBase
 
         group.MapPost("Upload", Upload)
             .WithName("Upload")
-            .Produces<FileResponse>(StatusCodes.Status200OK)
+            .Produces<FileResponse[]>(StatusCodes.Status200OK)
             .Produces<ProblemDetails>(StatusCodes.Status400BadRequest);
 
         group.MapPost("RemoveFile", RemoveFile)

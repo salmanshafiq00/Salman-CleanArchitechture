@@ -36,6 +36,11 @@ public class Users : EndpointGroupBase
             .Produces(StatusCodes.Status204NoContent)
             .Produces<ProblemDetails>(StatusCodes.Status400BadRequest);
 
+        group.MapPut("ChangePhoto", ChangePhoto)
+            .WithName("ChangePhoto")
+            .Produces(StatusCodes.Status204NoContent)
+            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest);
+
         group.MapPut("UpdateBasic", UpdateBasic)
             .WithName("UpdateBasic")
             .Produces(StatusCodes.Status204NoContent)
@@ -102,6 +107,15 @@ public class Users : EndpointGroupBase
     }
 
     private async Task<IResult> Update(ISender sender, [FromBody] UpdateAppUserCommand command)
+    {
+        var result = await sender.Send(command);
+
+        return result.Match(
+            onSuccess: () => Results.NoContent(),
+            onFailure: result.ToProblemDetails);
+    }
+
+    private async Task<IResult> ChangePhoto(ISender sender, [FromBody] ChangeUserPhotoCommand command)
     {
         var result = await sender.Send(command);
 
