@@ -34,7 +34,7 @@ public class DataFilterModel
     public string Value { get; set; } = string.Empty;
     public string MatchMode { get; set; } = string.Empty;
     public string Operator { get; set; } = string.Empty;
-    public string DSName {  get; set; } = string.Empty;
+    public string DsName {  get; set; } = string.Empty;
     public string DbField { get; set; } = string.Empty;
 }
 

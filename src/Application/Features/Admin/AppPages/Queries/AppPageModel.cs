@@ -7,6 +7,7 @@ public record AppPageModel
     public string SubTitle { get; set; } = string.Empty;
     public string ComponentName { get; set; } = string.Empty;
     public string AppPageLayout { get; set; } = string.Empty;
+    public string GridFilterType { get; set; } = string.Empty;
     public bool ShowRowActionCol { get; set; }
     public string? RowActionType { get; set; }
     public bool ShowSelectCheckbox { get; set; }
@@ -29,7 +30,7 @@ public record AppPageFieldModel
     public string TextAlign { get; set; } = string.Empty;
     public bool IsSortable { get; set; } = true;
     public bool IsFilterable { get; set; } = false;
-    public string DSName { get; set; } = string.Empty;
+    public string DsName { get; set; } = string.Empty;
     public bool IsGlobalFilterable { get; set; } = false;
     public string FilterType { get; set; } = string.Empty;
     public bool EnableLink { get; set; } = false;
