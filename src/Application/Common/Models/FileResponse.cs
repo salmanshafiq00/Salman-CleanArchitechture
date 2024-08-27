@@ -1,6 +1,6 @@
 ﻿namespace CleanArchitechture.Application.Common.Models;
 
-public record FileResponse(string Path)
+public record FileResponse(string FilePath)
 {
 
 }

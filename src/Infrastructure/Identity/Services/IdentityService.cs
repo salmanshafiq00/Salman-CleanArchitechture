@@ -219,6 +219,35 @@ public class IdentityService : IIdentityService
         return Result.Success(appUser);
     }
 
+    public async Task<Result<AppUserModel>> GetProfileAsync(
+      string id,
+      CancellationToken cancellation = default)
+    {
+        var user = await _userManager.Users
+            .AsNoTracking()
+            .SingleOrDefaultAsync(u => u.Id == id, cancellation);
+
+        if (user is null)
+            return Result.Failure<AppUserModel>(Error.Failure("User.Found", ErrorMessages.USER_NOT_FOUND));
+
+        var appUser = new AppUserModel
+        {
+            Id = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            IsActive = user.IsActive,
+            PhotoUrl = user.PhotoUrl,
+            Username = user.UserName,
+            Email = user.Email,
+            PhoneNumber = user.PhoneNumber
+        };
+
+        var roles = await _userManager.GetRolesAsync(user);
+        appUser.AssignedRoles = string.Join(", ", roles); 
+
+        return Result.Success(appUser);
+    }
+
     public async Task<Result> IsInRoleAsync(string userId, string role, CancellationToken cancellation = default)
     {
         var user = await _userManager.Users

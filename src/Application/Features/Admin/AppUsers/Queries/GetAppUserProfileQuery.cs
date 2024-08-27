@@ -3,11 +3,11 @@ using CleanArchitechture.Application.Common.Abstractions.Identity;
 
 namespace CleanArchitechture.Application.Features.Admin.AppUsers.Queries;
 
-public record GetAppUserProfileQuery(string userId) 
+public record GetAppUserProfileQuery(string UserId) 
     : ICacheableQuery<AppUserModel>
 {
     [JsonIgnore]
-    public string CacheKey => $"{CacheKeys.AppUser}_{userId}";
+    public string CacheKey => $"{CacheKeys.AppUser}_{UserId}";
 
     public bool? AllowCache => true;
 
@@ -19,10 +19,10 @@ internal sealed class GetAppUserProfileQueryHandler(IIdentityService identitySer
 {
     public async Task<Result<AppUserModel>> Handle(GetAppUserProfileQuery request, CancellationToken cancellationToken)
     {
-        if(string.IsNullOrEmpty(request.userId) || Guid.Parse(request.userId) == Guid.Empty)
+        if(string.IsNullOrEmpty(request.UserId) || Guid.Parse(request.UserId) == Guid.Empty)
         {
             return new AppUserModel();
         }
-        return await identityService.GetUserAsync(request.userId, cancellationToken).ConfigureAwait(false);
+        return await identityService.GetProfileAsync(request.UserId, cancellationToken).ConfigureAwait(false);
     }
 }

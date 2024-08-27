@@ -1660,7 +1660,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FileResponse"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FileResponse"
+                  }
                 }
               }
             }
@@ -2136,6 +2139,46 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/UpdateAppUserCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/api/Users/ChangePhoto": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "ChangePhoto",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeUserPhotoCommand"
               }
             }
           },
@@ -3536,7 +3579,7 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "path": {
+          "filePath": {
             "type": "string"
           }
         }
@@ -3845,6 +3888,15 @@
             "items": {
               "type": "string"
             }
+          }
+        }
+      },
+      "ChangeUserPhotoCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "photoUrl": {
+            "type": "string"
           }
         }
       },
