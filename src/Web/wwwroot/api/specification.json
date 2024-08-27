@@ -3351,6 +3351,9 @@
           "appPageLayout": {
             "type": "string"
           },
+          "gridFilterType": {
+            "type": "string"
+          },
           "showRowActionCol": {
             "type": "boolean"
           },
