@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Linq;
 using System.Security.Claims;
 using Application.Constants;
 using CleanArchitechture.Application.Common.Abstractions.Caching;
@@ -124,7 +125,7 @@ public class IdentityService : IIdentityService
         user.LastName = command.LastName;
         user.PhoneNumber = command.PhoneNumber;
 
-       var result = await _identityContext.SaveChangesAsync(cancellation);
+        var result = await _identityContext.SaveChangesAsync(cancellation);
 
         return result > 0
             ? Result.Success()
@@ -146,7 +147,7 @@ public class IdentityService : IIdentityService
 
         var identityResult = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
 
-        return identityResult.ToApplicationResult(); 
+        return identityResult.ToApplicationResult();
     }
 
     public async Task<Result> ChangePhotoAsync(
@@ -171,8 +172,8 @@ public class IdentityService : IIdentityService
     }
 
     private async Task DeleteAndAddUserRoles(
-        List<string> roles, 
-        ApplicationUser user, 
+        List<string> roles,
+        ApplicationUser user,
         CancellationToken cancellation)
     {
         await _identityContext.UserRoles
@@ -243,7 +244,7 @@ public class IdentityService : IIdentityService
         };
 
         var roles = await _userManager.GetRolesAsync(user);
-        appUser.AssignedRoles = string.Join(", ", roles); 
+        appUser.AssignedRoles = string.Join(", ", roles);
 
         return Result.Success(appUser);
     }
@@ -255,7 +256,7 @@ public class IdentityService : IIdentityService
             .SingleOrDefaultAsync(u => u.Id == userId, cancellation);
 
         if (user is null) return Result.Failure(Error.NotFound(nameof(user), ErrorMessages.USER_NOT_FOUND));
-        
+
         return await _userManager.IsInRoleAsync(user, role)
             ? Result.Success()
             : Result.Failure(Error.Forbidden(nameof(ErrorType.Forbidden), "You have no permission to access the resource"));
@@ -294,13 +295,16 @@ public class IdentityService : IIdentityService
 
     public async Task<Result<string[]>> GetUserPermissionsAsync(string userId, CancellationToken cancellationToken = default)
     {
-
-        if (!await _identityContext.Users
+        var user = await _identityContext.Users
             .AsNoTracking()
-            .AnyAsync(u => u.Id == userId, cancellationToken))
+            .SingleOrDefaultAsync(u => u.Id == userId, cancellationToken);
+
+        if (user is null)
         {
             return Result.Failure<string[]>(Error.NotFound(nameof(userId), ErrorMessages.USER_NOT_FOUND));
         }
+
+        var roles = await _userManager.GetRolesAsync(user);
 
         var userRoles = _identityContext.UserRoles
             .AsNoTracking()
@@ -308,10 +312,13 @@ public class IdentityService : IIdentityService
             .Select(x => x.RoleId)
             .AsQueryable();
 
-        return await _identityContext.RoleClaims
+        var rolePermissions = await _identityContext.RoleClaims
+            .AsNoTracking()
             .Where(x => userRoles.Contains(x.RoleId))
             .Select(x => x.ClaimValue!)
             .ToArrayAsync(cancellationToken);
+
+        return roles.Union(rolePermissions).ToArray();
 
     }
 
