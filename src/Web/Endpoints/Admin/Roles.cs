@@ -1,7 +1,10 @@
-﻿using CleanArchitechture.Application.Common.Models;
+﻿using CleanArchitechture.Application.Common.Abstractions;
+using CleanArchitechture.Application.Common.Models;
 using CleanArchitechture.Application.Features.Admin.AppMenus.Queries;
 using CleanArchitechture.Application.Features.Admin.Roles.Commands;
 using CleanArchitechture.Application.Features.Admin.Roles.Queries;
+using CleanArchitechture.Infrastructure.Communications;
+using Microsoft.AspNetCore.SignalR;
 
 namespace CleanArchitechture.Web.Endpoints.Admin;
 
@@ -66,9 +69,17 @@ public class Roles : EndpointGroupBase
             onFailure: result.ToProblemDetails);
     }
 
-    private async Task<IResult> Update(ISender sender, [FromBody] UpdateRoleCommand command)
+    private async Task<IResult> Update(
+        ISender sender, 
+        IHubContext<NotificationHub, INotificationHub> signalrContext, 
+        [FromBody] UpdateRoleCommand command)
     {
         var result = await sender.Send(command);
+
+        if (result.IsSuccess)
+        {
+            await signalrContext.Clients.All.ReceiveRolePermissionNotify();
+        }
 
         return result.Match(
             onSuccess: () => Results.NoContent(),

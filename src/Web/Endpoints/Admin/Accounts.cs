@@ -127,9 +127,10 @@ public class Accounts : EndpointGroupBase
 
     private async Task<IResult> GetUserPermissions(
         ISender sender,
-        IUser user)
+        IUser user,
+        [FromBody] bool allowCache = true)
     {
-        var result = await sender.Send(new GetUserPermissionsQuery(user.Id));
+        var result = await sender.Send(new GetUserPermissionsQuery(user.Id, allowCache));
 
         return result.Match(
             onSuccess: () => Results.Ok(result.Value),

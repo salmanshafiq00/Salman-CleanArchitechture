@@ -25,7 +25,7 @@ public static class SelectListSqls
         """;
 
     public const string GetLookupDetailParentSelectListSql = """
-        SELECT l.Id, l.Name 
+        SELECT Distinct l.Id, l.Name 
         FROM dbo.LookupDetails l
         INNER JOIN dbo.LookupDetails l2 ON l2.ParentId = l.Id
         WHERE 1 = 1

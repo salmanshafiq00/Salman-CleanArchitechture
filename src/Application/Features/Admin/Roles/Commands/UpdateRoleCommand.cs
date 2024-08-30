@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using CleanArchitechture.Application.Common.Abstractions.Caching;
+﻿using CleanArchitechture.Application.Common.Abstractions.Caching;
 using CleanArchitechture.Application.Common.Abstractions.Identity;
 
 namespace CleanArchitechture.Application.Features.Admin.Roles.Commands;
@@ -20,6 +19,11 @@ internal sealed class UpdateRoleCommandHandler(IIdentityRoleService roleService)
 {
     public async Task<Result> Handle(UpdateRoleCommand request, CancellationToken cancellationToken)
     {
-        return await roleService.UpdateRoleAsync(request.Id, request.Name, request.Rolemenus, request.Permissions, cancellationToken );
+        return await roleService.UpdateRoleAsync(
+            request.Id, 
+            request.Name, 
+            request.Rolemenus, 
+            request.Permissions, 
+            cancellationToken );
     }
 }

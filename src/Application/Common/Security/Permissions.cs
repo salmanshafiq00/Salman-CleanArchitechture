@@ -96,6 +96,13 @@ public static class Permissions
             public const string Edit = "Permissions.AppMenus.Edit";
             public const string Delete = "Permissions.AppMenus.Delete";
         }
+        public static class AppPageSetting
+        {
+            public const string View = "Permissions.AppPageSetting.View";
+            public const string Create = "Permissions.AppPageSetting.Create";
+            public const string Edit = "Permissions.AppPageSetting.Edit";
+            public const string Delete = "Permissions.AppPageSetting.Delete";
+        }
     }
 
     #endregion
