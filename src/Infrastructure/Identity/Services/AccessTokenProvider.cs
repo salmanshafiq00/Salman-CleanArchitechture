@@ -33,7 +33,7 @@ internal sealed class AccessTokenProvider(
             new Claim(JwtRegisteredClaimNames.Email, user.Email!),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim("username", user.UserName!),
-            new Claim("photoUrl", user.PhotoUrl!),
+            new Claim("photoUrl", user.PhotoUrl ?? ""),
             new Claim("ip", GetIpAddress())
         }
         .Union(userRoles);

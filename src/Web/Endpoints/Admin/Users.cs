@@ -1,8 +1,12 @@
-﻿using CleanArchitechture.Application.Common.Abstractions.Identity;
+﻿using Application.Constants;
+using CleanArchitechture.Application.Common.Abstractions;
+using CleanArchitechture.Application.Common.Abstractions.Identity;
 using CleanArchitechture.Application.Common.Extensions;
 using CleanArchitechture.Application.Features.Admin.AppUsers.Commands;
 using CleanArchitechture.Application.Features.Admin.AppUsers.Queries;
 using CleanArchitechture.Application.Features.Common.Queries;
+using CleanArchitechture.Infrastructure.Communications;
+using Microsoft.AspNetCore.SignalR;
 
 namespace CleanArchitechture.Web.Endpoints.Admin;
 
@@ -90,7 +94,9 @@ public class Users : EndpointGroupBase
 
     private async Task<IResult> GetProfile(ISender sender, IUser user)
     {
-        var result = await sender.Send(new GetAppUserProfileQuery(user.Id));
+        if(user is null) return Results.NotFound(ErrorMessages.USER_NOT_FOUND);
+
+        var result = await sender.Send(new GetAppUserProfileQuery(user.Id!));
 
         return result.Match(
             onSuccess: () => Results.Ok(result.Value),
@@ -106,9 +112,17 @@ public class Users : EndpointGroupBase
             onFailure: result.ToProblemDetails);
     }
 
-    private async Task<IResult> Update(ISender sender, [FromBody] UpdateAppUserCommand command)
+    private async Task<IResult> Update(
+        ISender sender,
+        IHubContext<NotificationHub, INotificationHub> signalrContext,
+        [FromBody] UpdateAppUserCommand command)
     {
         var result = await sender.Send(command);
+
+        if (result.IsSuccess)
+        {
+            await signalrContext.Clients.All.ReceiveRolePermissionNotify();
+        }
 
         return result.Match(
             onSuccess: () => Results.NoContent(),
@@ -124,7 +138,9 @@ public class Users : EndpointGroupBase
             onFailure: result.ToProblemDetails);
     }
 
-    private async Task<IResult> UpdateBasic(ISender sender, [FromBody] UpdateAppUserBasicCommand command)
+    private async Task<IResult> UpdateBasic(
+        ISender sender,
+        [FromBody] UpdateAppUserBasicCommand command)
     {
         var result = await sender.Send(command);
 

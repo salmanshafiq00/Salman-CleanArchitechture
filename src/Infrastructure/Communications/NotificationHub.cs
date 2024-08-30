@@ -16,4 +16,9 @@ public class NotificationHub: Hub<INotificationHub>
     {
         await Clients.All.ReceiveNotification(notificaiton);
     }
+
+    public async Task SendRolePermissionChange()
+    {
+        await Clients.All.ReceiveRolePermissionNotify();
+    }
 }

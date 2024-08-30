@@ -11,7 +11,6 @@ public record UpdateAppUserCommand(
      string FirstName,
      string LastName,
      string PhoneNumber,
-     string PhotoUrl,
      bool IsActive,
      List<string>? Roles
     ) : ICacheInvalidatorCommand

@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Ardalis.GuardClauses" />
+    <PackageReference Include="ClosedXML" />
     <PackageReference Include="Dapper" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
     <PackageReference Include="LazyCache" />

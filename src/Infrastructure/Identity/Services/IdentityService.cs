@@ -96,7 +96,6 @@ public class IdentityService : IIdentityService
         user.FirstName = command.FirstName;
         user.LastName = command.LastName;
         user.IsActive = command.IsActive;
-        user.PhotoUrl = command.PhotoUrl;
         user.PhoneNumber = command.PhoneNumber;
 
         if (command.Roles?.Count > 0)
@@ -206,8 +205,8 @@ public class IdentityService : IIdentityService
             LastName = user.LastName,
             IsActive = user.IsActive,
             PhotoUrl = user.PhotoUrl,
-            Username = user.UserName,
-            Email = user.Email,
+            Username = user.UserName!,
+            Email = user.Email!,
             PhoneNumber = user.PhoneNumber
         };
 

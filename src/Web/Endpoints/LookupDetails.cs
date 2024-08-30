@@ -39,6 +39,11 @@ public class LookupDetails : EndpointGroupBase
              .WithName("DeleteMultiple")
              .Produces(StatusCodes.Status204NoContent)
              .Produces<ProblemDetails>(StatusCodes.Status400BadRequest);
+
+        group.MapPost("Upload", Upload)
+             .WithName("LookupDetailUpload")
+             .Produces<int>(StatusCodes.Status200OK)
+             .Produces<ProblemDetails>(StatusCodes.Status400BadRequest);
     }
 
     private async Task<IResult> GetAll(ISender sender, GetLookupDetailListQuery query)
@@ -114,10 +119,27 @@ public class LookupDetails : EndpointGroupBase
         Result? result = null;
         foreach (var id in ids)
         {
-             result = await sender.Send(new DeleteLookupDetailCommand(id));
+            result = await sender.Send(new DeleteLookupDetailCommand(id));
         }
         return result!.Match(
             onSuccess: Results.NoContent,
             onFailure: result!.ToProblemDetails);
+    }
+
+    private async Task<IResult> Upload(ISender sender, IHttpContextAccessor contextAccessor)
+    {
+        var file = contextAccessor.HttpContext.Request.Form.Files[0];
+
+        if (file == null || file.Length == 0)
+        {
+            return Results.BadRequest("No file uploaded.");
+        }
+
+        return Results.Ok();
+        //var result = await sender.Send(new CreateLookupDetailFromExcelCommand(file));
+
+        //return result!.Match(
+        //    onSuccess: () => Results.Ok(result.Value),
+        //    onFailure: result!.ToProblemDetails);
     }
 }

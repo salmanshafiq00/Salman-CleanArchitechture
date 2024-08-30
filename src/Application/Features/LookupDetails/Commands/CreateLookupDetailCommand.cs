@@ -15,7 +15,7 @@ public record CreateLookupDetailCommand(
    public string CacheKey => CacheKeys.LookupDetail;
 }
 
-internal sealed class CreateLookupDetailQueryHandler(
+internal sealed class CreateLookupDetailCommandHandler(
     IApplicationDbContext dbContext) 
     : ICommandHandler<CreateLookupDetailCommand, Guid>
 {
