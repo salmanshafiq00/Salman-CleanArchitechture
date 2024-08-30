@@ -135,11 +135,10 @@ public class LookupDetails : EndpointGroupBase
             return Results.BadRequest("No file uploaded.");
         }
 
-        return Results.Ok();
-        //var result = await sender.Send(new CreateLookupDetailFromExcelCommand(file));
+        var result = await sender.Send(new CreateLookupDetailFromExcelCommand(file));
 
-        //return result!.Match(
-        //    onSuccess: () => Results.Ok(result.Value),
-        //    onFailure: result!.ToProblemDetails);
+        return result!.Match(
+            onSuccess: () => Results.Ok(result.Value),
+            onFailure: result!.ToProblemDetails);
     }
 }
