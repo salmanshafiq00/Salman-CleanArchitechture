@@ -6,9 +6,6 @@ public class Images : EndpointGroupBase
 
     public override void Map(WebApplication app)
     {
-        //app.MapGroup(this)
-        //    .MapGet(GetImage, "{fileName}");
-
         var group = app.MapGroup(this);
 
         group.MapGet("{fileName}", GetImage)
